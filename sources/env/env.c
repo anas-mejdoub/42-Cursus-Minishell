@@ -6,12 +6,11 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/08 10:54:37 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/08 12:01:57 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_env.h"
-
 
 static int	allocate_node(int i, char **ev, t_env_data **node, t_env_data **tmp)
 {
@@ -70,6 +69,7 @@ t_env	*init_env(char **ev)
 	tmp = NULL;
 	node = NULL;
 	tmp = NULL;
+    arr = NULL;
 	i = 0;
 	len = 0;
 	while (ev && ev[len++])

@@ -1,34 +1,33 @@
-CC = CC
-
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address
-
-RM = rm -rf
-
-SRC = ./sources/env/*.c
-
-NAME = minishell
+SRC = sources/env/env.c sources/env/methods.c sources/minishell.c
 
 OBJ = $(SRC:.c=.o)
 
-INCLUDES = ./includes
+LIBFT = sources/super_libft/libft.a
 
-make : $(NAME)
+CC = cc
 
-$(NAME) : $(OBJ) $(INCLUDES)
-	make -C ./sources/super_libft all
-	$(CC) $(CFLAGS) $(OBJ) -I INCLUDES -o minishell
+CFLAGS = -Wall -Wextra -Werror -I includes/
 
-%.c : %.o : INCLUDES
-	$(CC) $(CFLAGS) -c $< -o $@
+NAME = minishell
+
+RM = rm -rf
+
+all : $(NAME)
+
+
+
+$(NAME) : $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
+
+%.o : %.c
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	make -C ./sources/super_libft clean
 	@${RM} $(OBJ)
 
 fclean : clean
-	make -C ./sources/super_libft fclean
 	@${RM} $(NAME)
 
 re : fclean all
 
-.PHONY : all bonus clean fclean re includes sources
+.PHONY : all bonus clean fclean re
