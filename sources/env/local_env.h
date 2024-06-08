@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   local_env.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/08 10:54:42 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/06/08 10:30:33 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/06/08 10:54:39 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef LOCAL_ENV_H
+# define LOCAL_ENV_H
 
-# include "../sources/super_libft/libft.h"
-# include <dirent.h>
-# include <errno.h>
-# include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <termios.h>
-# include <unistd.h>
-// # include <wait.h>
-# include "env.h"
+# include "../../includes/env.h"
+# include "../../includes/minishell.h"
+
+void init_env_methods(t_env **env);
 
 
 #endif
