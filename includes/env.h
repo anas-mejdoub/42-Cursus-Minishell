@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:14:53 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/08 10:54:43 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/11 17:29:43 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct s_env
 {
     t_env_data *data;
     char *(*get)(t_env_data *env, char *key);
-    int (*set)(t_env_data *env, char *key, char *value);
+    int (*set)(t_env_data **env, char *key, char *value);
     int (*unset)(t_env_data *env, char *key);
 }   t_env;
 
