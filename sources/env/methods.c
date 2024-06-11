@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/08 10:54:38 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/11 17:30:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ static char	*get(t_env_data *env, char *key)
 	return (NULL);
 }
 
-static int	set(t_env_data *env, char *key, char *value)
+static int	set(t_env_data **env, char *key, char *value)
 {
 	t_env_data	*tmp;
 
-	if (!env || !key)
+	if (!(*env) || !key)
 		return (1);
-	tmp = env;
+	tmp = *env;
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->key, key, ft_strlen(tmp->key)))
@@ -50,7 +50,9 @@ static int	set(t_env_data *env, char *key, char *value)
 		return (1);
 	tmp->key = ft_strdup(key);
 	tmp->value = ft_strdup(value);
-	tmp->next = NULL;
+	tmp->next = *env;
+	*env = tmp;
+	
 	return (2);
 }
 static int	unset(t_env_data *env, char *key)
