@@ -6,12 +6,17 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/12 15:54:00 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/12 15:59:39 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+
+void tokenize(char *line)
+{
+    
+}
 
 
 void lexer()
@@ -20,7 +25,7 @@ void lexer()
     {
         char* line = readline("tchbi7a-shell$");
         if (line) {
-            printf("tchbi7a-shell$%s\n", line);
+            tokenize(line);
             free(line);
         }
     }
