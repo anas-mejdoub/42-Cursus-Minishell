@@ -1,4 +1,4 @@
-SRC = sources/env/env.c sources/env/methods.c sources/minishell.c
+SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -6,7 +6,7 @@ LIBFT = sources/super_libft/libft.a
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -I includes/
+CFLAGS = -Wall -Wextra -Werror  -I includes/
 
 NAME = minishell
 
@@ -14,10 +14,8 @@ RM = rm -rf
 
 all : $(NAME)
 
-
-
 $(NAME) : $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) -o $(NAME)
 
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
