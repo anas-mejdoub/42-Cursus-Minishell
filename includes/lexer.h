@@ -6,14 +6,14 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/12 19:22:48 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/12 19:26:46 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
-#define LEXER_H
 
-# include "minishell.h"
+#define LEXER_H
+#include "minishell.h"
 
 enum e_token
 {

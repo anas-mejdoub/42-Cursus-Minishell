@@ -6,7 +6,7 @@ LIBFT = sources/super_libft/libft.a
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror  -I includes/
+CFLAGS = -Wall -Wextra  -fsanitize=address -g -I includes/
 
 NAME = minishell
 

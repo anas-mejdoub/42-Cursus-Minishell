@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/12 16:20:07 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/12 19:50:26 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ int main(int ac, char **av, char  **ev)
     (void)ac;
     (void)av;
     
-    t_global_data *global_data;
+    // t_global_data *global_data;
     t_env *env;
 
-    global_data = malloc(sizeof(t_global_data)); 
+    // global_data = malloc(sizeof(t_global_data)); 
     env = init_env(ev);
-    global_data->env = env;
-    lexer(global_data);
+    // global_data->env = env;
+    lexer();
     // env->set(&env->data, "test_env", "hhh");
     // while (env->data)
     // {

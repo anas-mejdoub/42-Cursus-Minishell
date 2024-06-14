@@ -57,7 +57,8 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
-    "lexer.h": "c"
+    "lexer.h": "c",
+    "minishell.h": "c"
   },
   "editor.fontFamily": "fira code"
 }
