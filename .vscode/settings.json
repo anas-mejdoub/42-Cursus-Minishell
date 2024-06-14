@@ -58,7 +58,10 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "lexer.h": "c",
-    "minishell.h": "c"
+    "minishell.h": "c",
+    "libft.h": "c",
+    "parser.h": "c",
+    "__config": "c"
   },
   "editor.fontFamily": "fira code"
 }
