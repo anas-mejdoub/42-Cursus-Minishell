@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/12 19:26:46 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/14 19:31:35 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ enum e_token
 	PIPE_LINE = '|',
 	REDIR_IN = '<',
 	REDIR_OUT = '>',
+	START_SUBSHELL = '(',
+	END_SUBSHELL = ')',
+	WILDCARD = '*',
+	END,
+	OR,
 	HERE_DOC,
 	DREDIR_OUT,
 };
@@ -47,6 +52,6 @@ typedef struct s_elem
 	void			*next;
 }	t_elem;
 
-void lexer(void);
+t_elem *lexer(void);
 
 #endif
