@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/14 19:26:25 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/14 19:57:38 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ t_command	*new_node(void)
 	new->builtin = false;
 	new->infile = NULL;
 	new->outfile = NULL;
+	new->in_redir = false;
+	new->out_redir = false;
 	new->type_node = NODE;
 }
 
@@ -84,9 +86,9 @@ t_command	*handle_pipe_node(t_command *command)
 	return (pipe_node);
 }
 
-void handle_redir_in(t_command *command, char *fileanme)
+void handle_redir_in(t_command *command, char *filename)
 {
-	
+	command->in_redir = add_to_args(command->in_redir, filename);
 }
 
 t_command	*parser(t_elem *elements)
@@ -102,10 +104,10 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		if (elements->type == WORD)
+		if (elements->type == WORD && !command->in_redir && !command->out_redir)
 			command->command_args = add_to_args(command->command_args,
 					elements->content);
-		else if (elements->type == PIPE_LINE && !first_time)
+		else if (elements->type == PIPE_LINE)
 		{
 			pipe_node = handle_pipe_node(pipe_node);
 			if (!pipe_node)
@@ -113,9 +115,12 @@ t_command	*parser(t_elem *elements)
 			command = new_node();
 		}
 		else if (elements->type == REDIR_IN)
-		{
-
-		}
-		first_time = false;
+			command->in_redir = true;
+		else if (elements->type == REDIR_OUT)
+			command->out_redir = true;
+		else if (elements->type == WORD && REDIR_IN)
+			handle_redir_in(command, elements->content);
+		elements = elements->next;
 	}
+	return (pipe_node);
 }
