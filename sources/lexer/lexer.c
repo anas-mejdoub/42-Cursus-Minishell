@@ -6,11 +6,17 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 12:07:02 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 18:03:20 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
+
+void shift_string(char *str, int shift)
+{
+    int len = strlen(str);
+    memmove(str, str + shift, len - shift + 1); // +1 for the null terminator
+}
 
 int is_token(char c)
 {
@@ -74,9 +80,55 @@ int qoute_handler(t_elem **elem, char *line, int *i)
     }
     else
     {
-        printf(RED "synthax error : messing a quote\n" RESET);
+        printf(RED "synthax error : missing a quote\n" RESET);
         return (1);
     }
+}
+
+int dquote_env(t_elem **elem, char *line, int *i, int *index)
+{
+    int current_index;
+    char *content;
+    
+    (*i)++;
+    current_index = (*i);
+    if (ft_isdigit(line[(*i)]))
+    {
+        content = ft_substr(line, (*index), (*i) - 1 - (*index));
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem, content, IN_DQUOTE, WORD))
+             return (1);
+        content = ft_calloc(3, 1);
+        content[0] = '$';
+        content[1] = line[(*i)];
+        (*i)++;
+        if(allocate_node(elem ,content, IN_DQUOTE, ENV))
+            return (1);
+        (*index) = (*i);
+    } 
+    else if (ft_isalpha(line[(*i)]) || line[(*i)] == '_')
+    {
+        content = ft_substr(line, (*index), (*i) - 1 - (*index));
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem, content, IN_DQUOTE, WORD))
+             return (1);
+        while (ft_isalnum(line[(*i)]) || line[(*i)] == '_')
+            (*i)++;
+        if ((*i) != current_index)
+        {
+            content = ft_substr(line, current_index - 1, (*i) - current_index + 1);
+            if (!content)
+                return (1);
+            if (allocate_node(elem, content, IN_DQUOTE, ENV))
+                return (1);
+            (*index) = (*i);
+        }
+    }
+    else if (line[(*i)] == '*')
+        memmove(line + (*i) - 1, line + (*i) + 1, strlen(line + (*i) + 1) + 1);
+    return (0);
 }
 
 int double_qoute_handler(t_elem **elem, char *line, int *i)
@@ -97,12 +149,22 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
     while (line[(*i)] && line[(*i)] != DOUBLE_QUOTE)
     {
         while (line[(*i)] && line[(*i)] != DOUBLE_QUOTE)
-            (*i)++;
-        content = ft_substr(line, current_index, (*i) - current_index);
-        if (content == NULL)
-            return (1);
-        if (allocate_node(elem, content, IN_DQUOTE, WORD))
-            return (1);
+        {
+            if (line[(*i)] == ENV)
+            {
+                dquote_env(elem, line, i, &current_index);
+            }
+            else
+                (*i)++;
+        }
+        if ((*i) != current_index)
+        {
+            content = ft_substr(line, current_index, (*i) - current_index);
+            if (content == NULL)
+                return (1);
+            if (allocate_node(elem, content, IN_DQUOTE, WORD))
+                return (1);
+        }
     }
     if (line[(*i)] == DOUBLE_QUOTE)
     {
@@ -116,18 +178,22 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
     }
     else
     {
-        printf(RED "synthax error : messing a double quote\n" RESET);
+        printf(RED "synthax error : missing a double quote\n" RESET);
         return (1);
     }
 }
 
-int general_tokens(char c, t_elem **elem, int *i)
+int general_tokens(char c, t_elem **elem, int *i, int *subshell)
 {
     char *content;
 
     if (c == WHITE_SPACE || c == NEW_LINE || c == PIPE_LINE || c == REDIR_IN || c == REDIR_OUT ||
          c == START_SUBSHELL || c == END_SUBSHELL || c == WILDCARD)
     {
+        if (c == START_SUBSHELL)
+            (*subshell)++;
+        if (c == END_SUBSHELL)
+            (*subshell)--;
         content = ft_calloc(2, 1);
         if (content == NULL)
             return (1);
@@ -139,7 +205,7 @@ int general_tokens(char c, t_elem **elem, int *i)
     return (0);
 }
 
-int general_handler(t_elem **elem, char *line, int *i)
+int general_handler(t_elem **elem, char *line, int *i, int *subshell)
 {
     int current_index;
     char *content;
@@ -161,7 +227,7 @@ int general_handler(t_elem **elem, char *line, int *i)
                     return (1);
             current_index = (*i);
         }
-        if (general_tokens(line[(*i)], elem, i))
+        if (general_tokens(line[(*i)], elem, i, subshell))
             return (1);
         current_index = (*i);
         if (line [(*i)] && (line[(*i)] == QOUTE || line[(*i)] == DOUBLE_QUOTE))
@@ -170,14 +236,14 @@ int general_handler(t_elem **elem, char *line, int *i)
     return (0);
 }
 
-t_elem *tokenize(char *line)
+t_elem *tokenize(char *line, int subshell)
 {
     int i = 0;
     t_elem *elem = NULL;
+    while (line[i] && line[i] == ' ')
+        i++;
     while (line[i])
     {
-        while (line[i] && line[i] == ' ')
-            i++;
         if (line[i] && line[i] == QOUTE)
         {
             if (qoute_handler(&elem ,line, &i))
@@ -190,22 +256,25 @@ t_elem *tokenize(char *line)
         }
         else if (line[i])
         {
-            if (general_handler(&elem, line, &i))
+            if (general_handler(&elem, line, &i, subshell))
                 return (free(elem), NULL);
         }
-
     }
     return (elem);
 }
 
-
 t_elem *lexer()
 {
     t_elem *elem = NULL;
-    char* line = readline(BHMAG "tchbi7a-shell$ " RESET);
+    char* line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
     if (line) {
-        elem = tokenize(line);
+        elem = tokenize(line, subshell);
         free(line);
+    }
+    if (subshell != 0)
+    {
+        printf(RED "synthax error : missing a parenthese symbole\n" RESET);
+        return(free_elem(elem), NULL);
     }
     return (elem);
 }
