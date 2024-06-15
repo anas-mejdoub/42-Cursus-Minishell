@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 17:57:46 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 19:44:36 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,37 @@ int is_token(char c)
     return (0);
 }
 
-int env_handeler(t_elem **elem, char *line, int *i, int state)
+int env_handeler(t_elem **elem, char *line, int *i)
 {
-    int current_index = (*i);
+    int current_index;
     char *content;
-
+    
     (*i)++;
-    while (line[(*i)] && is_token(line[(*i)]))
+    current_index = (*i);
+    if (ft_isdigit(line[(*i)]))
+    {
+        content = ft_calloc(3, 1);
+        content[0] = '$';
+        content[1] = line[(*i)];
         (*i)++;
-    content = ft_substr(line, current_index, (*i) - current_index);
-    if (content == NULL)
-        return (1);
-    if (allocate_node(elem, content, state, ENV))
-        return (1);
+        if(allocate_node(elem ,content, GENERAL, ENV))
+            return (1);
+    } 
+    else if (ft_isalpha(line[(*i)]) || line[(*i)] == '_')
+    {
+        while (line[(*i)] && (ft_isalnum(line[(*i)]) || line[(*i)] == '_'))
+            (*i)++;
+        if ((*i) != current_index)
+        {
+            content = ft_substr(line, current_index - 1, (*i) - current_index + 1);
+            if (!content)
+                return (1);
+            if (allocate_node(elem, content, GENERAL, ENV))
+                return (1);
+        }
+    }
+    else if (line[(*i)] == '*')
+        memmove(line + (*i), line + (*i) + 1, strlen(line + (*i) + 1) + 1);
     return (0);
 }
 
@@ -222,10 +240,12 @@ int general_handler(t_elem **elem, char *line, int *i, int *subshell)
                 return (1);
             if (allocate_node(elem, content, GENERAL, WORD))
                 return (1);
-            if (line[(*i)] == ENV)
-                if (env_handeler(elem, line ,i, GENERAL))
-                    return (1);
             current_index = (*i);
+        }
+        if (line[(*i)] == ENV)
+        {
+            if (env_handeler(elem, line ,i))
+                return (1);
         }
         if (general_tokens(line[(*i)], elem, i, subshell))
             return (1);
