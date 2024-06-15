@@ -6,48 +6,11 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 11:04:23 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 11:52:52 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
-
-void free_elem(t_elem *elem)
-{
-    t_elem *prev;
-
-    while (elem)
-    {
-        prev = elem;
-        elem = elem->next;
-        free(prev->content);
-        free(prev);
-    }
-}
-
-int allocate_node(t_elem **elem, char *content, int state, int token)
-{
-    t_elem *new_node;
-    t_elem *last_node;
-    
-    new_node = malloc(sizeof(t_elem));
-    if (!new_node)
-        return (1);
-    new_node->state = state;
-    new_node->type = token;
-    new_node->content = content;
-    new_node->next = NULL;
-    
-    if (!(*elem))
-        (*elem) = new_node;
-    else {
-        last_node = *elem;
-        while (last_node->next)
-            last_node = last_node->next;
-        last_node->next = new_node;
-    }
-    return (0);
-}
 
 int is_token(char c)
 {
@@ -207,7 +170,7 @@ int general_handler(t_elem **elem, char *line, int *i)
     return (0);
 }
 
-t_elem *tokenize(char *line)
+t_elem *tokenize(char *line, int subshell)
 {
     int i = 0;
     t_elem *elem = NULL;
@@ -238,10 +201,13 @@ t_elem *tokenize(char *line)
 
 t_elem *lexer()
 {
+    int subshell;
+
+    subshell = 0;
     t_elem *elem = NULL;
     char* line = readline(BHMAG "tchbi7a-shell$ " RESET);
     if (line) {
-        elem = tokenize(line);
+        elem = tokenize(line, subshell);
         free(line);
     }
     return (elem);
