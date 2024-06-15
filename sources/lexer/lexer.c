@@ -6,11 +6,24 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/14 19:32:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 11:04:23 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
+
+void free_elem(t_elem *elem)
+{
+    t_elem *prev;
+
+    while (elem)
+    {
+        prev = elem;
+        elem = elem->next;
+        free(prev->content);
+        free(prev);
+    }
+}
 
 int allocate_node(t_elem **elem, char *content, int state, int token)
 {
@@ -23,7 +36,6 @@ int allocate_node(t_elem **elem, char *content, int state, int token)
     new_node->state = state;
     new_node->type = token;
     new_node->content = content;
-    // printf("content: %s\n", new_node->content);
     new_node->next = NULL;
     
     if (!(*elem))
@@ -55,11 +67,14 @@ int env_handeler(t_elem **elem, char *line, int *i, int state)
     while (line[(*i)] && is_token(line[(*i)]))
         (*i)++;
     content = ft_substr(line, current_index, (*i) - current_index);
-    allocate_node(elem, content, state, ENV);
+    if (content == NULL)
+        return (1);
+    if (allocate_node(elem, content, state, ENV))
+        return (1);
     return (0);
 }
 
-void qoute_handler(t_elem **elem, char *line, int *i)
+int qoute_handler(t_elem **elem, char *line, int *i)
 {
     int current_index;
     char *content;
@@ -67,7 +82,10 @@ void qoute_handler(t_elem **elem, char *line, int *i)
     if (line[(*i)] == QOUTE)
     {
         content = ft_strdup("\'");
-        allocate_node(elem,content, IN_QUOTE, QOUTE);
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem,content, IN_QUOTE, QOUTE))
+            return (1);
         (*i)++;
         current_index = (*i);
     }
@@ -76,13 +94,67 @@ void qoute_handler(t_elem **elem, char *line, int *i)
         while (line[(*i)] && line[(*i)] != QOUTE)
             (*i)++;
         content = ft_substr(line, current_index, (*i) - current_index);
-        allocate_node(elem, content, IN_QUOTE, WORD);
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem, content, IN_QUOTE, WORD))
+            return (1);
     }
     if (line[(*i)] == QOUTE)
     {
         content = ft_strdup("\'");
-        allocate_node(elem,content, IN_QUOTE, QOUTE);
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem,content, IN_QUOTE, QOUTE))
+            return (1);
         (*i)++;
+        return (0);
+    }
+    else
+    {
+        printf(RED "synthax error : messing a quote\n" RESET);
+        return (1);
+    }
+}
+
+int double_qoute_handler(t_elem **elem, char *line, int *i)
+{
+    int current_index;
+    char *content;
+
+    if (line[(*i)] == DOUBLE_QUOTE)
+    {
+        content = ft_strdup("\"");
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem,content, IN_DQUOTE, DOUBLE_QUOTE))
+            return (1);
+        (*i)++;
+        current_index = (*i);
+    }
+    while (line[(*i)] && line[(*i)] != DOUBLE_QUOTE)
+    {
+        while (line[(*i)] && line[(*i)] != DOUBLE_QUOTE)
+            (*i)++;
+        content = ft_substr(line, current_index, (*i) - current_index);
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem, content, IN_DQUOTE, WORD))
+            return (1);
+    }
+    if (line[(*i)] == DOUBLE_QUOTE)
+    {
+        content = ft_strdup("\"");
+        if (content == NULL)
+            return (1);
+        if (allocate_node(elem,content, IN_DQUOTE, DOUBLE_QUOTE))
+            return (1);
+        (*i)++;
+        return (0);
+    }
+    else
+    {
+        printf(RED "synthax error : messing a double quote\n" RESET);
+        return (1);
     }
 }
 
@@ -94,14 +166,17 @@ int general_tokens(char c, t_elem **elem, int *i)
          c == START_SUBSHELL || c == END_SUBSHELL || c == WILDCARD)
     {
         content = ft_calloc(2, 1);
+        if (content == NULL)
+            return (1);
         content[0] = c;
-        allocate_node(elem, content, GENERAL, (int)c);
+        if (allocate_node(elem, content, GENERAL, (int)c))
+            return (1);
         (*i)++;
     }
-    return ((*i));
+    return (0);
 }
 
-void general_handler(t_elem **elem, char *line, int *i)
+int general_handler(t_elem **elem, char *line, int *i)
 {
     int current_index;
     char *content;
@@ -114,15 +189,22 @@ void general_handler(t_elem **elem, char *line, int *i)
         if (current_index != (*i))
         {   
             content = ft_substr(line , current_index, (*i) - current_index);
-            allocate_node(elem, content, GENERAL, WORD);
+            if (content == NULL)
+                return (1);
+            if (allocate_node(elem, content, GENERAL, WORD))
+                return (1);
             if (line[(*i)] == ENV)
-                env_handeler(elem, line ,i, GENERAL);
+                if (env_handeler(elem, line ,i, GENERAL))
+                    return (1);
             current_index = (*i);
         }
-        current_index = general_tokens(line[(*i)], elem, i);
+        if (general_tokens(line[(*i)], elem, i))
+            return (1);
+        current_index = (*i);
         if (line [(*i)] && (line[(*i)] == QOUTE || line[(*i)] == DOUBLE_QUOTE))
             break;
     }
+    return (0);
 }
 
 t_elem *tokenize(char *line)
@@ -134,11 +216,21 @@ t_elem *tokenize(char *line)
         while (line[i] && line[i] == ' ')
             i++;
         if (line[i] && line[i] == QOUTE)
-            qoute_handler(&elem ,line, &i);
+        {
+            if (qoute_handler(&elem ,line, &i))
+                return (free(elem), NULL);
+        }
+        else if (line[i] && line[i] == DOUBLE_QUOTE)
+        {
+            if (double_qoute_handler(&elem, line, &i))
+                return (free(elem), NULL);
+        }
         else if (line[i])
-            general_handler(&elem, line, &i);
-        // if (line[i])
-        //     i++;
+        {
+            if (general_handler(&elem, line, &i))
+                return (free(elem), NULL);
+        }
+
     }
     return (elem);
 }
@@ -147,7 +239,7 @@ t_elem *tokenize(char *line)
 t_elem *lexer()
 {
     t_elem *elem = NULL;
-    char* line = readline("tchbi7a-shell$");
+    char* line = readline(BHMAG "tchbi7a-shell$ " RESET);
     if (line) {
         elem = tokenize(line);
         free(line);

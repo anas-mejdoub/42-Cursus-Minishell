@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/12 19:25:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 09:31:07 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 # include "env.h"
+# include "colors.h"
 
 typedef struct s_global_data
 {
