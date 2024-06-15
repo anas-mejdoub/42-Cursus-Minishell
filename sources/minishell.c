@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 11:34:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 17:17:44 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,10 @@ int main(int ac, char **av, char  **ev)
         elem = lexer();
         while (elem)
         {
-            printf("content :<%s>\n", elem->content);
-            printf("state :<%s>\n", elem->state == 0 ? "IN_DQUOTE" : elem->state == 2 ? "GENERAL" : "IN_QUOTE");
-            printf("token :<%c>\n", elem->type == -1 ? 'W' : (char)elem->type);
+            printf("content     state         token\n");
+            printf("<%s>", elem->content);
+            printf("        <%s>", elem->state == 0 ? "IN_DQUOTE" : elem->state == 2 ? "GENERAL" : "IN_QUOTE");
+            printf("      <%c>\n", elem->type == -1 ? 'W' : (char)elem->type);
             printf("----------------------------------------------------\n");
             elem = elem->next;
         }
