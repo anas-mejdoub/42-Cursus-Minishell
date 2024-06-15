@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 11:52:52 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 12:07:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ int general_handler(t_elem **elem, char *line, int *i)
     return (0);
 }
 
-t_elem *tokenize(char *line, int subshell)
+t_elem *tokenize(char *line)
 {
     int i = 0;
     t_elem *elem = NULL;
@@ -201,13 +201,10 @@ t_elem *tokenize(char *line, int subshell)
 
 t_elem *lexer()
 {
-    int subshell;
-
-    subshell = 0;
     t_elem *elem = NULL;
     char* line = readline(BHMAG "tchbi7a-shell$ " RESET);
     if (line) {
-        elem = tokenize(line, subshell);
+        elem = tokenize(line);
         free(line);
     }
     return (elem);
