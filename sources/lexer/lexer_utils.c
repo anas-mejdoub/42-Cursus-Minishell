@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 11:08:36 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 11:09:13 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 17:09:19 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int allocate_node(t_elem **elem, char *content, int state, int token)
     t_elem *new_node;
     t_elem *last_node;
     
+    if (!content || content[0] == '\0')
+        return (0);
     new_node = malloc(sizeof(t_elem));
     if (!new_node)
         return (1);
