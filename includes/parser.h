@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/14 19:29:25 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/15 11:49:09 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ typedef struct s_commands
 {
     char **command_args;
     int type_node;
-    char  *infile;
-    char *outfile;
+    char  **infile;
+    char **outfile;
     char *path;
     bool pipe;
     bool and_;

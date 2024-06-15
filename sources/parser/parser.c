@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/14 19:57:38 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/15 11:50:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,12 @@ t_command	*handle_pipe_node(t_command *command)
 
 void handle_redir_in(t_command *command, char *filename)
 {
-	command->in_redir = add_to_args(command->in_redir, filename);
+	command->infile = add_to_args(command->infile, filename);
+}
+
+void handle_redir_out(t_command *command, char *filename)
+{
+	command->outfile = add_to_args(command->outfile, filename);
 }
 
 t_command	*parser(t_elem *elements)
@@ -118,8 +123,10 @@ t_command	*parser(t_elem *elements)
 			command->in_redir = true;
 		else if (elements->type == REDIR_OUT)
 			command->out_redir = true;
-		else if (elements->type == WORD && REDIR_IN)
+		else if (elements->type == WORD && command->in_redir)
 			handle_redir_in(command, elements->content);
+		else if (elements->type == WORD && command->out_redir)
+			handle_redir_out(command, elements->content);
 		elements = elements->next;
 	}
 	return (pipe_node);
