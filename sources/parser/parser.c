@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/15 15:41:40 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/15 18:01:06 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,18 @@ t_command	*new_node(void)
 	return (new);
 }
 
+void print_2d(char **str)
+{
+	int i = 0;
+	while (str && str[i])
+	{
+		// ft_putstr_fd(str, 1);
+		printf("%s ", str[i]);
+		i++;
+	}
+	printf("\n");
+}
+
 void	print_tree(t_command *root, int n)
 {
 	if (!root)
@@ -47,7 +59,8 @@ void	print_tree(t_command *root, int n)
 	else if (n == 2)
 		printf("left\n");
 	if (root->type_node == NODE)
-		printf("%s\n", root->command_args[0]);
+		print_2d(root->command_args);
+		// printf("%s\n", root->command_args[0]);
 	print_tree(root->right, 1);
 	print_tree(root->left, 2);
 }
@@ -101,12 +114,38 @@ t_command	*handle_pipe_node(t_command *command)
 	pipe_node->right = command;
 	return (pipe_node);
 }
-
+char *command_handling(t_elem **element)
+{
+	char *command = NULL;
+	while (*element)
+	{
+		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
+		{
+			if (!command)
+				command = (*element)->content;
+			else
+				command = ft_strjoin(command, (*element)->content);
+		}
+		else if ((*element)->state == GENERAL)
+		{
+			// printf ("{}%s\n", (*element)->content);
+			if (!command)
+				command = (*element)->content;
+			else
+				command = ft_strjoin(command, (*element)->content);
+			return (command);
+		}
+		else if ((*element)->type == WHITE_SPACE )
+			printf ("space !\n");
+		*element = (*element)->next;
+	}
+	return (command);
+}
 void	handle_redir_in(t_command *command, char *filename)
 {
 	command->infile = add_to_args(command->infile, filename);
 	command->in_redir = false;
-}
+} 
 
 void	handle_redir_out(t_command *command, char *filename)
 {
@@ -127,9 +166,10 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
+		printf ("----%s----\n", elements->content);
 		if (elements->type == WORD && !command->in_redir && !command->out_redir)
 			command->command_args = add_to_args(command->command_args,
-					elements->content);
+					command_handling(&elements));
 		else if (elements->type == PIPE_LINE && first_time == false)
 		{
 			pipe_node = handle_pipe_node(pipe_node);
@@ -152,7 +192,10 @@ t_command	*parser(t_elem *elements)
 			handle_redir_in(command, elements->content);
 		else if (elements->type == WORD && command->out_redir)
 			handle_redir_out(command, elements->content);
-		elements = elements->next;
+		if (elements)
+			elements = elements->next;
+		else
+			break;
 	}
 	return (pipe_node);
 }
