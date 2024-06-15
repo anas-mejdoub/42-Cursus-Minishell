@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/15 11:49:09 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/15 12:48:38 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,11 @@ typedef struct s_commands
     bool builtin;
     bool in_redir;
     bool out_redir;
-    struct s_command* left;
-    struct s_command* right;
+     void *right;
+    void *left;
 } t_command;
 
+t_command	*parser(t_elem *elements);
+void print_tree(t_command *root, int n);
 
 #endif

@@ -1,4 +1,4 @@
-SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c
+SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/parser/parser.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -6,7 +6,7 @@ LIBFT = sources/super_libft/libft.a
 
 CC = cc
 
-CFLAGS = -Wall -Wextra   -g -I includes/
+CFLAGS = -Wall -Wextra   -g -I includes/ -fsanitize=address -g
 
 NAME = minishell
 

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/15 11:50:17 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/15 15:41:40 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_command	*new_node(void)
 	new->right = NULL;
 	new->type_node = NODE;
 	new->left = NULL;
+	new->command_args = NULL;
 	new->path = NULL;
 	new->pipe = false;
 	new->and_ = false;
@@ -32,6 +33,23 @@ t_command	*new_node(void)
 	new->in_redir = false;
 	new->out_redir = false;
 	new->type_node = NODE;
+	return (new);
+}
+
+void	print_tree(t_command *root, int n)
+{
+	if (!root)
+		return ;
+	if (root->type_node == PIPE_LINE_NODE)
+		printf("root\n");
+	else if (n == 1)
+		printf("right\n");
+	else if (n == 2)
+		printf("left\n");
+	if (root->type_node == NODE)
+		printf("%s\n", root->command_args[0]);
+	print_tree(root->right, 1);
+	print_tree(root->left, 2);
 }
 
 void	free2d(char **str)
@@ -53,17 +71,15 @@ char	**add_to_args(char **args, char *to_append)
 {
 	int		i;
 	char	**new;
-	int		j;
 
 	i = 0;
-	if (args)
-		while (args[i])
-			;
-	new = malloc(sizeof(char *) * (i + 1));
+	while (args && args[i])
+		i++;
+	new = malloc(sizeof(char *) * (i + 2));
 	if (!new)
 		return (NULL);
-	j = 0;
-	while (args[i])
+	i = 0;
+	while (args && args[i])
 	{
 		new[i] = ft_strdup(args[i]);
 		i++;
@@ -78,7 +94,7 @@ t_command	*handle_pipe_node(t_command *command)
 {
 	t_command	*pipe_node;
 
-	pipe_node = new_node;
+	pipe_node = new_node();
 	if (!pipe_node)
 		return (NULL);
 	pipe_node->type_node = PIPE_LINE_NODE;
@@ -86,23 +102,25 @@ t_command	*handle_pipe_node(t_command *command)
 	return (pipe_node);
 }
 
-void handle_redir_in(t_command *command, char *filename)
+void	handle_redir_in(t_command *command, char *filename)
 {
 	command->infile = add_to_args(command->infile, filename);
+	command->in_redir = false;
 }
 
-void handle_redir_out(t_command *command, char *filename)
+void	handle_redir_out(t_command *command, char *filename)
 {
 	command->outfile = add_to_args(command->outfile, filename);
+	command->out_redir = false;
 }
 
 t_command	*parser(t_elem *elements)
 {
 	t_command	*command;
 	t_command	*pipe_node;
-    t_command *root;
-	bool first_time = true;
+	bool		first_time;
 
+	first_time = true;
 	command = new_node();
 	pipe_node = new_node();
 	pipe_node->type_node = PIPE_LINE_NODE;
@@ -112,12 +130,19 @@ t_command	*parser(t_elem *elements)
 		if (elements->type == WORD && !command->in_redir && !command->out_redir)
 			command->command_args = add_to_args(command->command_args,
 					elements->content);
-		else if (elements->type == PIPE_LINE)
+		else if (elements->type == PIPE_LINE && first_time == false)
 		{
 			pipe_node = handle_pipe_node(pipe_node);
 			if (!pipe_node)
 				return (NULL);
 			command = new_node();
+			pipe_node->left = command;
+		}
+		else if (elements->type == PIPE_LINE && first_time)
+		{
+			first_time = false;
+			command = new_node();
+			pipe_node->left = command;
 		}
 		else if (elements->type == REDIR_IN)
 			command->in_redir = true;

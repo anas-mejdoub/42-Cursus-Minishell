@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 11:34:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 12:48:28 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,23 +37,10 @@ int main(int ac, char **av, char  **ev)
 
     // global_data = malloc(sizeof(t_global_data)); 
     env = init_env(ev);
-    // global_data->env = env;
     while (1)
     {
         elem = lexer();
-        while (elem)
-        {
-            printf("content :<%s>\n", elem->content);
-            printf("state :<%s>\n", elem->state == 0 ? "IN_DQUOTE" : elem->state == 2 ? "GENERAL" : "IN_QUOTE");
-            printf("token :<%c>\n", elem->type == -1 ? 'W' : (char)elem->type);
-            printf("----------------------------------------------------\n");
-            elem = elem->next;
-        }
+        t_command * root = parser(elem);
+        print_tree(root, 0);
     }
-    // env->set(&env->data, "test_env", "hhh");
-    // while (env->data)
-    // {
-    //     printf("key :%s|    value %s\n", env->data->key, env->data->value);
-    //     env->data = env->data->next;
-    // }
 }
