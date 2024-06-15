@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/15 18:01:06 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/15 18:50:50 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,10 @@ void print_2d(char **str)
 	int i = 0;
 	while (str && str[i])
 	{
-		// ft_putstr_fd(str, 1);
-		printf("%s ", str[i]);
+		printf("{%s}\n", str[i]);
 		i++;
 	}
-	printf("\n");
+	// printf("\n");
 }
 
 void	print_tree(t_command *root, int n)
@@ -128,15 +127,15 @@ char *command_handling(t_elem **element)
 		}
 		else if ((*element)->state == GENERAL)
 		{
-			// printf ("{}%s\n", (*element)->content);
 			if (!command)
 				command = (*element)->content;
 			else
-				command = ft_strjoin(command, (*element)->content);
+			{
+				if ((*element)->type != WHITE_SPACE)
+					command = ft_strjoin(command, (*element)->content);
+			}
 			return (command);
 		}
-		else if ((*element)->type == WHITE_SPACE )
-			printf ("space !\n");
 		*element = (*element)->next;
 	}
 	return (command);
@@ -166,7 +165,6 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		printf ("----%s----\n", elements->content);
 		if (elements->type == WORD && !command->in_redir && !command->out_redir)
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
