@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/15 18:50:50 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/15 19:45:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void print_2d(char **str)
 		printf("{%s}\n", str[i]);
 		i++;
 	}
-	// printf("\n");
 }
 
 void	print_tree(t_command *root, int n)
@@ -59,7 +58,6 @@ void	print_tree(t_command *root, int n)
 		printf("left\n");
 	if (root->type_node == NODE)
 		print_2d(root->command_args);
-		// printf("%s\n", root->command_args[0]);
 	print_tree(root->right, 1);
 	print_tree(root->left, 2);
 }
@@ -118,6 +116,10 @@ char *command_handling(t_elem **element)
 	char *command = NULL;
 	while (*element)
 	{
+		if ((*element)->type == WHITE_SPACE && (*element)->state == GENERAL)
+		{
+			return command;
+		}
 		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
 		{
 			if (!command)
@@ -134,7 +136,6 @@ char *command_handling(t_elem **element)
 				if ((*element)->type != WHITE_SPACE)
 					command = ft_strjoin(command, (*element)->content);
 			}
-			return (command);
 		}
 		*element = (*element)->next;
 	}
@@ -165,7 +166,7 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		if (elements->type == WORD && !command->in_redir && !command->out_redir)
+		if ((elements->type == WORD || elements->type == QOUTE) && !command->in_redir && !command->out_redir)
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
 		else if (elements->type == PIPE_LINE && first_time == false)
