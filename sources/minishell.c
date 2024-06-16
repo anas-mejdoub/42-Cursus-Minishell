@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 18:51:44 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/16 11:41:52 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int main(int ac, char **av, char  **ev)
             printf("content     state         token\n");
             printf("<%s>", elem->content);
             printf("        <%s>", elem->state == 0 ? "IN_DQUOTE" : elem->state == 2 ? "GENERAL" : "IN_QUOTE");
-            printf("      <%c>\n", elem->type == -1 ? 'W' : (char)elem->type);
+            printf("      <%c>\n", elem->type == -1 ? 'w' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : (char)elem->type);
             printf("----------------------------------------------------\n");
             elem = elem->next;
         }
