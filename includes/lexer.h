@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/14 19:36:47 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/16 13:14:16 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ enum e_token
 	START_SUBSHELL = '(',
 	END_SUBSHELL = ')',
 	WILDCARD = '*',
-	END,
+	AND,
 	OR,
 	HERE_DOC,
 	DREDIR_OUT,

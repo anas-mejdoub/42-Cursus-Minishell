@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 18:10:45 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/16 13:28:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,37 @@ int is_token(char c)
     return (0);
 }
 
-int env_handeler(t_elem **elem, char *line, int *i, int state)
+int env_handeler(t_elem **elem, char *line, int *i)
 {
-    int current_index = (*i);
+    int current_index;
     char *content;
-
+    
     (*i)++;
-    while (line[(*i)] && is_token(line[(*i)]))
+    current_index = (*i);
+    if (ft_isdigit(line[(*i)]))
+    {
+        content = ft_calloc(3, 1);
+        content[0] = '$';
+        content[1] = line[(*i)];
         (*i)++;
-    content = ft_substr(line, current_index, (*i) - current_index);
-    if (content == NULL)
-        return (1);
-    if (allocate_node(elem, content, state, ENV))
-        return (1);
+        if(allocate_node(elem ,content, GENERAL, ENV))
+            return (1);
+    } 
+    else if (ft_isalpha(line[(*i)]) || line[(*i)] == '_')
+    {
+        while (line[(*i)] && (ft_isalnum(line[(*i)]) || line[(*i)] == '_'))
+            (*i)++;
+        if ((*i) != current_index)
+        {
+            content = ft_substr(line, current_index - 1, (*i) - current_index + 1);
+            if (!content)
+                return (1);
+            if (allocate_node(elem, content, GENERAL, ENV))
+                return (1);
+        }
+    }
+    else if (line[(*i)] == '*')
+        memmove(line + (*i), line + (*i) + 1, strlen(line + (*i) + 1) + 1);
     return (0);
 }
 
@@ -183,24 +201,43 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
     }
 }
 
-int general_tokens(char c, t_elem **elem, int *i, int *subshell)
+int general_tokens(char *line, t_elem **elem, int *i, int *subshell)
 {
     char *content;
 
-    if (c == WHITE_SPACE || c == NEW_LINE || c == PIPE_LINE || c == REDIR_IN || c == REDIR_OUT ||
-         c == START_SUBSHELL || c == END_SUBSHELL || c == WILDCARD)
+    content = NULL;
+    if (line[(*i)] == WHITE_SPACE || line[(*i)] == NEW_LINE || line[(*i)] == PIPE_LINE || line[(*i)] == REDIR_IN || line[(*i)] == REDIR_OUT ||
+         line[(*i)] == START_SUBSHELL || line[(*i)] == END_SUBSHELL || line[(*i)] == WILDCARD || line[(*i)] == '&')
     {
-        if (c == START_SUBSHELL)
+        if (line[(*i)] == START_SUBSHELL)
             (*subshell)++;
-        if (c == END_SUBSHELL)
+        if (line[(*i)] == END_SUBSHELL)
             (*subshell)--;
-        content = ft_calloc(2, 1);
-        if (content == NULL)
-            return (1);
-        content[0] = c;
-        if (allocate_node(elem, content, GENERAL, (int)c))
-            return (1);
-        (*i)++;
+        if (line[(*i)] == PIPE_LINE && line[(*i) + 1] == PIPE_LINE)
+        {
+            content = ft_strdup("||");
+            allocate_node(elem, content, GENERAL, OR);
+            (*i) += 2;
+        }
+        else if (line[(*i)] == REDIR_OUT && line[(*i) + 1] == REDIR_OUT)
+        {
+            content = ft_strdup(">>");
+            allocate_node(elem, content, GENERAL, HERE_DOC);
+            (*i) += 2;
+        }
+        else if (line[(*i)] == '&' && line[(*i) + 1] == '&')
+        {
+            content = ft_strdup("&&");
+            allocate_node(elem, content, GENERAL, AND);
+            (*i) += 2;
+        }
+        else if (line[(*i)] != '&')
+        {
+            content = ft_calloc(2, 1);
+            content[0] = line[(*i)];
+            allocate_node(elem, content, GENERAL, (int)line[(*i)]);
+            (*i)++;
+        }
     }
     return (0);
 }
@@ -213,7 +250,7 @@ int general_handler(t_elem **elem, char *line, int *i, int *subshell)
     current_index = (*i);
     while (line[(*i)] && (line[(*i)] != QOUTE && line[(*i)] != DOUBLE_QUOTE))
     {
-        while (line[(*i)] && is_token(line[(*i)]))
+        while (line[(*i)] && (is_token(line[(*i)]) && !(line[(*i)] == '&' && line[(*i) + 1] ==  '&')))
             (*i)++;
         if (current_index != (*i))
         {   
@@ -222,12 +259,14 @@ int general_handler(t_elem **elem, char *line, int *i, int *subshell)
                 return (1);
             if (allocate_node(elem, content, GENERAL, WORD))
                 return (1);
-            if (line[(*i)] == ENV)
-                if (env_handeler(elem, line ,i, GENERAL))
-                    return (1);
             current_index = (*i);
         }
-        if (general_tokens(line[(*i)], elem, i, subshell))
+        if (line[(*i)] == ENV)
+        {
+            if (env_handeler(elem, line ,i))
+                return (1);
+        }
+        if (general_tokens(line, elem, i, subshell))
             return (1);
         current_index = (*i);
         if (line [(*i)] && (line[(*i)] == QOUTE || line[(*i)] == DOUBLE_QUOTE))
