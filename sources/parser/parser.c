@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/15 19:45:17 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/16 12:42:18 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,33 @@ t_command	*new_node(void)
 	return (new);
 }
 
-void print_2d(char **str)
+void print_2d(t_command *command)
 {
 	int i = 0;
-	while (str && str[i])
+	printf("command \t infile \t outfile\n");
+	while (command->command_args && command->command_args[i])
 	{
-		printf("{%s}\n", str[i]);
+		printf ("{%s} ", command->command_args[i]);
 		i++;
 	}
+	i = 0;
+	printf (" \t");
+	while (command->infile && command->infile[i])
+	{
+		printf("(%s) ", command->infile[i]);
+		i++;
+	}
+	if (!command->infile)
+		printf("\t \t");
+	printf("\t");
+	i = 0;
+	while (command->outfile && command->outfile[i])
+	{
+		printf("[%s] ", command->outfile[i]);
+		i++;
+	}
+	printf("\n");
+	
 }
 
 void	print_tree(t_command *root, int n)
@@ -57,7 +76,7 @@ void	print_tree(t_command *root, int n)
 	else if (n == 2)
 		printf("left\n");
 	if (root->type_node == NODE)
-		print_2d(root->command_args);
+		print_2d(root);
 	print_tree(root->right, 1);
 	print_tree(root->left, 2);
 }
@@ -114,10 +133,13 @@ t_command	*handle_pipe_node(t_command *command)
 char *command_handling(t_elem **element)
 {
 	char *command = NULL;
+	t_elem *tmp = NULL;
 	while (*element)
 	{
-		if ((*element)->type == WHITE_SPACE && (*element)->state == GENERAL)
+		if (ft_strchr(" ><|()&", (*element)->type) && (*element)->state == GENERAL)
 		{
+			if (ft_strchr("><|()&", (*element)->type))
+				*element = tmp;
 			return command;
 		}
 		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
@@ -137,6 +159,7 @@ char *command_handling(t_elem **element)
 					command = ft_strjoin(command, (*element)->content);
 			}
 		}
+		tmp = *element;
 		*element = (*element)->next;
 	}
 	return (command);
@@ -166,7 +189,7 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		if ((elements->type == WORD || elements->type == QOUTE) && !command->in_redir && !command->out_redir)
+		if ((elements->type == WORD) && !command->in_redir && !command->out_redir)
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
 		else if (elements->type == PIPE_LINE && first_time == false)
