@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/16 12:42:18 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/16 12:56:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,9 +211,9 @@ t_command	*parser(t_elem *elements)
 		else if (elements->type == REDIR_OUT)
 			command->out_redir = true;
 		else if (elements->type == WORD && command->in_redir)
-			handle_redir_in(command, elements->content);
+			handle_redir_in(command,command_handling(&elements));
 		else if (elements->type == WORD && command->out_redir)
-			handle_redir_out(command, elements->content);
+			handle_redir_out(command, command_handling(&elements));
 		if (elements)
 			elements = elements->next;
 		else
