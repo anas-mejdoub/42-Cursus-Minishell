@@ -15,15 +15,18 @@ RM = rm -rf
 all : $(NAME)
 
 $(NAME) : $(OBJ)
+	make -C sources/super_libft
 	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) -o $(NAME)
 
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
+	make clean -C sources/super_libft
 	@${RM} $(OBJ)
 
 fclean : clean
+	make fclean -C sources/super_libft
 	@${RM} $(NAME)
 
 re : fclean all

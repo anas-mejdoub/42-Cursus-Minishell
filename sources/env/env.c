@@ -62,7 +62,6 @@ t_env	*init_env(char **ev)
 	t_env_data	*node;
 	t_env_data	*tmp;
 	char		**arr;
-	int			i;
 	int			len;
 
 	node = NULL;
@@ -70,7 +69,6 @@ t_env	*init_env(char **ev)
 	node = NULL;
 	tmp = NULL;
     arr = NULL;
-	i = 0;
 	len = 0;
 	while (ev && ev[len++])
 		;
