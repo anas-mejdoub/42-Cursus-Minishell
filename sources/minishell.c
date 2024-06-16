@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/16 13:28:11 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/15 18:08:08 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 void print_tchbi7a(void)
 {
     printf(RED "██████  ██░ ██ ▓█████  ██▓     ██▓            \n"
-"▒██   ▒ ▓██░ ██▒▓█   ▀ ▓██▒    ▓██▒            \n"
-"░ ▓██▄  ▒██▀▀██░▒████ ▒██░    ▒██░            \n"
-"  ▒   ██▒░▓█ ░██▒▓█  ▄ ▒██░    ▒██░            \n"
+"▒██    ▒ ▓██░ ██▒▓█   ▀ ▓██▒    ▓██▒            \n"
+"░ ▓██▄   ▒██▀▀██░▒███   ▒██░    ▒██░            \n"
+"  ▒   ██▒░▓█ ░██ ▒▓█  ▄ ▒██░    ▒██░            \n"
 "▒██████▒▒░▓█▒░██▓░▒████▒░██████▒░██████▒        \n"
 "▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░░ ▒░ ░░ ▒░▓  ░░ ▒░▓  ░        \n"
 "░ ░▒  ░ ░ ▒ ░▒░ ░ ░ ░  ░░ ░ ▒  ░░ ░ ▒  ░        \n"
@@ -32,22 +32,16 @@ int main(int ac, char **av, char  **ev)
     (void)av;
     
     // t_global_data *global_data;
-    t_env *env;
+    // t_env *env;
     t_elem *elem;
+    (void)ev;
 
     // global_data = malloc(sizeof(t_global_data)); 
-    env = init_env(ev);
+    // env = init_env(ev);
     while (1)
     {
         elem = lexer();
-        while (elem)
-        {
-            printf("content     state         token\n");
-            printf("<%s>", elem->content);
-            printf("        <%s>", elem->state == 0 ? "IN_DQUOTE" : elem->state == 2 ? "GENERAL" : "IN_QUOTE");
-            printf("      <%c>\n", elem->type == -1 ? 'w' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : (char)elem->type);
-            printf("----------------------------------------------------\n");
-            elem = elem->next;
-        }
+        t_command * root = parser(elem);
+        print_tree(root, 0);
     }
 }

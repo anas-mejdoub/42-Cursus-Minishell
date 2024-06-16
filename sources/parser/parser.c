@@ -20,7 +20,6 @@ t_command	*new_node(void)
 	if (!new)
 		return (0);
 	new->right = NULL;
-	new->type_node = NODE;
 	new->left = NULL;
 	new->command_args = NULL;
 	new->path = NULL;
@@ -69,12 +68,14 @@ void	print_tree(t_command *root, int n)
 {
 	if (!root)
 		return ;
-	if (root->type_node == PIPE_LINE_NODE)
-		printf("root\n");
+	if (root->type_node != NODE)
+		printf("root %d\n", root->type_node);
 	else if (n == 1)
-		printf("right\n");
+		printf("----right----\n");
 	else if (n == 2)
-		printf("left\n");
+		printf("----left----\n");
+	else
+		printf("n is %d this time \n", n);
 	if (root->type_node == NODE)
 		print_2d(root);
 	print_tree(root->right, 1);
@@ -118,16 +119,26 @@ char	**add_to_args(char **args, char *to_append)
 	free2d(args);
 	return (new);
 }
-
-t_command	*handle_pipe_node(t_command *command)
+int set_type_node(int type_elem)
+{
+	if (type_elem == PIPE_LINE)
+		return PIPE_LINE_NODE;
+	else if (type_elem == AND)
+		return AND_NODE;
+	else if (type_elem == OR)
+		return OR_NODE;
+	return (0);
+}
+t_command	*handle_pipe_node(t_command *command, int type_elem)
 {
 	t_command	*pipe_node;
 
 	pipe_node = new_node();
 	if (!pipe_node)
 		return (NULL);
-	pipe_node->type_node = PIPE_LINE_NODE;
+
 	pipe_node->right = command;
+	pipe_node->type_node = set_type_node(type_elem);
 	return (pipe_node);
 }
 
@@ -193,19 +204,20 @@ t_command	*parser(t_elem *elements)
 		if ((elements->type == WORD) && !command->in_redir && !command->out_redir)
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
-		else if (elements->type == PIPE_LINE && first_time == false)
+		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
 		{
-			pipe_node = handle_pipe_node(pipe_node);
+			pipe_node = handle_pipe_node(pipe_node, elements->type);
 			if (!pipe_node)
 				return (NULL);
 			command = new_node();
 			pipe_node->left = command;
 		}
-		else if (elements->type == PIPE_LINE && first_time)
+		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time)
 		{
 			first_time = false;
 			command = new_node();
 			pipe_node->left = command;
+			pipe_node->type_node = set_type_node(elements->type);
 		}
 		else if (elements->type == REDIR_IN)
 			command->in_redir = true;
