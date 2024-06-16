@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/16 12:56:41 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/16 13:19:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ t_command	*handle_pipe_node(t_command *command)
 	pipe_node->right = command;
 	return (pipe_node);
 }
+
 char *command_handling(t_elem **element)
 {
 	char *command = NULL;
