@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/16 13:28:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/17 08:18:15 by kali             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,6 +302,7 @@ t_elem *tokenize(char *line, int *subshell)
     return (elem);
 }
 
+
 t_elem *lexer()
 {
     int subshell;
@@ -309,7 +310,8 @@ t_elem *lexer()
     subshell = 0;
     t_elem *elem = NULL;
     char* line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
-    if (line) {
+    if (line && *line) {
+        add_history(line);
         elem = tokenize(line, &subshell);
         free(line);
     }
