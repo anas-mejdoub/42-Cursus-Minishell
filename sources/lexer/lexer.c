@@ -6,7 +6,7 @@
 /*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/17 08:18:15 by kali             ###   ########.fr       */
+/*   Updated: 2024/06/17 08:49:22 by kali             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,13 +303,27 @@ t_elem *tokenize(char *line, int *subshell)
 }
 
 
+void handle_sigint(int sig) 
+{
+    (void)sig;
+    printf(BHMAG "\n" RESET);
+    rl_on_new_line(); 
+    rl_replace_line("", 0);
+    rl_redisplay();
+}
+
+
 t_elem *lexer()
 {
     int subshell;
 
     subshell = 0;
     t_elem *elem = NULL;
+    signal(SIGINT, handle_sigint);
     char* line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
+    if (line == NULL) {
+        exit(0);
+    }
     if (line && *line) {
         add_history(line);
         elem = tokenize(line, &subshell);
