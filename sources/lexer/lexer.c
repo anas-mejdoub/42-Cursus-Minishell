@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/17 08:49:22 by kali             ###   ########.fr       */
+/*   Updated: 2024/06/18 06:58:27 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,13 +222,19 @@ int general_tokens(char *line, t_elem **elem, int *i, int *subshell)
         else if (line[(*i)] == REDIR_OUT && line[(*i) + 1] == REDIR_OUT)
         {
             content = ft_strdup(">>");
-            allocate_node(elem, content, GENERAL, HERE_DOC);
+            allocate_node(elem, content, GENERAL, DREDIR_OUT);
             (*i) += 2;
         }
         else if (line[(*i)] == '&' && line[(*i) + 1] == '&')
         {
             content = ft_strdup("&&");
             allocate_node(elem, content, GENERAL, AND);
+            (*i) += 2;
+        }
+        else if (line[(*i)] == '<' && line[(*i) + 1] == '<')
+        {
+            content = ft_strdup("<<");
+            allocate_node(elem, content, GENERAL, HERE_DOC);
             (*i) += 2;
         }
         else if (line[(*i)] != '&')
@@ -331,7 +337,12 @@ t_elem *lexer()
     }
     if (subshell != 0)
     {
-        printf(RED "synthax error : missing a parenthese symbole\n" RESET);
+        printf(RED "syntax error : missing a parenthese symbole\n" RESET);
+        return(free_elem(elem), NULL);
+    }
+    if (syntax_error(elem))
+    {
+        printf(RED "syntax error : unexpected token\n" RESET);
         return(free_elem(elem), NULL);
     }
     return (elem);

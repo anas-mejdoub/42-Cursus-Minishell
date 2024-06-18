@@ -1,4 +1,4 @@
-SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/parser/parser.c
+SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/parser/parser.c sources/lexer/syntax_error.c
 
 OBJ = $(SRC:.c=.o)
 

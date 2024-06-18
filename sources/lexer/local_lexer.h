@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:06:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 11:09:30 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/18 06:58:37 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,5 +18,5 @@
 
 void free_elem(t_elem *elem);
 int allocate_node(t_elem **elem, char *content, int state, int token);
-
+int    syntax_error(t_elem *elem);
 #endif
