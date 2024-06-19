@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/18 07:23:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:52:15 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,16 @@ int    syntax_error(t_elem *elem)
             if (!elem || elem->type == END_SUBSHELL)
                 return (258);
             continue;
+        }
+        if (elem->type == END_SUBSHELL)
+        {
+            elem = elem->next;
+            while (elem && elem->type == WHITE_SPACE)
+                elem = elem->next;
+            if (!elem)
+                continue;
+            if (elem && ((elem->type != END_SUBSHELL && elem->type != AND && elem->type != OR && elem->type != PIPE_LINE) || elem->type == START_SUBSHELL))
+                return (258);
         }
         if (is_tocken(elem)  == true)
         {
