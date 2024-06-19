@@ -201,9 +201,11 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		if ((elements->type == WORD) && !command->in_redir && !command->out_redir)
+		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir)
+		{
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
+		}
 		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
 		{
 			pipe_node = handle_pipe_node(pipe_node, elements->type);
