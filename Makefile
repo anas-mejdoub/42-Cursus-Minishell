@@ -1,12 +1,14 @@
 SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/parser/parser.c sources/lexer/syntax_error.c
-
+LIBS = -L/goinfre/$(USER)/homebrew/opt/readline/lib -lreadline
+# $(NAME): $(OBJS) minishell.h
+#     $(CC) $(CFLAGS) $(SRCS) $(LIBS) -o $(NAME)
 OBJ = $(SRC:.c=.o)
 
 LIBFT = sources/super_libft/libft.a
 
 CC = cc
 
-CFLAGS = -Wall -Wextra   -g -I includes/ -fsanitize=address -g
+CFLAGS = -Wall -Wextra   -g -I includes/ -fsanitize=address -g -I/goinfre/$(USER)/homebrew/opt/readline/include
 
 NAME = minishell
 
@@ -16,7 +18,7 @@ all : $(NAME)
 
 $(NAME) : $(OBJ)
 	make -C sources/super_libft
-	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) $(LIBS)  -o $(NAME)
 
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@

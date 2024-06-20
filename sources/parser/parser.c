@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/20 11:19:57 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/20 13:06:59 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ t_command	*new_node(void)
 	new->outfile = NULL;
 	new->in_redir = false;
 	new->out_redir = false;
+	new->dredir = false;
+	new->outfiles = NULL;
 	new->type_node = NODE;
 	return (new);
 }
@@ -55,10 +57,10 @@ void print_2d(t_command *command)
 		printf("\t \t");
 	printf("\t");
 	i = 0;
-	while (command->outfile && command->outfile[i])
+	while (command->outfiles)
 	{
-		printf("[%s] ", command->outfile[i]);
-		i++;
+		printf("[%s append : %d]", command->outfiles->filename, (int)command->outfiles->append);
+		command->outfiles = command->outfiles->next;
 	}
 	printf("\n");
 	
@@ -180,14 +182,48 @@ void	handle_redir_in(t_command *command, char *filename)
 {
 	command->infile = add_to_args(command->infile, filename);
 	command->in_redir = false;
-} 
-
-void	handle_redir_out(t_command *command, char *filename)
-{
-	command->outfile = add_to_args(command->outfile, filename);
-	command->out_redir = false;
 }
 
+t_out_files *get_last_file(t_out_files *files)
+{
+	while (files && files->next)
+	{
+		files = files->next;
+	}
+	return (files);
+}
+t_out_files *new_file(char *filename, bool append)
+{
+	t_out_files *new;
+	new = malloc(sizeof(t_out_files));
+	if (!new)
+		return (NULL);
+	new->filename = filename;
+	new->append = append;
+	new->next = NULL;
+	return (new);
+}
+void add_to_outfiles(t_command *command, t_out_files *file)
+{
+	// int i = 0;
+	if (!command->outfiles)
+		command->outfiles = file;
+	else
+		get_last_file(command->outfiles)->next = file;
+}
+void	handle_redir_out(t_command *command, char *filename)
+{
+	command->out_redir = false;
+	bool append = false;
+	if (command->dredir)
+		append = true;
+	command->dredir = false;
+	add_to_outfiles(command, new_file(filename, append));
+}
+// void handle_dredir(t_command *command, char *filename)
+// {
+ 
+// }
 t_command	*parser(t_elem *elements)
 {
 	t_command	*command;
@@ -201,7 +237,8 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir)
+		printf("cooontent %s \n", elements->content);
+		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir)
 		{
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
@@ -225,10 +262,18 @@ t_command	*parser(t_elem *elements)
 			command->in_redir = true;
 		else if (elements->type == REDIR_OUT)
 			command->out_redir = true;
+		else if (elements->type == DREDIR_OUT)
+		{
+			printf("YEEES\n");
+			command->dredir = true;
+		}
 		else if (elements->type == WORD && command->in_redir)
-			handle_redir_in(command,command_handling(&elements));
-		else if (elements->type == WORD && command->out_redir)
-			handle_redir_out(command, command_handling(&elements));
+			handle_redir_in(command, command_handling(&elements));
+		else if (elements->type == WORD && (command->out_redir || command->dredir))
+		{
+			printf("teeest\n");
+			handle_redir_out(command, elements->content);
+		}
 		if (elements)
 			elements = elements->next;
 		else
