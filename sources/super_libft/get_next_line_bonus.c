@@ -14,7 +14,7 @@
 
 char	*get_next_line(int fd)
 {
-	static char	*helper[OPEN_MAX];
+	static char	*helper[1024];
 	char		*ptr;
 
 	ptr = (char *)malloc(1);

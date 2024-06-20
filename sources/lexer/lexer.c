@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/16 13:28:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/20 11:30:46 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,13 +222,19 @@ int general_tokens(char *line, t_elem **elem, int *i, int *subshell)
         else if (line[(*i)] == REDIR_OUT && line[(*i) + 1] == REDIR_OUT)
         {
             content = ft_strdup(">>");
-            allocate_node(elem, content, GENERAL, HERE_DOC);
+            allocate_node(elem, content, GENERAL, DREDIR_OUT);
             (*i) += 2;
         }
         else if (line[(*i)] == '&' && line[(*i) + 1] == '&')
         {
             content = ft_strdup("&&");
             allocate_node(elem, content, GENERAL, AND);
+            (*i) += 2;
+        }
+        else if (line[(*i)] == '<' && line[(*i) + 1] == '<')
+        {
+            content = ft_strdup("<<");
+            allocate_node(elem, content, GENERAL, HERE_DOC);
             (*i) += 2;
         }
         else if (line[(*i)] != '&')
@@ -302,20 +308,41 @@ t_elem *tokenize(char *line, int *subshell)
     return (elem);
 }
 
+
+void handle_sigint(int sig) 
+{
+    (void)sig;
+    printf(BHMAG "\n" RESET);
+    rl_on_new_line(); 
+    // rl_replace_line("", 0);
+    rl_redisplay();
+}
+
+
 t_elem *lexer()
 {
     int subshell;
 
     subshell = 0;
     t_elem *elem = NULL;
+    signal(SIGINT, handle_sigint);
     char* line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
-    if (line) {
+    if (line == NULL) {
+        exit(0);
+    }
+    if (line && *line) {
+        add_history(line);
         elem = tokenize(line, &subshell);
         free(line);
     }
     if (subshell != 0)
     {
-        printf(RED "synthax error : missing a parenthese symbole\n" RESET);
+        printf(RED "syntax error : missing a parenthese symbole\n" RESET);
+        return(free_elem(elem), NULL);
+    }
+    if (syntax_error(elem))
+    {
+        printf(RED "syntax error : unexpected token\n" RESET);
         return(free_elem(elem), NULL);
     }
     return (elem);

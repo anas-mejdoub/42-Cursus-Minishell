@@ -1,4 +1,4 @@
-SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/parser/parser.c
+SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/parser/parser.c sources/lexer/syntax_error.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -15,15 +15,18 @@ RM = rm -rf
 all : $(NAME)
 
 $(NAME) : $(OBJ)
+	make -C sources/super_libft
 	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) -o $(NAME)
 
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
+	make clean -C sources/super_libft
 	@${RM} $(OBJ)
 
 fclean : clean
+	make fclean -C sources/super_libft
 	@${RM} $(NAME)
 
 re : fclean all

@@ -19,6 +19,8 @@ enum e_type_node
 {
     NODE = 1,
     PIPE_LINE_NODE = 2,
+    AND_NODE = 3,
+    OR_NODE = 4,
 };
 
 typedef struct s_commands
