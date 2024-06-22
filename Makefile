@@ -1,12 +1,12 @@
-SRC = sources/env/env.c sources/env/methods.c sources/minishell.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/parser/parser.c sources/lexer/syntax_error.c
+SRC =  sources/env/env.c sources/env/methods.c sources/lexer/lexer.c sources/lexer/lexer_utils.c sources/lexer/syntax_error.c sources/parser/parser.c sources/here_doc/here_doc.c sources/minishell.c
 
 OBJ = $(SRC:.c=.o)
 
-LIBFT = sources/super_libft/libft.a
+LIBFT = -L /goinfre/$(USER)/homebrew/opt/readline/lib sources/super_libft/libft.a 
 
 CC = cc
 
-CFLAGS = -Wall -Wextra   -g -I includes/ -fsanitize=address -g
+CFLAGS = -Wall -Wextra -g -I includes/ -fsanitize=address -g -I/goinfre/$(USER)/homebrew/opt/readline/include
 
 NAME = minishell
 

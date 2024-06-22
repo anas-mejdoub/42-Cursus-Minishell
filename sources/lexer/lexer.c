@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/19 13:52:30 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/22 18:32:30 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,10 @@ int dquote_env(t_elem **elem, char *line, int *i, int *index)
         }
     }
     else if (line[(*i)] == '*')
+    {
         memmove(line + (*i) - 1, line + (*i) + 1, strlen(line + (*i) + 1) + 1);
+        (*i)--;
+    }
     return (0);
 }
 
@@ -169,9 +172,7 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
         while (line[(*i)] && line[(*i)] != DOUBLE_QUOTE)
         {
             if (line[(*i)] == ENV)
-            {
                 dquote_env(elem, line, i, &current_index);
-            }
             else
                 (*i)++;
         }
@@ -340,7 +341,8 @@ t_elem *lexer()
         printf(RED "syntax error : missing a parenthese symbole\n" RESET);
         return(free_elem(elem), NULL);
     }
-    if (syntax_error(elem))
+    int Exit_Status = syntax_error(elem);
+    if (Exit_Status)
     {
         printf(RED "syntax error : unexpected token\n" RESET);
         return(free_elem(elem), NULL);

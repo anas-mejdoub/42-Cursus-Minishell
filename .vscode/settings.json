@@ -61,7 +61,8 @@
     "minishell.h": "c",
     "libft.h": "c",
     "parser.h": "c",
-    "__config": "c"
+    "__config": "c",
+    "local_here_doc.h": "c"
   },
   "editor.fontFamily": "fira code"
 }
