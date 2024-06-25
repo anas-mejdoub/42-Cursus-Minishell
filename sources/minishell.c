@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/22 18:56:46 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/24 21:10:31 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,10 @@ int main(int ac, char **av, char  **ev)
         }
         // char *content  = here_doc("lim");
         // if (content)
-        //     printf ("%s\n", content);
+        // {
+        //     // printf ("%s\n", content);
+        //     expand_here_doc_content(content);
+        //     // char new_arr
+        // }
     }
 }
