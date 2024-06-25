@@ -6,57 +6,93 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/24 14:49:49 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:51:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_here_doc.h"
 
-char *expand_here_doc_content(char *str)
+char *concat_string(t_list *list)
 {
-	t_list *list;
-	int i;
-	int s;
+	t_list *tmp;
+	
+	tmp = list;
+	char *str;
+	char *tmp_str;
+
+	str = ft_calloc(1, 1);
+	while (tmp)
+	{
+		tmp_str = ft_strjoin(str, tmp->content);
+		free(str);
+		str = tmp_str;
+		tmp = tmp->next;
+	}
+	return (str);
+}
+
+void free_list(void *ptr)
+{
+	free(ptr);
+}
+
+char	*expand_here_doc_content(char *str, t_env *env)
+{
+	t_list	*list;
+	char *var;
+	int		i;
+	int		s;
+	char *string_final;
 
 	i = 0;
 	s = i;
-	while (str[i])
+	list = NULL;
+	while (str && str[i])
 	{
-		while (str[i] != ENV)
+		while (str && str[i] && str[i] != ENV)
 			i++;
-		if (str[i] == '$')
+		if (s != i)
+			ft_lstadd_back(&list, ft_lstnew(ft_substr(str, s, i - s)));
+		if (str && str[i] && str[i] == ENV)
 		{
 			i++;
-			ft_lstadd_back(&list, ft_lstnew(ft_substr(str, s, i - s)));
 			s = i;
-			while (ft_isalpha(str[i]) || str[i] == '_')
-				i++;
-			if (i != s + 1)
-				ft_lstadd_back(&list, ft_lstnew(ft_substr(str, s, i - s)));
-			if (str[i] == '*' || ft_isdigit(str[i]) || str[i] == '@')
+			if (str && str[i] && (ft_isalpha(str[i]) || str[i] == '_'))
 			{
-				memmove(str + i - 1, str +i + 1, strlen(str + i + 1) + 1);
-				i--;
+				while (str && str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+					i++;
+				if (i != s)
+				{
+					var = env->get(env->data, ft_substr(str, s, i - s + 1));
+					if (var)
+						ft_lstadd_back(&list, ft_lstnew(var));
+					s = i;
+				}
 			}
 		}
 	}
-	while (list)
-	{
-		printf("<%s>\n", list->content);
-		list = list->next;
-	}
-	return (NULL);
+	string_final = concat_string(list);
+	ft_lstclear(&list, free_list);
+	printf("%s", string_final);
+	// while (list)
+	// {
+	// 	printf("~%s~", list->content);
+	// 	list = list->next;
+	// }
+	
+	return (string_final);
 }
 
 char	*here_doc(char *lim)
 {
 	char	*line;
-	char	*content = NULL;
+	char	*content;
 	char	*tmp;
 	int		a;
 	int		status;
 	pid_t	pid;
 
+	content = NULL;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -79,8 +115,8 @@ char	*here_doc(char *lim)
 			free(content);
 			content = tmp;
 		}
-          return (content);
+		return (content);
 	}
 	waitpid(pid, &status, 0);
-    return (NULL);
+	return (NULL);
 }

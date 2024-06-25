@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/24 21:10:31 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:50:10 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,14 @@ void print_tchbi7a(void)
 
 int main(int ac, char **av, char  **ev)
 {
-    print_tchbi7a();
+    t_env *env;
     (void)ac;
     (void)av;
-    
+    // (void)ev;
+    print_tchbi7a();
+    env = init_env(ev);
+    // printf("%s\n", env->get(env->data, "HOME"));
     t_elem *elem;
-    (void)ev;
     while (1)
     {
         elem = lexer();
@@ -49,7 +51,7 @@ int main(int ac, char **av, char  **ev)
         // if (content)
         // {
         //     // printf ("%s\n", content);
-        //     expand_here_doc_content(content);
+        //     expand_here_doc_content(content, env);
         //     // char new_arr
         // }
     }
