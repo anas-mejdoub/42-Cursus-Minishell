@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/28 16:37:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/28 16:50:25 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ char *random_str()
 	res[i] = '\0';
 	return (res);
 }
-void handle_here_doc(t_command *command, t_in_files *file)
+void handle_here_doc(t_in_files *file)
 {
 	char *random = random_str();
 	char *file_name = ft_strjoin("/tmp/", random);
@@ -260,7 +260,7 @@ void add_to_infiles(t_command *command, t_in_files *file)
 	else
 		get_last_in_file(command->in_files)->next = file;
 	if (file->here_doc)
-		handle_here_doc(command, file);
+		handle_here_doc(file);
 }
 
 void	handle_redir_in(t_command *command, char *filename)
@@ -353,22 +353,18 @@ t_command	*parser(t_elem *elements)
 			command->out_redir = true;
 		else if (elements->type == DREDIR_OUT)
 		{
-			printf("YEEES\n");
 			command->dredir = true;
 		}
 		else if (elements->type == WORD && (command->out_redir || command->dredir))
 		{
-			printf("teeest\n");
 			handle_redir_out(command, elements->content);
 		}
 		else if (elements->type == HERE_DOC)
 		{
-			printf("teeest2`\n");
 			command->here_doc = true;
 		}
 		else if (elements->type == WORD && (command->here_doc || command->in_redir))
 		{
-			printf("ttttttt\n");
 			handle_redir_in(command, command_handling(&elements));
 		}
 		if (elements)
