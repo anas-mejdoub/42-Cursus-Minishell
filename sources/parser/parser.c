@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/28 09:52:07 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/28 10:16:49 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ char *command_handling(t_elem **element)
 	t_elem *tmp = NULL;
 	while (*element)
 	{
-		if (ft_strchr(" ><|()&", (*element)->type) && (*element)->state == GENERAL)
+		if (ft_strchr(" ><|()&", (*element)->type) && (*element)->state == GENERAL && (*element)->type != QOUTE)
 		{
 			if (ft_strchr("><|()&", (*element)->type))
 				*element = tmp;
@@ -163,7 +163,7 @@ char *command_handling(t_elem **element)
 			else
 				command = ft_strjoin(command, (*element)->content);
 		}
-		else if ((*element)->state == GENERAL)
+		else if ((*element)->state == GENERAL && (*element)->type != QOUTE && (*element)->type != DOUBLE_QUOTE)
 		{
 			if (!command)
 				command = (*element)->content;
@@ -233,9 +233,9 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		// printf("cooontent %s \n", elements->content);
 		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir)
 		{
+		printf("the conts : %s\n", elements->content);
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
 		}
