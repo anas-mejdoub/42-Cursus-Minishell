@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/21 15:55:46 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/28 09:52:07 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,6 @@ t_out_files *new_file(char *filename, bool append)
 }
 void add_to_outfiles(t_command *command, t_out_files *file)
 {
-	// int i = 0;
 	if (!command->outfiles)
 		command->outfiles = file;
 	else
@@ -220,10 +219,7 @@ void	handle_redir_out(t_command *command, char *filename)
 	command->dredir = false;
 	add_to_outfiles(command, new_file(filename, append));
 }
-// void handle_dredir(t_command *command, char *filename)
-// {
- 
-// }
+
 t_command	*parser(t_elem *elements)
 {
 	t_command	*command;
@@ -237,7 +233,7 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		printf("cooontent %s \n", elements->content);
+		// printf("cooontent %s \n", elements->content);
 		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir)
 		{
 			command->command_args = add_to_args(command->command_args,
