@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/15 12:05:07 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/22 11:55:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,11 @@
 #include <readline/history.h>
 # include "env.h"
 # include "colors.h"
+# include "here_doc.h"
 
 typedef struct s_global_data
 {
     t_env *env;
 }   t_global_data;
-
-// void lexer(t_global_data *data);
 
 #endif

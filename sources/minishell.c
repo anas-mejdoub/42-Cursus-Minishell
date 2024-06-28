@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/20 11:07:44 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/28 09:42:17 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,30 @@ void print_tchbi7a(void)
 
 int main(int ac, char **av, char  **ev)
 {
-    print_tchbi7a();
+    t_env *env;
     (void)ac;
     (void)av;
     
-    // t_global_data *global_data;
-    // t_env *env;
+    // (void)ev;
+    print_tchbi7a();
+    env = init_env(ev);
+    // printf("%s\n", env->get(env->data, "HOME"));
     t_elem *elem;
-    (void)ev;
-
-    // global_data = malloc(sizeof(t_global_data)); 
-    // env = init_env(ev);
     while (1)
     {
         elem = lexer();
-        t_command * root = parser(elem);
-        print_tree(root, 0);
+        if (!elem)
+            continue;
+        while (elem)
+        {
+            printf("~%s~                       ", elem->content);
+            printf("~%c~                       ", elem->type == WORD ? 'W' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : elem->type == DREDIR_OUT ? 'D' : elem->type);
+            printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
+            elem = elem->next;
+        }
+        // char *content  = here_doc("$lim");
+        // // printf("here doc content without expanding");
+        // if (content)
+        //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
     }
 }
