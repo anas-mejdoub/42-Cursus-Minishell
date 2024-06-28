@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/25 16:50:10 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/28 09:39:25 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int main(int ac, char **av, char  **ev)
     t_env *env;
     (void)ac;
     (void)av;
+    
     // (void)ev;
     print_tchbi7a();
     env = init_env(ev);
@@ -47,12 +48,9 @@ int main(int ac, char **av, char  **ev)
             printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
             elem = elem->next;
         }
-        // char *content  = here_doc("lim");
+        // char *content  = here_doc("$lim");
+        // // printf("here doc content without expanding");
         // if (content)
-        // {
-        //     // printf ("%s\n", content);
-        //     expand_here_doc_content(content, env);
-        //     // char new_arr
-        // }
+        //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
     }
 }

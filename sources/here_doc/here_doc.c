@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/25 16:51:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/28 09:30:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,12 @@ char	*expand_here_doc_content(char *str, t_env *env)
 	}
 	string_final = concat_string(list);
 	ft_lstclear(&list, free_list);
-	printf("%s", string_final);
-	// while (list)
-	// {
-	// 	printf("~%s~", list->content);
-	// 	list = list->next;
-	// }
-	
 	return (string_final);
+}
+void kill_here_doc(int sig)
+{
+	(void)sig;
+	exit(0);
 }
 
 char	*here_doc(char *lim)
@@ -93,9 +91,11 @@ char	*here_doc(char *lim)
 	pid_t	pid;
 
 	content = NULL;
+	signal (SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, kill_here_doc);
 		a = 1;
 		content = malloc(1);
 		content[0] = '\0';
