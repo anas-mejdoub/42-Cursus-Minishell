@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/28 10:16:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/28 16:37:49 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ t_command	*new_node(void)
 	new->dredir = false;
 	new->outfiles = NULL;
 	new->type_node = NODE;
+	new->in_files = NULL;
+	new->here_doc = false;
 	return (new);
 }
 
@@ -48,13 +50,12 @@ void print_2d(t_command *command)
 	}
 	i = 0;
 	printf (" \t");
-	while (command->infile && command->infile[i])
+	while (command->in_files)
 	{
-		printf("(%s) ", command->infile[i]);
+		printf("(%s) ", command->in_files->filename);
+		command->in_files = command->in_files->next;
 		i++;
 	}
-	if (!command->infile)
-		printf("\t \t");
 	printf("\t");
 	i = 0;
 	while (command->outfiles)
@@ -178,13 +179,7 @@ char *command_handling(t_elem **element)
 	}
 	return (command);
 }
-void	handle_redir_in(t_command *command, char *filename)
-{
-	command->infile = add_to_args(command->infile, filename);
-	command->in_redir = false;
-}
-
-t_out_files *get_last_file(t_out_files *files)
+t_in_files *get_last_in_file(t_in_files *files)
 {
 	while (files && files->next)
 	{
@@ -192,6 +187,104 @@ t_out_files *get_last_file(t_out_files *files)
 	}
 	return (files);
 }
+
+t_in_files *new_in_file(char *filename, bool here_doc)
+{
+	t_in_files *new;
+	new = malloc(sizeof(t_in_files));
+	if (!new)
+		return (NULL);
+	new->filename = filename;
+	new->here_doc = here_doc;
+	new->limiter = NULL;
+	new->next = NULL;
+	if (here_doc)
+	{
+		
+		new->limiter = filename;
+	}
+	return (new);
+}
+
+int my_rand() {
+    void* ptr = malloc(1);
+    int addr = (int)ptr;
+    free(ptr);
+    return addr % INT_MAX;
+}
+
+char *random_str()
+{
+	char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	char *res = NULL;
+	int key;
+	int i = 0;
+	res = malloc(sizeof (char) * 10);
+	if (!res)
+		return (NULL);
+	while (i < 9)
+	{
+		key = my_rand() % 61;
+		res[i] = charset[key];
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
+}
+void handle_here_doc(t_command *command, t_in_files *file)
+{
+	char *random = random_str();
+	char *file_name = ft_strjoin("/tmp/", random);
+	unlink(file_name);
+	free(random);
+	file->filename = ft_strdup(file_name);
+	int i = open(file_name, O_CREAT | O_WRONLY);
+	if (i == -1)
+	{
+		printf("problem with opennig here doc\n");
+		return;
+	}
+	char *str = here_doc(file->limiter);
+	printf("%s\n", str);
+	close(i);
+	unlink(file_name);
+	free(file_name);
+}
+
+void add_to_infiles(t_command *command, t_in_files *file)
+{
+	if (!command->in_files)
+	{
+		command->in_files = file;
+	}
+	else
+		get_last_in_file(command->in_files)->next = file;
+	if (file->here_doc)
+		handle_here_doc(command, file);
+}
+
+void	handle_redir_in(t_command *command, char *filename)
+{
+	if (command->in_redir)
+	{
+		command->in_redir = false;
+		add_to_infiles(command, new_in_file(filename, false));
+	}
+	else if (command->here_doc)
+	{
+		command->here_doc = false;
+		add_to_infiles(command, new_in_file(filename, true));
+	}
+}
+
+t_out_files *get_last_file(t_out_files *files)
+{
+	while (files && files->next)	{
+		files = files->next;
+	}
+	return (files);
+}
+
 t_out_files *new_file(char *filename, bool append)
 {
 	t_out_files *new;
@@ -233,9 +326,9 @@ t_command	*parser(t_elem *elements)
 	pipe_node->right = command;
 	while (elements)
 	{
-		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir)
+
+		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
-		printf("the conts : %s\n", elements->content);
 			command->command_args = add_to_args(command->command_args,
 					command_handling(&elements));
 		}
@@ -263,12 +356,20 @@ t_command	*parser(t_elem *elements)
 			printf("YEEES\n");
 			command->dredir = true;
 		}
-		else if (elements->type == WORD && command->in_redir)
-			handle_redir_in(command, command_handling(&elements));
 		else if (elements->type == WORD && (command->out_redir || command->dredir))
 		{
 			printf("teeest\n");
 			handle_redir_out(command, elements->content);
+		}
+		else if (elements->type == HERE_DOC)
+		{
+			printf("teeest2`\n");
+			command->here_doc = true;
+		}
+		else if (elements->type == WORD && (command->here_doc || command->in_redir))
+		{
+			printf("ttttttt\n");
+			handle_redir_in(command, command_handling(&elements));
 		}
 		if (elements)
 			elements = elements->next;

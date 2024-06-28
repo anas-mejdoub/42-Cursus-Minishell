@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/28 10:21:04 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/28 16:44:28 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 int is_token(char c)
 {
     if (c != WHITE_SPACE && c != NEW_LINE && c != QOUTE && c != DOUBLE_QUOTE && 
-         c != ENV && c != PIPE_LINE && c != REDIR_IN && c != REDIR_OUT &&  
-         c!= START_SUBSHELL && c!= END_SUBSHELL && c != WILDCARD)
+        c != ENV && c != PIPE_LINE && c != REDIR_IN && c != REDIR_OUT &&  
+        c!= START_SUBSHELL && c!= END_SUBSHELL && c != WILDCARD)
         return (1);
     return (0);
 }
