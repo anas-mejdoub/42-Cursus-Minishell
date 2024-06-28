@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/28 09:55:25 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/28 10:19:12 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
 
     if (line[(*i)] == DOUBLE_QUOTE)
     {
-        if (allocate_node(elem,ft_strdup("\""), IN_DQUOTE, DOUBLE_QUOTE))
+        if (allocate_node(elem,ft_strdup("\""), GENERAL, DOUBLE_QUOTE))
             return (1);
         (*i)++;
         current_index = (*i);
@@ -103,7 +103,7 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
     }
     if (line[(*i)] == DOUBLE_QUOTE)
     {
-        if (allocate_node(elem, ft_strdup("\""), IN_DQUOTE, DOUBLE_QUOTE))
+        if (allocate_node(elem, ft_strdup("\""), GENERAL, DOUBLE_QUOTE))
             return (1);
         (*i)++;
         return (0);
