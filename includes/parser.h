@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/21 16:59:07 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/28 09:42:30 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,21 @@ enum e_type_node
     OR_NODE = 4,
 };
 
+
+typedef struct s_out_files
+{
+    char *filename;
+    bool append;
+    struct s_out_files *next;
+} t_out_files;
+
 typedef struct s_commands
 {
     char **command_args;
     int type_node;
     char  **infile;
     char **outfile;
+    t_out_files *outfiles;
     char *path;
     bool pipe;
     bool and_;
@@ -36,6 +45,10 @@ typedef struct s_commands
     bool builtin;
     bool in_redir;
     bool out_redir;
+<<<<<<< HEAD
+=======
+    bool dredir;
+>>>>>>> e24b6a968979b0f6e058db8166963d61576728de
     void *right;
     void *left;
 } t_command;

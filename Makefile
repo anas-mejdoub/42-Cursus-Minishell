@@ -16,7 +16,7 @@ all : $(NAME)
 
 $(NAME) : $(OBJ)
 	make -C sources/super_libft
-	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) $(LIBS)  -o $(NAME)
 
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
