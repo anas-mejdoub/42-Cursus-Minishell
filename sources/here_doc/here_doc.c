@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/28 09:30:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/29 10:10:38 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char	*here_doc(char *lim)
 				content = NULL;
 				exit(1);
 			}
-			if (ft_strnstr(line, lim, ft_strlen(line)))
+			if (!ft_strncmp(line, lim, ft_strlen(lim)) && ft_strlen(lim) == ft_strlen(line))
 				break ;
 			tmp = ft_strjoin(content, ft_strjoin(line, "\n"));
 			free(content);
