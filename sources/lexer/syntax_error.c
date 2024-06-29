@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/29 10:51:22 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/29 14:47:35 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ t_list    *syntax_error(t_elem *elem)
 
     list = NULL;
     original = NULL;
+    if (elem == NULL)
+        return (NULL);
     ft_lstadd_back(&original, ft_lstnew(ft_strdup("start")));
     i = 1;
     while (elem && elem->type == WHITE_SPACE)
