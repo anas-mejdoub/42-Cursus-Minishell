@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/28 10:21:04 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/29 12:44:43 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ void handle_sigint(int sig)
     (void)sig;
     printf(BHMAG "\n" RESET);
     rl_on_new_line(); 
-    // rl_replace_line("", 0);
+    rl_replace_line("", 0);
     rl_redisplay();
 }
 
@@ -245,10 +245,17 @@ t_elem *lexer()
         printf(RED "syntax error : missing a parenthese symbole\n" RESET);
         return(free_elem(elem), NULL);
     }
-    int Exit_Status = syntax_error(elem);
-    if (Exit_Status)
+    t_list *list = syntax_error(elem);
+    if (list)
     {
         printf(RED "syntax error : unexpected token\n" RESET);
+        list = list->next;
+        while (list)
+        {
+            char *str = here_doc(list->content);
+            free(str);
+            list = list->next;
+        }
         return(free_elem(elem), NULL);
     }
     return (elem);

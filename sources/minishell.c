@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/28 11:10:14 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/28 11:11:40 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ int main(int ac, char **av, char  **ev)
             printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
             elem = elem->next;
         }
-        char *content  = here_doc("$lim");
-        // printf("here doc content without expanding");
-        if (content)
-            printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
+        // char *content  = here_doc("$lim");
+        // // printf("here doc content without expanding");
+        // if (content)
+        //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
     }
 }
