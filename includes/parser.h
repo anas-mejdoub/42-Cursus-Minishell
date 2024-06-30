@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/30 15:10:44 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/30 18:13:01 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,17 @@ typedef struct s_out_files
     struct s_out_files *next;
 } t_out_files;
 
+typedef struct s_env_index
+{
+    int index;
+    bool expanded;
+    struct s_env_index *next;
+} t_env_index;
 typedef struct s_command_h_ret
 {
     char *command;
+    int index;
+    int *arr;
     bool env;
 } t_command_h_ret;
 typedef struct s_in_files
@@ -47,6 +55,8 @@ typedef struct s_in_files
 typedef struct s_command_args
 {
     char *content;
+    int *env_arr;
+    t_env_index *index_list;
     bool env;
     struct s_command_args *next;
 }t_command_args;
