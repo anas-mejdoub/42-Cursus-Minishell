@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 17:39:06 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/30 18:02:27 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int main(int ac, char **av, char  **ev)
         if (!elem)
             continue;
         t_command *root = parser(elem);
-        echo(root->right);
+        // echo(root->right);
         
         print_tree(root, 0);
         while (elem)

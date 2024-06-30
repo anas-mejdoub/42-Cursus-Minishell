@@ -63,7 +63,8 @@
     "parser.h": "c",
     "__config": "c",
     "local_here_doc.h": "c",
-    "unistd.h": "c"
+    "unistd.h": "c",
+    "local_builtin.h": "c"
   },
   "editor.fontFamily": "fira code"
 }
