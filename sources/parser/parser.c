@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/28 16:50:25 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/30 14:46:37 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,29 +35,26 @@ t_command	*new_node(void)
 	new->outfiles = NULL;
 	new->type_node = NODE;
 	new->in_files = NULL;
+	new->command_arg = NULL;
 	new->here_doc = false;
 	return (new);
 }
 
 void print_2d(t_command *command)
 {
-	int i = 0;
 	printf("command \t infile \t outfile\n");
-	while (command->command_args && command->command_args[i])
+	while (command->command_arg)
 	{
-		printf ("{%s} ", command->command_args[i]);
-		i++;
+		printf ("{%s env : %d} ", command->command_arg->content, command->command_arg->env);
+		command->command_arg = command->command_arg->next;
 	}
-	i = 0;
 	printf (" \t");
 	while (command->in_files)
 	{
 		printf("(%s) ", command->in_files->filename);
 		command->in_files = command->in_files->next;
-		i++;
 	}
 	printf("\t");
-	i = 0;
 	while (command->outfiles)
 	{
 		printf("[%s append : %d]", command->outfiles->filename, (int)command->outfiles->append);
@@ -85,6 +82,37 @@ void	print_tree(t_command *root, int n)
 	print_tree(root->left, 2);
 }
 
+t_command_args *new_arg(char *content, bool env)
+{
+	t_command_args* new;
+
+	new = malloc (sizeof(t_command_args));
+	if (!new)
+		return (NULL);
+	new->content = content;
+	new->env = env;
+	new->next = NULL;
+	return (new);
+}
+
+t_command_args *get_last_arg(t_command *command)
+{
+	while (command && command->command_arg && command->command_arg->next)
+	{
+		command->command_arg = command->command_arg->next;
+	}
+	return (command->command_arg);
+}
+
+void add_to_command(t_command *command, t_command_args *new_arg)
+{
+	if (!(command->command_arg))
+		command->command_arg = new_arg;
+	else
+	{
+		get_last_arg(command)->next = new_arg;
+	}
+}
 void	free2d(char **str)
 {
 	int	i;
@@ -145,39 +173,49 @@ t_command	*handle_pipe_node(t_command *command, int type_elem)
 	return (pipe_node);
 }
 
-char *command_handling(t_elem **element)
+t_command_h_ret *command_handling(t_elem **element)
 {
 	char *command = NULL;
+	t_command_h_ret *res;
+	res = malloc (sizeof(t_command_h_ret));
+	if (!res)
+		return (NULL);
+	res->command = NULL;
+	res->env = false;
 	t_elem *tmp = NULL;
+	if ((*element)->type == ENV)
+				res->env = true;
 	while (*element)
 	{
+		if ((*element)->type == ENV)
+				res->env = true;
 		if (ft_strchr(" ><|()&", (*element)->type) && (*element)->state == GENERAL && (*element)->type != QOUTE)
 		{
 			if (ft_strchr("><|()&", (*element)->type))
 				*element = tmp;
-			return command;
+			return res;
 		}
 		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
 		{
-			if (!command)
-				command = (*element)->content;
+			if (!res->command)
+				res->command = (*element)->content;
 			else
-				command = ft_strjoin(command, (*element)->content);
+				res->command = ft_strjoin(res->command, (*element)->content);
 		}
 		else if ((*element)->state == GENERAL && (*element)->type != QOUTE && (*element)->type != DOUBLE_QUOTE)
 		{
-			if (!command)
-				command = (*element)->content;
+			if (!res->command)
+				res->command = (*element)->content;
 			else
 			{
 				if ((*element)->type != WHITE_SPACE)
-					command = ft_strjoin(command, (*element)->content);
+					res->command = ft_strjoin(res->command, (*element)->content);
 			}
 		}
 		tmp = *element;
 		*element = (*element)->next;
 	}
-	return (command);
+	return (res);
 }
 t_in_files *get_last_in_file(t_in_files *files)
 {
@@ -231,6 +269,7 @@ char *random_str()
 	res[i] = '\0';
 	return (res);
 }
+
 void handle_here_doc(t_in_files *file)
 {
 	char *random = random_str();
@@ -318,7 +357,9 @@ t_command	*parser(t_elem *elements)
 	t_command	*command;
 	t_command	*pipe_node;
 	bool		first_time;
+	t_command_h_ret *comm_hand_ret;
 
+	comm_hand_ret = NULL;
 	first_time = true;
 	command = new_node();
 	pipe_node = new_node();
@@ -329,8 +370,14 @@ t_command	*parser(t_elem *elements)
 
 		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
-			command->command_args = add_to_args(command->command_args,
-					command_handling(&elements));
+			comm_hand_ret = command_handling(&elements);
+			if (comm_hand_ret->env)
+			{
+				printf("TRUE\n");
+				add_to_command(command, new_arg(comm_hand_ret->command, true));
+			}
+			else
+				add_to_command(command, new_arg(comm_hand_ret->command, false));
 		}
 		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
 		{
@@ -365,7 +412,12 @@ t_command	*parser(t_elem *elements)
 		}
 		else if (elements->type == WORD && (command->here_doc || command->in_redir))
 		{
-			handle_redir_in(command, command_handling(&elements));
+			comm_hand_ret = command_handling(&elements);
+			handle_redir_in(command, comm_hand_ret->command);
+		}
+		else if (elements->type == QOUTE && elements->next && ((t_elem *)elements->next)->type == QOUTE && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
+		{
+			add_to_command(command, new_arg(ft_strdup(""), false));
 		}
 		if (elements)
 			elements = elements->next;
