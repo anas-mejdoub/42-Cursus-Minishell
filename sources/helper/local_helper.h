@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   local_helper.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 16:26:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 10:30:29 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/06/30 12:39:52 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/06/30 12:40:13 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#ifndef LOCAL_HELPER_H
+# define LOCAL_HELPER_H
 
 # include "minishell.h"
-int echo(t_command *cmd);
+# include "helper.h"
 
 #endif

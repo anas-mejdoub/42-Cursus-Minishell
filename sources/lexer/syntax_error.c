@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/29 14:47:35 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/30 17:36:57 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ t_list    *syntax_error(t_elem *elem)
                     ft_lstadd_back(&original, ft_lstnew(str));
                     elem = elem->next;
                 }
-                else if (tmp && tmp->type == WORD)
+                else if (tmp && (tmp->type == WORD || tmp->type != ENV))
                 {
                     ft_lstadd_back(&original, ft_lstnew(tmp->content));
                     elem = elem->next;
@@ -106,7 +106,7 @@ t_list    *syntax_error(t_elem *elem)
             while (elem && elem->type == WHITE_SPACE)
                 elem = elem->next;
             if (!elem || (elem->type != REDIR_IN && elem->type != REDIR_OUT 
-                && elem->type != DREDIR_OUT && elem->type != HERE_DOC && elem->type != WORD))
+                && elem->type != DREDIR_OUT && elem->type != HERE_DOC && elem->type != WORD && elem->type != ENV && elem->type != START_SUBSHELL))
                     return (original);
         }
         else if (elem && (elem->type == REDIR_IN || elem->type == REDIR_OUT 
@@ -115,7 +115,7 @@ t_list    *syntax_error(t_elem *elem)
             elem = elem->next;
             while (elem && elem->type == WHITE_SPACE)
                 elem = elem->next;
-            if (!elem || (elem->type != AND && elem->type != OR && elem->type != PIPE_LINE && elem->type != WORD))
+            if (!elem || (elem->type != AND && elem->type != OR && elem->type != PIPE_LINE && elem->type != WORD && elem->type != ENV))
                 return (original);
         }
         else if (elem)
