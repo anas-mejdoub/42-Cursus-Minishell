@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/30 14:46:37 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/06/30 15:24:35 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ t_command	*new_node(void)
 		return (0);
 	new->right = NULL;
 	new->left = NULL;
-	new->command_args = NULL;
 	new->path = NULL;
 	new->pipe = false;
 	new->and_ = false;
@@ -95,22 +94,24 @@ t_command_args *new_arg(char *content, bool env)
 	return (new);
 }
 
-t_command_args *get_last_arg(t_command *command)
+t_command_args *get_last_arg(t_command_args *command)
 {
-	while (command && command->command_arg && command->command_arg->next)
+	while (command && command && command->next)
 	{
-		command->command_arg = command->command_arg->next;
+		command = command->next;
 	}
-	return (command->command_arg);
+	return (command);
 }
 
 void add_to_command(t_command *command, t_command_args *new_arg)
 {
 	if (!(command->command_arg))
+	{
 		command->command_arg = new_arg;
+	}
 	else
 	{
-		get_last_arg(command)->next = new_arg;
+		get_last_arg(command->command_arg)->next = new_arg;
 	}
 }
 void	free2d(char **str)
@@ -175,7 +176,7 @@ t_command	*handle_pipe_node(t_command *command, int type_elem)
 
 t_command_h_ret *command_handling(t_elem **element)
 {
-	char *command = NULL;
+	// char *command = NULL;
 	t_command_h_ret *res;
 	res = malloc (sizeof(t_command_h_ret));
 	if (!res)
@@ -284,7 +285,6 @@ void handle_here_doc(t_in_files *file)
 		return;
 	}
 	char *str = here_doc(file->limiter);
-	printf("%s\n", str);
 	close(i);
 	unlink(file_name);
 	free(file_name);
@@ -373,7 +373,6 @@ t_command	*parser(t_elem *elements)
 			comm_hand_ret = command_handling(&elements);
 			if (comm_hand_ret->env)
 			{
-				printf("TRUE\n");
 				add_to_command(command, new_arg(comm_hand_ret->command, true));
 			}
 			else
