@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/22 11:55:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/29 16:27:00 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # include "env.h"
 # include "colors.h"
 # include "here_doc.h"
+# include "builtins.h"
 
 typedef struct s_global_data
 {

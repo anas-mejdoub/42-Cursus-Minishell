@@ -6,12 +6,11 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/16 13:14:16 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/29 16:26:27 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
-
 #define LEXER_H
 #include "minishell.h"
 

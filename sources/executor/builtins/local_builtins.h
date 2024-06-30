@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                         :+:      :+:    :+:   */
+/*   local_builtins.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 15:20:53 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/29 16:29:46 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/06/29 15:23:49 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/06/29 16:25:46 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "local_builtins.h"
+#ifndef LOCAL_BUILTINS_H
+# define LOCAL_BUILTINS_H
 
-int main()
-{
-    return (0);
-}
+#include "minishell.h"
+#include "builtins.h"
+
+#endif
