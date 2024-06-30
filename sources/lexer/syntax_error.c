@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 17:36:57 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/30 19:47:33 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ t_list    *syntax_error(t_elem *elem)
             while (elem && elem->type == WHITE_SPACE)
                 elem = elem->next;
             if (!elem || (elem->type != REDIR_IN && elem->type != REDIR_OUT 
-                && elem->type != DREDIR_OUT && elem->type != HERE_DOC && elem->type != WORD && elem->type != ENV && elem->type != START_SUBSHELL))
+                && elem->type != DREDIR_OUT && elem->type != HERE_DOC && elem->type != WORD && elem->type != ENV && elem->type != START_SUBSHELL && elem->type != QOUTE && elem->type != DOUBLE_QUOTE))
                     return (original);
         }
         else if (elem && (elem->type == REDIR_IN || elem->type == REDIR_OUT 

@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 17:46:05 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 17:58:40 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/30 18:04:37 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int pwd(void)
     {
         current_dir = malloc(size);
         if (!current_dir)
-            return (NULL);
+            return (1);
         if (getcwd(current_dir, size) == NULL)
         {
             if (errno == ERANGE)

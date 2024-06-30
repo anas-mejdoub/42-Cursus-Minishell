@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   env_command.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 16:26:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 19:07:14 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/06/30 18:15:58 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/06/30 19:09:38 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#include "local_builtin.h"
 
-# include "minishell.h"
+void env_command(t_env *env)
+{
+    t_env_data *tmp;
 
-// int echo(t_command *cmd);
-int pwd(void);
-void env_command(t_env *env);
+    tmp = env->data;
 
-#endif
+    while (tmp)
+    {
+        printf("%s=%s\n", tmp->key, tmp->value);
+        tmp= tmp->next;
+    }
+}

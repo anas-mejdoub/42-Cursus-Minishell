@@ -1,22 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 16:26:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 19:07:14 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/06/30 18:15:12 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#include "local_builtin.h"
 
-# include "minishell.h"
-
-// int echo(t_command *cmd);
-int pwd(void);
-void env_command(t_env *env);
-
-#endif
+int exit_comand(int a, t_command *cmd)
+{
+    //free cmd  
+    exit(a);
+}
