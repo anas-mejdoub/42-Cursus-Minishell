@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/30 18:00:51 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/06/30 19:55:54 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,13 @@ void print_2d(t_command *command)
 	printf("command \t infile \t outfile\n");
 	while (command->command_arg)
 	{
-		printf ("{%s env : %d} ", command->command_arg->content, command->command_arg->env);
+		printf ("{%s env :{", command->command_arg->content);
+		while (command->command_arg->index_list)
+		{
+			printf(" %d", command->command_arg->index_list->index);
+			command->command_arg->index_list = command->command_arg->index_list->next;
+		}
+		printf("}}\n");
 		command->command_arg = command->command_arg->next;
 	}
 	printf (" \t");
@@ -91,6 +97,8 @@ t_command_args *new_arg(char *content, bool env)
 	new->content = content;
 	new->env = env;
 	new->next = NULL;
+	new->env_arr = NULL;
+	new->index_list = NULL;
 	return (new);
 }
 
@@ -173,15 +181,89 @@ t_command	*handle_pipe_node(t_command *command, int type_elem)
 	pipe_node->type_node = set_type_node(type_elem);
 	return (pipe_node);
 }
+t_env_index *new_index(int new)
+{
+	t_env_index *new_i;
+	new_i = malloc(sizeof(t_env_index));
+	if (!new_i)
+		return NULL;
+	new_i->index = new;
+	new_i->expanded = false;
+	new_i->next = NULL;
+	return (new_i);
+}
+t_env_index *last_index(t_env_index *list)
+{
+	while (list && list->next)
+	{
+		list = list->next;
+	}
+	return (list);
+}
+void add_to_index(t_command_args *list, t_env_index *new)
+{
+	if (!list->index_list)
+	{
+		list->index_list = new;
+	}
+	else
+	{
+		
+		last_index(list->index_list)->next = new;
+	}
+}
 
+int env_index(char *env_str, char *prev)
+{
+	int i = 0;
+	while (env_str && env_str[i])
+	{
+		if (env_str[i] == '$')
+			break;
+		i++;
+	}
+	return (ft_strlen(prev) + i);
+}
+int *add_int(int *arr, int new)
+{
+	int i = 0;
+	// printf("the new is %d---\n", new);
+	while (arr)
+	{
+		if (arr[i] == -1)
+			break;
+		i++;
+	}
+	int *res = malloc (sizeof (int) * (i + 2));
+	if (!res)
+		return (NULL);
+	int j = 0;
+	while (res && j < i)
+	{
+		res[j] = arr[j];
+		j++;
+	}
+	res[j] = new;
+	// printf("thej %d res is {{{{%d}}}}\n",j,  res[j]);
+	res[j + 1] = -1;
+	// i = 0;
+	// // while (1)
+	// // {
+	// // 	printf("debuug %d\n", res[i]);
+	// // 	if (res[i] == -1)
+	// // 		break;
+	// // 	i++;
+	// // }
+	return (res);
+}
 t_command_h_ret *command_handling(t_elem **element)
 {
-	// char *command = NULL;
 	t_command_h_ret *res;
 	res = malloc (sizeof(t_command_h_ret));
 	if (!res)
 		return (NULL);
 	res->command = NULL;
+	res->arr = NULL;
 	res->env = false;
 	t_elem *tmp = NULL;
 	if ((*element)->type == ENV)
@@ -189,11 +271,16 @@ t_command_h_ret *command_handling(t_elem **element)
 	while (*element)
 	{
 		if ((*element)->type == ENV)
-				res->env = true;
+		{
+			// printf("the elem %s and the res->command : %s\n", (*element)->content, res->command);
+			res->arr = add_int(res->arr, env_index((*element)->content, res->command));
+			res->env = true;
+		}
 		if (ft_strchr(" ><|()&", (*element)->type) && (*element)->state == GENERAL && (*element)->type != QOUTE)
 		{
 			if (ft_strchr("><|()&", (*element)->type))
 				*element = tmp;
+			// printf("res b4 ret %s\n", res->command);
 			return res;
 		}
 		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
@@ -216,6 +303,15 @@ t_command_h_ret *command_handling(t_elem **element)
 		tmp = *element;
 		*element = (*element)->next;
 	}
+	// printf("2- res b4 ret %s\n", res->command);
+	// int i = 0;
+	// while (1)
+	// {
+	// 	printf("debuug %d\n", res->arr[i]);
+	// 	if (res->arr[i] == -1)
+	// 		break;
+	// 	i++;
+	// }
 	return (res);
 }
 t_in_files *get_last_in_file(t_in_files *files)
@@ -284,7 +380,7 @@ void handle_here_doc(t_in_files *file)
 		printf("problem with opennig here doc\n");
 		return;
 	}
-	char *str = here_doc(file->limiter);
+	here_doc(file->limiter);
 	close(i);
 	unlink(file_name);
 	free(file_name);
@@ -318,7 +414,8 @@ void	handle_redir_in(t_command *command, char *filename)
 
 t_out_files *get_last_file(t_out_files *files)
 {
-	while (files && files->next)	{
+	while (files && files->next)
+	{
 		files = files->next;
 	}
 	return (files);
@@ -351,7 +448,18 @@ void	handle_redir_out(t_command *command, char *filename)
 	command->dredir = false;
 	add_to_outfiles(command, new_file(filename, append));
 }
-
+void add_indexs_to_args(int *arr, t_command_args *args)
+{
+	int i = 0;
+	while (arr)
+	{
+		if (arr[i] == -1)
+			break;
+		// printf ("i is %d\n", i);
+		add_to_index(args, new_index(arr[i]));
+		i++;
+	}
+}
 t_command	*parser(t_elem *elements)
 {
 	t_command	*command;
@@ -377,6 +485,7 @@ t_command	*parser(t_elem *elements)
 			}
 			else
 				add_to_command(command, new_arg(comm_hand_ret->command, false));
+			add_indexs_to_args(comm_hand_ret->arr, get_last_arg(command->command_arg));
 		}
 		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
 		{
