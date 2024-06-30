@@ -1,19 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_builtins.h                                   :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 15:23:49 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/29 16:25:46 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/06/29 18:33:22 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/06/30 10:29:53 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_BUILTINS_H
-# define LOCAL_BUILTINS_H
+#include "local_builtin.h"
 
-#include "minishell.h"
-#include "builtins.h"
-
-#endif
+int cd(t_command *cmd, t_env *env)
+{
+    return (0);
+    // if (!ft_strncmp(cmd->command_args[0], "cd", ft_strlen("cd")) && ft_strlen("cd") == ft_strlen(cmd->command_args[0]))
+    // {
+        
+    // }+ 
+}

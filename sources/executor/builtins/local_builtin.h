@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   local_builtin.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 16:26:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 10:30:29 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/06/29 15:23:49 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/06/30 10:30:24 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#ifndef LOCAL_BUILTIN_H
+# define LOCAL_BUILTIN_H
 
-# include "minishell.h"
-int echo(t_command *cmd);
+#include "minishell.h"
+#include "builtins.h"
+
 
 #endif
