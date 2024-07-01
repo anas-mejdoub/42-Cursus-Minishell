@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/06/30 18:13:01 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/01 12:44:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ enum e_type_node
 };
 
 
-typedef struct s_out_files
-{
-    char *filename;
-    bool append;
-    struct s_out_files *next;
-} t_out_files;
 
 typedef struct s_env_index
 {
@@ -37,6 +31,13 @@ typedef struct s_env_index
     bool expanded;
     struct s_env_index *next;
 } t_env_index;
+typedef struct s_out_files
+{
+    char *filename;
+    bool append;
+    t_env_index *index_list;
+    struct s_out_files *next;
+} t_out_files;
 typedef struct s_command_h_ret
 {
     char *command;
@@ -49,13 +50,13 @@ typedef struct s_in_files
     char *filename;
     bool here_doc;
     char *limiter;
+    t_env_index *index_list;
     struct s_in_files *next;
 } t_in_files;
 
 typedef struct s_command_args
 {
     char *content;
-    int *env_arr;
     t_env_index *index_list;
     bool env;
     struct s_command_args *next;
@@ -63,7 +64,6 @@ typedef struct s_command_args
 
 typedef struct s_commands
 {
-    // char **command_args;
     t_command_args *command_arg;
     int type_node;
     char  **infile;

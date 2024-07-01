@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/01 11:58:10 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/01 12:44:44 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,25 @@ void print_2d(t_command *command)
 	printf (" \t");
 	while (command->in_files)
 	{
-		printf("(%s) ", command->in_files->filename);
+		printf("(%s) env : {", command->in_files->filename);
+		while (command->in_files->index_list)
+		{
+			printf("%d, ", command->in_files->index_list->index);
+			command->in_files->index_list = command->in_files->index_list->next;
+		}
+		printf("}");
 		command->in_files = command->in_files->next;
 	}
 	printf("\t");
 	while (command->outfiles)
 	{
-		printf("[%s append : %d]", command->outfiles->filename, (int)command->outfiles->append);
+		printf("[%s append : %d |{", command->outfiles->filename, (int)command->outfiles->append);
+		while (command->outfiles->index_list)
+		{
+			printf(" %d,", command->outfiles->index_list->index);
+			command->outfiles->index_list = command->outfiles->index_list->next;
+		}
+		printf(" }]");
 		command->outfiles = command->outfiles->next;
 	}
 	printf("\n");
@@ -97,7 +109,7 @@ t_command_args *new_arg(char *content, bool env)
 	new->content = content;
 	new->env = env;
 	new->next = NULL;
-	new->env_arr = NULL;
+	// new->env_arr = NULL;
 	new->index_list = NULL;
 	return (new);
 }
@@ -332,6 +344,7 @@ t_in_files *new_in_file(char *filename, bool here_doc)
 	new->filename = filename;
 	new->here_doc = here_doc;
 	new->limiter = NULL;
+	new->index_list = NULL;
 	new->next = NULL;
 	if (here_doc)
 	{
@@ -402,7 +415,7 @@ void	handle_redir_in(t_command *command, char *filename)
 {
 	if (command->in_redir)
 	{
-		command->in_redir = false;
+		// command->in_redir = false;
 		add_to_infiles(command, new_in_file(filename, false));
 	}
 	else if (command->here_doc)
@@ -430,6 +443,7 @@ t_out_files *new_file(char *filename, bool append)
 	new->filename = filename;
 	new->append = append;
 	new->next = NULL;
+	new->index_list = NULL;
 	return (new);
 }
 void add_to_outfiles(t_command *command, t_out_files *file)
@@ -457,6 +471,54 @@ void add_indexs_to_args(int *arr, t_command_args *args)
 			break;
 		// printf ("i is %d\n", i);
 		add_to_index(args, new_index(arr[i]));
+		i++;
+	}
+}
+void add_to_out_index(t_out_files *list, t_env_index *new)
+{
+	if (!list->index_list)
+	{
+		list->index_list = new;
+	}
+	else
+	{
+		last_index(list->index_list)->next = new;
+	}
+}
+void add_indexs_to_outfiles(int *arr, t_out_files *file)
+{
+	int i = 0;
+	while (arr)
+	{
+		printf ("i is %d\n", i);
+		if (arr[i] == -1)
+			break;
+		add_to_out_index(file, new_index(arr[i]));
+		i++;
+	}
+}
+
+void add_to_in_index(t_in_files *list, t_env_index *new)
+{
+	if (!list->index_list)
+	{
+		list->index_list = new;
+	}
+	else
+	{
+		last_index(list->index_list)->next = new;
+	}
+}
+
+void add_indexs_to_infiles(int *arr, t_in_files *file)
+{
+	int i = 0;
+	while (arr)
+	{
+		printf ("i is %d\n", i);
+		if (arr[i] == -1)
+			break;
+		add_to_in_index(file, new_index(arr[i]));
 		i++;
 	}
 }
@@ -512,16 +574,24 @@ t_command	*parser(t_elem *elements)
 		}
 		else if ((elements->type == WORD || elements->type == ENV) && (command->out_redir || command->dredir))
 		{
-			handle_redir_out(command, elements->content);
+			comm_hand_ret = command_handling(&elements);
+			handle_redir_out(command, comm_hand_ret->command);
+			add_indexs_to_outfiles(comm_hand_ret->arr, get_last_file(command->outfiles));
 		}
 		else if (elements->type == HERE_DOC)
 		{
 			command->here_doc = true;
 		}
-		else if (elements->type == WORD && (command->here_doc || command->in_redir))
+		else if ((elements->type == WORD || elements->type == ENV) && (command->here_doc || command->in_redir))
 		{
 			comm_hand_ret = command_handling(&elements);
 			handle_redir_in(command, comm_hand_ret->command);
+			if (command->in_redir)
+			{
+				command->in_redir = false;
+				add_indexs_to_infiles(comm_hand_ret->arr, get_last_in_file(command->in_files));
+			}
+
 		}
 		else if (elements->type == QOUTE && elements->next && ((t_elem *)elements->next)->type == QOUTE && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
 		{
