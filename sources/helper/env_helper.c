@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 15:49:50 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/01 10:53:29 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,33 @@ char *add_string_back(char *s1, char *s2)
     s1 = tmp;
     return (s1);
 }
+
+// char  *env_handeler_test(t_command_args *cmd, t_env *env)
+// {
+//     int i;
+//     int start;
+//     char *str;
+
+//     i = 0;
+//     start = i;
+//     if (!cmd->env)
+//         return (NULL);
+//     str = ft_calloc(1, 1);
+//     while (cmd && cmd->content && cmd->content[i])
+//     {
+//         if (i != cmd->index_list->index)
+//             i++;
+//         if (i == cmd->index_list->index)
+//         {
+//             str = add_string_back(str, ft_substr(cmd->content, start, i - start));
+//             start = i;
+//             i++;
+//             while (ft_isalnum(cmd->content[i]) || cmd->content[i] == '_')
+//                 i++;
+//             printf
+//         }
+//     }
+// }
 
 
 char  *env_handeler_test(char *line, t_env *env)

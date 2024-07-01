@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/01 11:01:45 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/01 11:58:10 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -510,7 +510,7 @@ t_command	*parser(t_elem *elements)
 		{
 			command->dredir = true;
 		}
-		else if (elements->type == WORD && (command->out_redir || command->dredir))
+		else if ((elements->type == WORD || elements->type == ENV) && (command->out_redir || command->dredir))
 		{
 			handle_redir_out(command, elements->content);
 		}
