@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/01 12:44:44 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/01 14:26:38 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,11 +354,14 @@ t_in_files *new_in_file(char *filename, bool here_doc)
 	return (new);
 }
 
-int my_rand() {
-    void* ptr = malloc(1);
-    int addr = (int)ptr;
-    free(ptr);
-    return addr % INT_MAX;
+int my_rand()
+{
+	static int r;
+
+	if (!r)
+		r = 1;
+	r *= 50;
+    return r % INT_MAX;
 }
 
 char *random_str()
@@ -372,7 +375,10 @@ char *random_str()
 		return (NULL);
 	while (i < 9)
 	{
-		key = my_rand() % 61;
+		int rand = my_rand();
+		if (rand < 0)
+			rand = -rand;
+		key = rand % 61;
 		res[i] = charset[key];
 		i++;
 	}
@@ -387,6 +393,7 @@ void handle_here_doc(t_in_files *file)
 	unlink(file_name);
 	free(random);
 	file->filename = ft_strdup(file_name);
+	printf("filename %s\n", file->filename);
 	int i = open(file_name, O_CREAT | O_WRONLY);
 	if (i == -1)
 	{
