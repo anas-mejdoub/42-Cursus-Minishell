@@ -1,4 +1,5 @@
 SRC =\
+		sources/executor/execution/executor.c \
 		sources/env/env.c sources/env/methods.c \
 		sources/lexer/lexer.c sources/lexer/lexer_utils.c \
 		sources/lexer/syntax_error.c \
@@ -7,6 +8,7 @@ SRC =\
 		sources/helper/env_helper.c \
 		sources/executor/builtins/echo.c sources/executor/builtins/pwd.c sources/executor/builtins/env_command.c\
 		sources/minishell.c 
+		
 
 OBJ = $(SRC:.c=.o)
 

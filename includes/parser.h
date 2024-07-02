@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/01 12:44:17 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:28:08 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define PARSER_H
 #include <stdbool.h>
 # include <fcntl.h>
+#include "minishell.h"
+#include "env.h"
 
 enum e_type_node
 {
@@ -85,5 +87,6 @@ typedef struct s_commands
 
 t_command	*parser(t_elem *elements);
 void print_tree(t_command *root, int n);
-
+void	free2d(char **str);
+char	**add_to_args(char **args, char *to_append);
 #endif

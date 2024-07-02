@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/01 12:28:40 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 14:49:25 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,10 @@ int main(int ac, char **av, char  **ev)
         elem = lexer();
         if (!elem)
             continue;
+        // t_env *env;
         t_command *root = parser(elem);
-        print_tree(root, 0);
+        executor(root, env);
+        // print_tree(root, 0);
         // while (elem)
         // {
         //     printf("~%s~                       ", elem->content);

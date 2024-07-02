@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 15:29:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/02 14:33:10 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../sources/super_libft/libft.h"
 # include "lexer.h"
 # include "parser.h"
+#include "executor.h"
 # include "env.h"
 # include <dirent.h>
 # include <errno.h>
@@ -29,7 +30,7 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-# include "env.h"
+// # include "env.h"
 # include "colors.h"
 # include "here_doc.h"
 # include "builtins.h"

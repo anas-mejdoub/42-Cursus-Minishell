@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/01 14:26:38 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 14:49:13 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -422,7 +422,6 @@ void	handle_redir_in(t_command *command, char *filename)
 {
 	if (command->in_redir)
 	{
-		// command->in_redir = false;
 		add_to_infiles(command, new_in_file(filename, false));
 	}
 	else if (command->here_doc)
