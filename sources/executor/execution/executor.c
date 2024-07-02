@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 16:13:05 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:30:06 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,13 @@ char *get_path(char *command, t_env *env)
 
 void executor(t_command *command, t_env *env)
 {
+    if (command->type_node == PIPE_LINE_NODE)
+    {
+        
+    }
     if (command->type_node != NODE)
         executor(command->right, env);
+    
     else 
     {
         pid_t i = fork();

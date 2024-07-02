@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 16:17:47 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:35:15 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ typedef struct s_commands
     t_in_files *in_files;
     char *path;
     bool pipe;
+    int infd;
+    int outfd;
     bool and_;
     bool or_;
     bool builtin;
