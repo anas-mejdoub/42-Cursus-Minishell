@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 14:49:13 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:39:02 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ t_command	*new_node(void)
 	new->dredir = false;
 	new->outfiles = NULL;
 	new->type_node = NODE;
+	new->args = NULL;
 	new->in_files = NULL;
 	new->command_arg = NULL;
 	new->here_doc = false;

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 15:30:13 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:13:05 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 
 char *get_path(char *command, t_env *env)
 {
-    printf ("the command is %s\n", command);
+    // printf ("the command is %s\n", command);
     char **paths = ft_split(env->get(env->data, "PATH"), ':');
     int i = 0;
     while (paths[i])
     {
         paths[i] = ft_strjoin(paths[i], "/");
-        printf("-> %s\n", ft_strjoin(paths[i], command));
+        // printf("-> %s\n", ft_strjoin(paths[i], command));
         if (!access(ft_strjoin(paths[i], command), F_OK))
         {
-            printf("YES\n");
+            // printf("YES\n");
             return (ft_strjoin(paths[i], command));
         }
         i++;
@@ -35,25 +35,25 @@ char *get_path(char *command, t_env *env)
 
 void executor(t_command *command, t_env *env)
 {
-    // printf("test\n");
     if (command->type_node != NODE)
         executor(command->right, env);
     else 
     {
-        command->path = get_path(((t_command *)command)->command_arg->content, env);
-        // execve(command->path, comman)
-        char **args = NULL;
-        while (command->command_arg)
+        pid_t i = fork();
+        if (i == 0)
         {
-            args = add_to_args(args, command->command_arg->content);
-            command->command_arg = command->command_arg->next;
+            command->path = get_path(((t_command *)command)->command_arg->content, env);
+            // char **args = NULL;
+            while (command->command_arg)
+            {
+                command->args = add_to_args(command->args, command->command_arg->content);
+                command->command_arg = command->command_arg->next;
+            }
+            execve(command->path, command->args, NULL);        
         }
-        int i = 0;
-        while (args[i])
+        else
         {
-            printf("%s\n", args[i]);
-            i++;
+            waitpid(i, NULL, 0);
         }
-        execve(command->path, args, NULL);        
     }
 }

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 15:28:08 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:37:34 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_command_args
 typedef struct s_commands
 {
     t_command_args *command_arg;
+    char **args;
     int type_node;
     char  **infile;
     char **outfile;
