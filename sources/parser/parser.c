@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 15:39:02 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:20:05 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ t_command	*handle_pipe_node(t_command *command, int type_elem)
 	pipe_node = new_node();
 	if (!pipe_node)
 		return (NULL);
-
+	
 	pipe_node->right = command;
 	pipe_node->type_node = set_type_node(type_elem);
 	return (pipe_node);
@@ -540,7 +540,7 @@ t_command	*parser(t_elem *elements)
 	first_time = true;
 	command = new_node();
 	pipe_node = new_node();
-	pipe_node->type_node = PIPE_LINE_NODE;
+	pipe_node->type_node = ROOT_NODE;
 	pipe_node->right = command;
 	while (elements)
 	{

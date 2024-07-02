@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 15:37:34 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:17:47 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ enum e_type_node
     PIPE_LINE_NODE = 2,
     AND_NODE = 3,
     OR_NODE = 4,
+    ROOT_NODE,
 };
 
 
