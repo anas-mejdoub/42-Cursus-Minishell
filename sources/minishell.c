@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/04 10:41:02 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/04 11:56:34 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,31 @@ int main(int ac, char **av, char  **ev)
             continue;
         // t_env *env;
         t_command *root = parser(elem);
-        executor(root, env);
+        // int *arr = NULL;
+        t_exec_ret *r =  executor(root, env, '\0');
+        
+        int i = 0;
+        if (!r || !r->pids)
+            printf("problem with the r\n");
+        while (r && r->pids && r->pids[i])
+        {
+            // printf("wait the id : %d\n", r->pids[i]);
+            if (r->pids[i] == -1)
+                break;
+            waitpid(r->pids[i], NULL, 0);
+            i++;
+        }
+        // while (1)
+        // {
+        //     i = executor(root, env, '\0');
+        //     waitpid(i, NULL, 0);
+        //     printf("after wait\n");
+        //     if (i == -1)
+        //     {
+        //         printf("it the end of the prompt !\n");
+        //         break;
+        //     }
+        // }
         // print_tree(root, 0);
         // while (elem)
         // {
