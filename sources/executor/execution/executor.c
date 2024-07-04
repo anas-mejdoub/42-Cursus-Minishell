@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 16:30:06 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/04 11:36:22 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,32 +33,75 @@ char *get_path(char *command, t_env *env)
     return 0;
 }
 
-void executor(t_command *command, t_env *env)
+t_exec_ret *executor(t_command *command, t_env *env, char c)
 {
-    if (command->type_node == PIPE_LINE_NODE)
+    t_exec_ret *ret = NULL;
+    ret = malloc(sizeof(t_exec_ret));
+    if (!command)
     {
+        ret->ret = -1;
+        ret->pids = NULL;
+        return (ret);
+    }
+    if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
+    {
+        if (command->type_node == PIPE_LINE_NODE )
+        {
+            int fd[2];
+            int k = pipe(fd);
+            if (k == -1)
+                exit(99);
+            ((t_command *)command->right)->outfd = fd[1];
+            ((t_command *)command->left)->infd = fd[0];
+        }
+        t_exec_ret *tmp = executor(command->right, env, 'r');
+        ret->pids = add_int(ret->pids, tmp->ret);
+        // printf ("the return of right is, tmp->ret");
+        tmp = executor(command->left, env, 'l');
+        ret->pids = add_int(ret->pids, tmp->ret);
         
     }
-    if (command->type_node != NODE)
-        executor(command->right, env);
-    
+    else if (command->type_node == ROOT_NODE)
+        executor(command->right, env, '\0');
     else 
     {
         pid_t i = fork();
         if (i == 0)
         {
             command->path = get_path(((t_command *)command)->command_arg->content, env);
-            // char **args = NULL;
             while (command->command_arg)
             {
                 command->args = add_to_args(command->args, command->command_arg->content);
                 command->command_arg = command->command_arg->next;
             }
-            execve(command->path, command->args, NULL);        
+            if (c == 'r')
+            {
+                dup2(command->outfd, STDOUT_FILENO);
+            }
+            else if (c == 'l')
+            {
+                dup2(command->infd, STDIN_FILENO);
+            }
+            execve(command->path, command->args, NULL);
         }
         else
         {
-            waitpid(i, NULL, 0);
+            printf("---{}--->\n");
+            close(command->outfd);
+            close(command->infd);
+            if (i == -1)
+                printf("something wrong !-----------\n");
+            // printf("i is %d\n", i);
+            ret->ret = i;
+            ret->pids = NULL;
+            return (ret);
         }
     }
+    // int l= 0;
+    // while (ret->pids[l])
+    // {
+    //     printf("checking the pids %d\n", ret->pids[l]);
+    //     l++;
+    // }
+    return (ret);
 }
