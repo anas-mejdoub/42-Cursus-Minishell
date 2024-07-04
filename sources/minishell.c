@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/02 14:49:25 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/04 10:41:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int main(int ac, char **av, char  **ev)
     // printf("%s\n", env->get(env->data, "HOME"));
     t_elem *elem;
     // env_command(env);
-    // env_handeler_test("hello $HOME $?fasdf$_vdfv1", env);
     while (1)
     {
         elem = lexer();
@@ -54,6 +53,15 @@ int main(int ac, char **av, char  **ev)
         //     printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
         //     elem = elem->next;
         // }
+        // printf("%s\n", env_expander((((t_command *)root->right))->command_arg->content, (((t_command *)root->right))->command_arg->index_list, env));
+        print_tree(root, 0);
+        while (elem)
+        {
+            printf("~%s~                       ", elem->content);
+            printf("~%c~                       ", elem->type == WORD ? 'W' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : elem->type == DREDIR_OUT ? 'D' : elem->type);
+            printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
+            elem = elem->next;
+        }
     //     // char *content  = here_doc("$lim");
     //     // // printf("here doc content without expanding");
     //     // if (content)
