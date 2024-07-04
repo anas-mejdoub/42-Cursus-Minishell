@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/02 16:35:28 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/04 15:56:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -443,7 +443,7 @@ t_out_files *get_last_file(t_out_files *files)
 	return (files);
 }
 
-t_out_files *new_file(char *filename, bool append)
+t_out_files *new_file(char *filename, bool append, bool env_dqoute)
 {
 	t_out_files *new;
 	new = malloc(sizeof(t_out_files));
@@ -451,6 +451,7 @@ t_out_files *new_file(char *filename, bool append)
 		return (NULL);
 	new->filename = filename;
 	new->append = append;
+	new->in_qoute = env_dqoute;
 	new->next = NULL;
 	new->index_list = NULL;
 	return (new);
@@ -462,14 +463,14 @@ void add_to_outfiles(t_command *command, t_out_files *file)
 	else
 		get_last_file(command->outfiles)->next = file;
 }
-void	handle_redir_out(t_command *command, char *filename)
+void	handle_redir_out(t_command *command, char *filename, bool env_dqoute)
 {
 	command->out_redir = false;
 	bool append = false;
 	if (command->dredir)
 		append = true;
 	command->dredir = false;
-	add_to_outfiles(command, new_file(filename, append));
+	add_to_outfiles(command, new_file(filename, append, env_dqoute));
 }
 void add_indexs_to_args(int *arr, t_command_args *args)
 {
@@ -544,6 +545,7 @@ t_command	*parser(t_elem *elements)
 	pipe_node = new_node();
 	pipe_node->type_node = ROOT_NODE;
 	pipe_node->right = command;
+	bool env_dqoute = false;
 	while (elements)
 	{
 
@@ -583,8 +585,10 @@ t_command	*parser(t_elem *elements)
 		}
 		else if ((elements->type == WORD || elements->type == ENV) && (command->out_redir || command->dredir))
 		{
+			if (elements->type)
+				env_dqoute = !env_dqoute;
 			comm_hand_ret = command_handling(&elements);
-			handle_redir_out(command, comm_hand_ret->command);
+			handle_redir_out(command, comm_hand_ret->command, env_dqoute);
 			add_indexs_to_outfiles(comm_hand_ret->arr, get_last_file(command->outfiles));
 		}
 		else if (elements->type == HERE_DOC)

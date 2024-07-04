@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 09:58:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/01 10:53:40 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/04 12:57:04 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,17 @@
 int echo(t_command *cmd)
 {
     (void)cmd;
-    int new_line;
-    int i;
+    // int new_line;
+    // int i;
+    // int fd;
 
-    i = 0;
-    new_line = 1;
-    if (!cmd || !cmd->command_arg || !cmd->command_arg->content)
-        return (1);
-    if (!ft_strncmp(cmd->command_arg->content, "echo", ft_strlen("echo")) && ft_strlen("echo") == ft_strlen(cmd->command_arg->content))
-        cmd->command_arg = cmd->command_arg->next;
+    
+    // i = 0;
+    // new_line = 1;
+    // if (!cmd || !cmd->command_arg || !cmd->command_arg->content)
+    //     return (1);
+    // if (!ft_strncmp(cmd->command_arg->content, "echo", ft_strlen("echo")) && ft_strlen("echo") == ft_strlen(cmd->command_arg->content))
+    //     cmd->command_arg = cmd->command_arg->next;
     // else if ()
     //     i++;
     // else
