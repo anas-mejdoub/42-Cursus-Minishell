@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/04 10:41:02 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/04 15:43:59 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,33 @@ int main(int ac, char **av, char  **ev)
             continue;
         // t_env *env;
         t_command *root = parser(elem);
-        executor(root, env);
+        // int *arr = NULL;
+        t_exec_ret *r =  executor(root, env, '\0');
+        
+            // printf("no problem with the r\n");
+        int i = 0;
+        if (!r || !r->pids)
+            printf("problem with the r\n");
+        while (r && r->pids)
+        {
+            // printf("wait the id : {%d}\n", r->pids[i]);
+            if (r->pids[i] == -1)
+                break;
+            waitpid(r->pids[i], NULL, 0);
+            i++;
+        }
+        // while (1);
+        // while (1)
+        // {
+        //     i = executor(root, env, '\0');
+        //     waitpid(i, NULL, 0);
+        //     printf("after wait\n");
+        //     if (i == -1)
+        //     {
+        //         printf("it the end of the prompt !\n");
+        //         break;
+        //     }
+        // }
         // print_tree(root, 0);
         // while (elem)
         // {
@@ -54,14 +80,14 @@ int main(int ac, char **av, char  **ev)
         //     elem = elem->next;
         // }
         // printf("%s\n", env_expander((((t_command *)root->right))->command_arg->content, (((t_command *)root->right))->command_arg->index_list, env));
-        print_tree(root, 0);
-        while (elem)
-        {
-            printf("~%s~                       ", elem->content);
-            printf("~%c~                       ", elem->type == WORD ? 'W' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : elem->type == DREDIR_OUT ? 'D' : elem->type);
-            printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
-            elem = elem->next;
-        }
+        // print_tree(root, 0);
+        // while (elem)
+        // {
+        //     printf("~%s~                       ", elem->content);
+        //     printf("~%c~                       ", elem->type == WORD ? 'W' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : elem->type == DREDIR_OUT ? 'D' : elem->type);
+        //     printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
+        //     elem = elem->next;
+        // }
     //     // char *content  = here_doc("$lim");
     //     // // printf("here doc content without expanding");
     //     // if (content)
