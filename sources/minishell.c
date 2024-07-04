@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 19:45:39 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/04 10:38:47 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ int main(int ac, char **av, char  **ev)
     // printf("%s\n", env->get(env->data, "HOME"));
     t_elem *elem;
     // env_command(env);
-    // env_handeler_test("hello $HOME $?fasdf$_vdfv1", env);
     while (1)
     {
         elem = lexer();
         if (!elem)
             continue;
         t_command *root = parser(elem);
+        // printf("%s\n", env_expander((((t_command *)root->right))->command_arg->content, (((t_command *)root->right))->command_arg->index_list, env));
         print_tree(root, 0);
         while (elem)
         {

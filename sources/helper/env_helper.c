@@ -6,98 +6,59 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/01 10:53:29 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/04 10:37:33 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
 
-char *add_string_back(char *s1, char *s2)
+char *add_string_back(char **s1, char **s2)
 {
     char *tmp;
 
-    tmp = ft_strjoin(s1, s2);
-    free(s2);
-    free(s1);
-    s1 = tmp;
-    return (s1);
+    if ((*s2) == NULL)
+        return ((*s1));
+    tmp = ft_strjoin(*s1, *s2);
+    *s1 = tmp;
+    return (*s1);
 }
 
-// char  *env_handeler_test(t_command_args *cmd, t_env *env)
-// {
-//     int i;
-//     int start;
-//     char *str;
-
-//     i = 0;
-//     start = i;
-//     if (!cmd->env)
-//         return (NULL);
-//     str = ft_calloc(1, 1);
-//     while (cmd && cmd->content && cmd->content[i])
-//     {
-//         if (i != cmd->index_list->index)
-//             i++;
-//         if (i == cmd->index_list->index)
-//         {
-//             str = add_string_back(str, ft_substr(cmd->content, start, i - start));
-//             start = i;
-//             i++;
-//             while (ft_isalnum(cmd->content[i]) || cmd->content[i] == '_')
-//                 i++;
-//             printf
-//         }
-//     }
-// }
-
-
-char  *env_handeler_test(char *line, t_env *env)
+char  *env_expander(char *content, t_env_index *indexs, t_env *env)
 {
-    int current_index;
-    char *tmp;
-    char *str;
     int i;
-    (void)env;
+    int start;
+    char *tmp_str;
+    char *str;
+    (void) env;
+    t_env_index *tmp_index;
 
-    printf("hello\n");
     i = 0;
+    start = i;
+    tmp_index = indexs;
+    if (!indexs)
+        return (NULL);
     str = ft_calloc(1, 1);
-    current_index = i;
-    while (line && line[i])
+    while (content[i])
     {
-        while (line[i] && (line[i] == ENV && !ft_isalpha(line[i + 1]) && line[i + 1] != '_' && line[i + 1] != '?'))
+        while ((!tmp_index && content[i]) || (content[i] && tmp_index && i != tmp_index->index))
             i++;
-        printf("hy\n");
-        if (i != current_index)
+        if (i != start)
         {
-            tmp = ft_substr(line, current_index - 1, i - current_index + 1);
-            printf("%s\n", tmp);
-            // str = add_string_back(str ,tmp);
+            tmp_str = ft_substr(content, start , i - start);
+            str = add_string_back(&str, &tmp_str);
+            start = i;
         }
-        if (line[i] && line[i] == ENV)
+        if (tmp_index && i == tmp_index->index)
         {
-            i = current_index;
-            if (line[i] && line[i] == '?')
-            {
+            tmp_index = tmp_index->next;
+            i++;
+            while (content[i] && (ft_isalnum(content[i]) || content[i] == '_'))
                 i++;
-                tmp = ft_substr(line, current_index - 1, i - current_index + 1);
-                // str = add_string_back(str ,tmp);
-                printf("%s\n", tmp);
-                i = current_index;
-            }
-            else if (line[i] && (ft_isalpha(line[i]) || line[i] == '_'))
-            {
-                while (line[i] && (ft_isalnum(line[i]) || line[i] == '_'))
-                    i++;
-                if (i != current_index)
-                {
-                    tmp = ft_substr(line, current_index - 1, i - current_index + 1);
-                    printf("%s\n", tmp);
-                    // str = add_string_back(str ,tmp);
-                    i = current_index;
-                }
-            }
+            tmp_str = ft_substr(content, start + 1 , i - start);
+            char *s = env->get(env->data, tmp_str);
+            add_string_back(&str, &s);
+            start = i;
         }
     }
-    return (NULL);
+    return (str);
 }
