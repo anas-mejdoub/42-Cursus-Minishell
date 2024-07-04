@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/04 11:36:05 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/04 15:39:46 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,19 @@ int main(int ac, char **av, char  **ev)
         // int *arr = NULL;
         t_exec_ret *r =  executor(root, env, '\0');
         
+            // printf("no problem with the r\n");
         int i = 0;
         if (!r || !r->pids)
             printf("problem with the r\n");
-        while (r && r->pids && r->pids[i])
+        while (r && r->pids)
         {
-            // printf("wait the id : %d\n", r->pids[i]);
+            // printf("wait the id : {%d}\n", r->pids[i]);
             if (r->pids[i] == -1)
                 break;
             waitpid(r->pids[i], NULL, 0);
             i++;
         }
+        // while (1);
         // while (1)
         // {
         //     i = executor(root, env, '\0');
