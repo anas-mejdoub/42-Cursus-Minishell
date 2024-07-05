@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/11 17:30:41 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:16:28 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static char	*get(t_env_data *env, char *key)
 	tmp = env;
 	while (tmp)
 	{
-		if (!ft_strncmp(tmp->key, key, ft_strlen(tmp->key)))
+		if (!ft_strncmp(tmp->key, key, ft_strlen(tmp->key)) && ft_strlen(tmp->key) == ft_strlen(key))
 			return (tmp->value);
 		tmp = tmp->next;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 10:01:01 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:00:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -508,6 +508,7 @@ void add_indexs_to_outfiles(int *arr, t_out_files *file)
 		printf ("i is %d\n", i);
 		if (arr[i] == -1)
 			break;
+		
 		add_to_out_index(file, new_index(arr[i]));
 		i++;
 	}
@@ -592,9 +593,10 @@ t_command	*parser(t_elem *elements)
 		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir))
 		{
 			// if (elements->type)
-			if (elements->type == QOUTE || elements->type == DOUBLE_QUOTE	)
-				env_dqoute = !env_dqoute;
-				// printf("YYYYYYY\n");
+			if (elements->state == IN_DQUOTE)
+				env_dqoute = true;
+			else
+				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
 			handle_redir_out(command, comm_hand_ret->command, env_dqoute);
 			add_indexs_to_outfiles(comm_hand_ret->arr, get_last_file(command->outfiles));

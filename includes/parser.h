@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/04 15:58:07 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:55:50 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ enum e_type_node
 typedef struct s_env_index
 {
     int index;
+    int len;
     bool expanded;
     struct s_env_index *next;
 } t_env_index;
