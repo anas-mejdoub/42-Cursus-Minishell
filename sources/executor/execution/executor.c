@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/04 15:40:34 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:01:34 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
     t_exec_ret *ret;
     t_exec_ret *tmp = NULL;
     ret = malloc(sizeof(t_exec_ret));
+    ret->pids = NULL;
     if (!command)
     {
         ret->ret = -1;
@@ -65,7 +66,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             ret->pids = tmp->pids;
         }
         else
+        {
+            if (!ret)
+                exit(1);
             ret->pids = add_int(ret->pids, tmp->ret);
+            // printf("TEST\n");
+        }
         // printf("the right %d just finished !\n", tmp->ret);
         // if (command->left)
         // {
