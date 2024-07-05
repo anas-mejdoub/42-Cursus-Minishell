@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 16:12:27 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:17:19 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             }
             if (execve(command->path, command->args, NULL) == -1)
             {
-                perror("execv : no such file or directory");
+                perror("execve : ");
                 exit(127);
             }
         }
