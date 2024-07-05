@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 16:20:17 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:37:53 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,11 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env)
         if (tmp_index && i == tmp_index->index)
         {
             i++;
-            int j = 0;
-            while (j < tmp_index->len - 1)
-            {
-                i++;
-                j++;
-            }
-            tmp_index = tmp_index->next;
-            tmp_str = ft_substr(content, start + 1 , i - start);
+            tmp_str = ft_substr(content, start + 1 , tmp_index->len - 1);
             char *s = env->get(env->data, tmp_str);
             add_string_back(&str, &s);
-            start = i;
+            start = i + tmp_index->len - 1;
+            tmp_index = tmp_index->next;
         }
     }
     return (str);

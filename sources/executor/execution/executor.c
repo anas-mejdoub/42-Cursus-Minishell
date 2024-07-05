@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 16:17:19 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:40:54 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
         pid_t i = fork();
         if (i == 0)
         {
-            command->path = get_path(((t_command *)command)->command_arg->content, env);
             command->args = get_command_args(command->command_arg, env);
+            command->path = get_path(command->args[0], env);
             if (c == 'r')
             {
                 dup2(command->outfd, STDOUT_FILENO);
@@ -131,6 +131,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             }
             if (execve(command->path, command->args, NULL) == -1)
             {
+                printf("str : -%s-\n", command->args[0]);
                 perror("execve : ");
                 exit(127);
             }
