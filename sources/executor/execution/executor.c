@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 11:03:47 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:51:14 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
                     close(command->outfd);
                 }
             }
-            execve(command->path, command->args, NULL);
+            if (execve(command->path, command->args, NULL) == -1)
+            {
+                printf("%s\n", command->args[0]);
+                perror("execv :");
+                exit(127);
+            }
         }
         else if (i > 0)
         {

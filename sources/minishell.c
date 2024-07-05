@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 11:00:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:47:26 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int main(int ac, char **av, char  **ev)
             continue;
         // t_env *env;
         t_command *root = parser(elem);
+        // print_tree(root, 0);
         // int *arr = NULL;
         t_exec_ret *r =  executor(root, env, '\0');
         
@@ -73,8 +74,7 @@ int main(int ac, char **av, char  **ev)
         // }
         // open_out_files(((t_command *)(root->right))->outfiles, env);
         // print_tree(root, 0);
-        open_out_files(((t_command *)(root->right))->outfiles, env);
-        print_tree(root, 0);
+        // open_out_files(((t_command *)(root->right))->outfiles, env);
         // printf("%s\n", env_expander((((t_command *)root->right))->command_arg->content, (((t_command *)root->right))->command_arg->index_list, env));
         // print_tree(root, 0);
         // while (elem)

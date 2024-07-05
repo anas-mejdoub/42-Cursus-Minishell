@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 11:00:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:47:50 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void print_2d(t_command *command)
 		printf ("{%s env :{", command->command_arg->content);
 		while (command->command_arg->index_list)
 		{
-			printf(" %d", command->command_arg->index_list->index);
+			printf(" %d %d,", command->command_arg->index_list->index, command->command_arg->index_list->len);
 			command->command_arg->index_list = command->command_arg->index_list->next;
 		}
 		printf("}}\n");
@@ -62,7 +62,7 @@ void print_2d(t_command *command)
 		printf("(%s) env : {", command->in_files->filename);
 		while (command->in_files->index_list)
 		{
-			printf("%d, ", command->in_files->index_list->index);
+			printf("%d %d, ", command->in_files->index_list->index, command->in_files->index_list->len);
 			command->in_files->index_list = command->in_files->index_list->next;
 		}
 		printf("}");
@@ -74,7 +74,7 @@ void print_2d(t_command *command)
 		printf("[%s append : %d |{", command->outfiles->filename, (int)command->outfiles->append);
 		while (command->outfiles->index_list)
 		{
-			printf(" %d,", command->outfiles->index_list->index);
+			printf(" %d %d,", command->outfiles->index_list->index, command->outfiles->index_list->len);
 			command->outfiles->index_list = command->outfiles->index_list->next;
 		}
 		printf(" }]");
@@ -196,13 +196,14 @@ t_command	*handle_pipe_node(t_command *command, int type_elem)
 	pipe_node->type_node = set_type_node(type_elem);
 	return (pipe_node);
 }
-t_env_index *new_index(int new)
+t_env_index *new_index(int new, int len)
 {
 	t_env_index *new_i;
 	new_i = malloc(sizeof(t_env_index));
 	if (!new_i)
 		return NULL;
 	new_i->index = new;
+	new_i->len = len;
 	new_i->expanded = false;
 	new_i->next = NULL;
 	return (new_i);
@@ -242,7 +243,6 @@ int env_index(char *env_str, char *prev)
 int *add_int(int *arr, int new)
 {
 	int i = 0;
-	// printf("the new is %d---\n", new);
 	while (arr)
 	{
 		if (arr[i] == -1)
@@ -259,16 +259,7 @@ int *add_int(int *arr, int new)
 		j++;
 	}
 	res[j] = new;
-	// printf("thej %d res is {{{{%d}}}}\n",j,  res[j]);
 	res[j + 1] = -1;
-	// i = 0;
-	// // while (1)
-	// // {
-	// // 	printf("debuug %d\n", res[i]);
-	// // 	if (res[i] == -1)
-	// // 		break;
-	// // 	i++;
-	// // }
 	return (res);
 }
 t_command_h_ret *command_handling(t_elem **element)
@@ -280,6 +271,7 @@ t_command_h_ret *command_handling(t_elem **element)
 	res->command = NULL;
 	res->arr = NULL;
 	res->env = false;
+	res->lens = NULL;
 	t_elem *tmp = NULL;
 	if ((*element)->type == ENV)
 				res->env = true;
@@ -287,15 +279,14 @@ t_command_h_ret *command_handling(t_elem **element)
 	{
 		if ((*element)->type == ENV)
 		{
-			// printf("the elem %s and the res->command : %s\n", (*element)->content, res->command);
 			res->arr = add_int(res->arr, env_index((*element)->content, res->command));
+			res->lens = add_int(res->lens, (*element)->len);
 			res->env = true;
 		}
 		if (ft_strchr(" ><|()&", (*element)->type) && (*element)->state == GENERAL && (*element)->type != QOUTE)
 		{
 			if (ft_strchr("><|()&", (*element)->type))
 				*element = tmp;
-			// printf("res b4 ret %s\n", res->command);
 			return res;
 		}
 		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
@@ -318,20 +309,10 @@ t_command_h_ret *command_handling(t_elem **element)
 		tmp = *element;
 		*element = (*element)->next;
 	}
-	// printf("2- res b4 ret %s\n", res->command);
-	// int i = 0;
-	// while (1)
-	// {
-	// 	printf("debuug %d\n", res->arr[i]);
-	// 	if (res->arr[i] == -1)
-	// 		break;
-	// 	i++;
-	// }
 	if (!res->command)
 	{ 
 		res->command = ft_strdup("");
 	}
-	// exit(0);
 	return (res);
 }
 t_in_files *get_last_in_file(t_in_files *files)
@@ -477,15 +458,14 @@ void	handle_redir_out(t_command *command, char *filename, bool env_dqoute)
 	command->dredir = false;
 	add_to_outfiles(command, new_file(filename, append, env_dqoute));
 }
-void add_indexs_to_args(int *arr, t_command_args *args)
+void add_indexs_to_args(int *arr, int *lens, t_command_args *args)
 {
 	int i = 0;
 	while (arr)
 	{
 		if (arr[i] == -1)
 			break;
-		// printf ("i is %d\n", i);
-		add_to_index(args, new_index(arr[i]));
+		add_to_index(args, new_index(arr[i], lens[i]) );
 		i++;
 	}
 }
@@ -500,7 +480,7 @@ void add_to_out_index(t_out_files *list, t_env_index *new)
 		last_index(list->index_list)->next = new;
 	}
 }
-void add_indexs_to_outfiles(int *arr, t_out_files *file)
+void add_indexs_to_outfiles(int *arr, int *len, t_out_files *file)
 {
 	int i = 0;
 	while (arr)
@@ -509,7 +489,7 @@ void add_indexs_to_outfiles(int *arr, t_out_files *file)
 		if (arr[i] == -1)
 			break;
 		
-		add_to_out_index(file, new_index(arr[i]));
+		add_to_out_index(file, new_index(arr[i], len[i]));
 		i++;
 	}
 }
@@ -526,7 +506,7 @@ void add_to_in_index(t_in_files *list, t_env_index *new)
 	}
 }
 
-void add_indexs_to_infiles(int *arr, t_in_files *file)
+void add_indexs_to_infiles(int *arr, int *len, t_in_files *file)
 {
 	int i = 0;
 	while (arr)
@@ -534,7 +514,7 @@ void add_indexs_to_infiles(int *arr, t_in_files *file)
 		printf ("i is %d\n", i);
 		if (arr[i] == -1)
 			break;
-		add_to_in_index(file, new_index(arr[i]));
+		add_to_in_index(file, new_index(arr[i], len[i]));
 		i++;
 	}
 }
@@ -554,8 +534,7 @@ t_command	*parser(t_elem *elements)
 	bool env_dqoute = false;
 	while (elements)
 	{
-		// if (!elements)
-		// 	break;
+		// printf("the elem %s\n", elements->content);
 		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			comm_hand_ret = command_handling(&elements);
@@ -565,7 +544,7 @@ t_command	*parser(t_elem *elements)
 			}
 			else
 				add_to_command(command, new_arg(comm_hand_ret->command, false));
-			add_indexs_to_args(comm_hand_ret->arr, get_last_arg(command->command_arg));
+			add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens, get_last_arg(command->command_arg));
 		}
 		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
 		{
@@ -592,14 +571,13 @@ t_command	*parser(t_elem *elements)
 		}
 		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir))
 		{
-			// if (elements->type)
 			if (elements->state == IN_DQUOTE)
 				env_dqoute = true;
 			else
 				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
 			handle_redir_out(command, comm_hand_ret->command, env_dqoute);
-			add_indexs_to_outfiles(comm_hand_ret->arr, get_last_file(command->outfiles));
+			add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_file(command->outfiles));
 		}
 		else if (elements->type == HERE_DOC)
 		{
@@ -612,9 +590,8 @@ t_command	*parser(t_elem *elements)
 			if (command->in_redir)
 			{
 				command->in_redir = false;
-				add_indexs_to_infiles(comm_hand_ret->arr, get_last_in_file(command->in_files));
+				add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_in_file(command->in_files));
 			}
-
 		}
 		else if (elements->type == QOUTE && elements->next && ((t_elem *)elements->next)->type == QOUTE && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
 		{
