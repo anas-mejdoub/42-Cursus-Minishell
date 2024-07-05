@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 16:40:54 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 19:57:11 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ char *get_path(char *command, t_env *env)
     char *tmp;
     char *tmp2;
     
+    if (!access(command, F_OK))
+        return (command);
     paths = ft_split(env->get(env->data, "PATH"), ':');
     i = 0;
     tmp = NULL;
@@ -113,6 +115,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
         {
             command->args = get_command_args(command->command_arg, env);
             command->path = get_path(command->args[0], env);
+            if (command->outfiles)
+            {
+                // printf("hehehe\n");
+                command->outfd = open_out_files(command->outfiles, env);
+                if (command->outfd == -1)
+                    exit(1);
+            }
             if (c == 'r')
             {
                 dup2(command->outfd, STDOUT_FILENO);

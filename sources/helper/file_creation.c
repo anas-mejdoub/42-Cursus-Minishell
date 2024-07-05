@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_creation.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 16:03:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 19:57:26 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int open_out_files(t_out_files *files, t_env *env)
         file_name = ambiguous(files, true, env);
         if (file_name == NULL)
             return (-1);
-        printf("%s\n", file_name);
+        // printf("%s\n", file_name);
         if (access(file_name, F_OK) == 0)
         {
             if (access(file_name, W_OK) == 0)
