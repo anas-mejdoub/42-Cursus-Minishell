@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/04 14:21:35 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/04 18:16:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,21 @@
 
 int open_out_files(t_out_files *files, t_env *env)
 {
-    int last_fd;
-    int i;
+    // int last_fd;
+    // int i;
     char *file_name;
+    (void)env;
 
     while (files)
     {
-
-        if (!index)
+        if (!files->index_list)
             file_name = files->filename;
         else
             file_name = env_expander(files->filename, files->index_list, env);
-        if (index && !files->in_qoute && ft_strchr(file_name, ' '))
+        if (files->index_list && !files->in_qoute && ft_strchr(file_name, ' '))
             printf("error");
-            else
-        printf("%s\n", file_name);
+        else
+            printf("%s\n", file_name);
         files = files->next;
         // if (!index)
         // {
@@ -56,6 +56,7 @@ int open_out_files(t_out_files *files, t_env *env)
         // }
         // }
     }
+    return (0);
 }
 
 
@@ -93,7 +94,7 @@ int open_out_files(t_out_files *files, t_env *env)
 //         }
             
 //     }
-}
+// }
 
 // int open_in_files(char **files)
 // {

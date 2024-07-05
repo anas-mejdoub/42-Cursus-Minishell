@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/04 15:56:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 09:39:16 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,6 +327,11 @@ t_command_h_ret *command_handling(t_elem **element)
 	// 		break;
 	// 	i++;
 	// }
+	if (!res->command)
+	{ 
+		res->command = ft_strdup("");
+	}
+	// exit(0);
 	return (res);
 }
 t_in_files *get_last_in_file(t_in_files *files)
@@ -548,7 +553,8 @@ t_command	*parser(t_elem *elements)
 	bool env_dqoute = false;
 	while (elements)
 	{
-
+		// if (!elements)
+		// 	break;
 		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			comm_hand_ret = command_handling(&elements);
@@ -583,10 +589,12 @@ t_command	*parser(t_elem *elements)
 		{
 			command->dredir = true;
 		}
-		else if ((elements->type == WORD || elements->type == ENV) && (command->out_redir || command->dredir))
+		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir))
 		{
-			if (elements->type)
+			// if (elements->type)
+			if (elements->type == QOUTE || elements->type == DOUBLE_QUOTE	)
 				env_dqoute = !env_dqoute;
+				// printf("YYYYYYY\n");
 			comm_hand_ret = command_handling(&elements);
 			handle_redir_out(command, comm_hand_ret->command, env_dqoute);
 			add_indexs_to_outfiles(comm_hand_ret->arr, get_last_file(command->outfiles));

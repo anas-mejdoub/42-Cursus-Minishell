@@ -5,7 +5,7 @@ SRC =\
 		sources/lexer/syntax_error.c \
 		sources/parser/parser.c \
 		sources/here_doc/here_doc.c \
-		sources/helper/env_helper.c \
+		sources/helper/env_helper.c sources/helper/file_creation.c\
 		sources/executor/builtins/echo.c sources/executor/builtins/pwd.c sources/executor/builtins/env_command.c\
 		sources/minishell.c 
 		
@@ -16,7 +16,7 @@ LIBFT = -L /goinfre/$(USER)/homebrew/opt/readline/lib sources/super_libft/libft.
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -g -I includes/  -g -I/goinfre/$(USER)/homebrew/opt/readline/include #-fsanitize=address
+CFLAGS = -Wall -Wextra -g -I includes/  -g -I/goinfre/$(USER)/homebrew/opt/readline/include -fsanitize=address
 
 NAME = minishell
 
