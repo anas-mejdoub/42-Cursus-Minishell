@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 11:08:36 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/16 10:49:23 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:39:47 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int allocate_node(t_elem **elem, char *content, int state, int token)
     new_node->state = state;
     new_node->type = token;
     new_node->content = content;
+    new_node->len = ft_strlen(content);
     new_node->next = NULL;
     
     if (!(*elem))

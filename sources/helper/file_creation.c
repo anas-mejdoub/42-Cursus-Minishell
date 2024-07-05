@@ -6,30 +6,49 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/04 18:16:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:58:32 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
+
+char  *ambiguous(t_out_files *files, t_env *env)
+{
+    char *file_name;
+    
+    if (!files->index_list)
+        file_name = files->filename;
+    else
+        file_name = env_expander(files->filename, files->index_list, env);
+    if (files->index_list && !files->in_qoute && (ft_strchr(file_name, ' ') || file_name[0] == '\0'))
+        return (printf("minishell: %s: ambiguous redirect\n", files->filename), NULL);
+    else
+        return (file_name);
+}
+
 
 int open_out_files(t_out_files *files, t_env *env)
 {
     // int last_fd;
     // int i;
     char *file_name;
-    (void)env;
 
     while (files)
     {
-        if (!files->index_list)
-            file_name = files->filename;
-        else
-            file_name = env_expander(files->filename, files->index_list, env);
-        if (files->index_list && !files->in_qoute && ft_strchr(file_name, ' '))
-            printf("error");
-        else
-            printf("%s\n", file_name);
-        files = files->next;
+        file_name = ambiguous(files, env);
+        if (file_name == NULL)
+            return (-1);
+        // if (access(files->filename, F_OK))
+        // {
+        //     if (access(files, W_OK))
+        //     {
+        //         last_fd = open(files->filename, O_WRONLY);
+        //         if (last_fd == -1)
+        //             return (perror("minishell :"), -1);
+        //     }
+        //     else
+        //         return (perror("minishell :"), -1);
+        // }
         // if (!index)
         // {
         //     if (access(files->filename, F_OK))
@@ -55,6 +74,7 @@ int open_out_files(t_out_files *files, t_env *env)
         //     clode(last_fd);
         // }
         // }
+        files = files->next;
     }
     return (0);
 }
