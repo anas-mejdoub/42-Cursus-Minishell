@@ -6,31 +6,72 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 11:51:14 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:12:27 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
+char	*ft_freed_join(char *s1, char *s2)
+{
+	char	*res;
+	int		i;
 
+	i = 0;
+	res = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!res)
+		return (free(s1), NULL);
+	while (s1 && s1[i])
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	while (s2 && *s2)
+	{
+		res[i] = *s2;
+		s2++;
+		i++;
+	}
+	res[i] = '\0';
+	free(s1);
+	return (res);
+}
 char *get_path(char *command, t_env *env)
 {
-    // printf ("the command is %s\n", command);
-    char **paths = ft_split(env->get(env->data, "PATH"), ':');
-    int i = 0;
+    char **paths;
+    int i;
+    char *tmp;
+    char *tmp2;
+    
+    paths = ft_split(env->get(env->data, "PATH"), ':');
+    i = 0;
+    tmp = NULL;
+    tmp2 = NULL;
     while (paths[i])
     {
-        paths[i] = ft_strjoin(paths[i], "/");
-        // printf("-> %s\n", ft_strjoin(paths[i], command));
-        if (!access(ft_strjoin(paths[i], command), F_OK))
+        tmp = ft_freed_join(paths[i], "/");
+        tmp2 = ft_freed_join(tmp, command);
+        if (!access(tmp2, F_OK))
         {
-            // printf("YES\n");
-            return (ft_strjoin(paths[i], command));
+            return (tmp2);
         }
         i++;
+        free(tmp2);
+        tmp2 = NULL;
     }
     
     return 0;
+}
+char **get_command_args(t_command_args *args, t_env *env)
+{
+    char **res;
+    res = NULL;
+    while (args)
+    {
+        res = add_to_args(res, env_expander(args->content, args->index_list, env));
+        args = args->next;
+    }
+    return (res);
 }
 t_exec_ret *executor(t_command *command, t_env *env, char c)
 {
@@ -71,11 +112,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
         if (i == 0)
         {
             command->path = get_path(((t_command *)command)->command_arg->content, env);
-            while (command->command_arg)
-            {
-                command->args = add_to_args(command->args, command->command_arg->content);
-                command->command_arg = command->command_arg->next;
-            }
+            command->args = get_command_args(command->command_arg, env);
             if (c == 'r')
             {
                 dup2(command->outfd, STDOUT_FILENO);
@@ -94,8 +131,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             }
             if (execve(command->path, command->args, NULL) == -1)
             {
-                printf("%s\n", command->args[0]);
-                perror("execv :");
+                perror("execv : no such file or directory");
                 exit(127);
             }
         }
