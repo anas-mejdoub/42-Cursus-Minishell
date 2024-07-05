@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 10:01:34 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:03:47 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ char *get_path(char *command, t_env *env)
     
     return 0;
 }
-
 t_exec_ret *executor(t_command *command, t_env *env, char c)
 {
     t_exec_ret *ret;
@@ -59,41 +58,19 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             ((t_command *)command->left)->infd = fd[0];
         }
         tmp = executor(command->right, env, 'r');
-
         if (tmp->pids)
-        {
-            // printf("the next is : %d\n", tmp->ret);
             ret->pids = tmp->pids;
-        }
         else
-        {
-            if (!ret)
-                exit(1);
             ret->pids = add_int(ret->pids, tmp->ret);
-            // printf("TEST\n");
-        }
-        // printf("the right %d just finished !\n", tmp->ret);
-        // if (command->left)
-        // {
-            tmp = executor(command->left, env, 'l');
-            ret->pids = add_int(ret->pids, tmp->ret);
-            // printf("the left %d just finished\n", tmp->ret);
-        // }
+        tmp = executor(command->left, env, 'l');
+        ret->pids = add_int(ret->pids, tmp->ret);
     }
-    // else if (command->type_node == ROOT_NODE)
-    // {
-    //     printf("in this shit \n");
-    //     tmp = executor(command->right, env, '\0');
-    //     ret->pids = add_int(ret->pids, tmp->ret);
-    // }
     else 
     {
         pid_t i = fork();
         if (i == 0)
         {
-        // printf("test : %s c is %c\n", command->command_arg->content, c);
             command->path = get_path(((t_command *)command)->command_arg->content, env);
-            // printf("the path is %s --\n", command->path);
             while (command->command_arg)
             {
                 command->args = add_to_args(command->args, command->command_arg->content);
@@ -101,39 +78,28 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             }
             if (c == 'r')
             {
-            // execve(command->path, command->args, NULL);
-            // ft_printf("THE FUCK RIGHT is %s in %d out %d\n", command->args[0], command->infd, command->outfd);
                 dup2(command->outfd, STDOUT_FILENO);
                 close(command->outfd);
                 close(command->infd);
-                execve(command->path, command->args, NULL);
             }
             else if (c == 'l')
             {
-                // ft_printf("THE FUCK LEEEEFT is %s in %d out %d\n", command->args[0], command->infd, command->outfd);
                 dup2(command->infd, STDIN_FILENO);
                 close(command->infd);
                 if (command->outfd != -1)
                 {
-                    // ft_printf("dup is %d and command %s\n", command->outfd, command->args[0]);
                     dup2(command->outfd, STDOUT_FILENO);
                     close(command->outfd);
-                    // close();
                 }
-            // ft_printf("command is %s in %d out %d\n", command->args[0], command->infd, command->outfd);
-            execve(command->path, command->args, NULL);
             }
+            execve(command->path, command->args, NULL);
         }
         else if (i > 0)
         {
-            
-            // printf("PARENT command is %s in %d out %d\n", command->command_arg->content, command->infd, command->outfd);
-            // ft_printf("---{}--->\n");
             close(command->outfd);
             close(command->infd);
             if (i == -1)
                 ft_printf("something wrong !-----------\n");
-            // ft_printf("i is %d\n", i);
             ret->ret = i;
             ret->pids = NULL;
             return (ret);
@@ -141,15 +107,5 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
         else if (i < 0)
             printf("THE FORK FAILED ! \n");
     }
-    // int l= 0;
-    // while (ret->pids[l])
-    // {
-    //     printf("checking %s the pids %d\n",((t_command *)command->right)->command_arg->content, ret->pids[l]);
-    //     l++;
-    // }
-    // close(command->infd);
-    // close(command->outfd);
-    // if (!ret)
-    //     printf("NUUUUUUUULLLLL\n");
     return (ret);
 }
