@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 11:00:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:02:48 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,7 +343,7 @@ t_in_files *get_last_in_file(t_in_files *files)
 	return (files);
 }
 
-t_in_files *new_in_file(char *filename, bool here_doc)
+t_in_files *new_in_file(char *filename, bool here_doc, bool env_qoute)
 {
 	t_in_files *new;
 	new = malloc(sizeof(t_in_files));
@@ -351,6 +351,7 @@ t_in_files *new_in_file(char *filename, bool here_doc)
 		return (NULL);
 	new->filename = filename;
 	new->here_doc = here_doc;
+	new->in_qoute = env_qoute;
 	new->limiter = NULL;
 	new->index_list = NULL;
 	new->next = NULL;
@@ -426,16 +427,16 @@ void add_to_infiles(t_command *command, t_in_files *file)
 		handle_here_doc(file);
 }
 
-void	handle_redir_in(t_command *command, char *filename)
+void	handle_redir_in(t_command *command, char *filename, bool env_qoute)
 {
 	if (command->in_redir)
 	{
-		add_to_infiles(command, new_in_file(filename, false));
+		add_to_infiles(command, new_in_file(filename, false, env_qoute));
 	}
 	else if (command->here_doc)
 	{
 		command->here_doc = false;
-		add_to_infiles(command, new_in_file(filename, true));
+		add_to_infiles(command, new_in_file(filename, true, env_qoute));
 	}
 }
 
@@ -605,10 +606,14 @@ t_command	*parser(t_elem *elements)
 		{
 			command->here_doc = true;
 		}
-		else if ((elements->type == WORD || elements->type == ENV) && (command->here_doc || command->in_redir))
+		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))  && (command->here_doc || command->in_redir))
 		{
+			if (elements->state == IN_DQUOTE)
+				env_dqoute = true;
+			else
+				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
-			handle_redir_in(command, comm_hand_ret->command);
+			handle_redir_in(command, comm_hand_ret->command, env_dqoute);
 			if (command->in_redir)
 			{
 				command->in_redir = false;

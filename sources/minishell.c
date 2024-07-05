@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 11:00:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 15:48:01 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,20 +45,20 @@ int main(int ac, char **av, char  **ev)
         // t_env *env;
         t_command *root = parser(elem);
         // int *arr = NULL;
-        t_exec_ret *r =  executor(root, env, '\0');
+        // t_exec_ret *r =  executor(root, env, '\0');
         
-            // printf("no problem with the r\n");
-        int i = 0;
-        if (!r || !r->pids)
-            printf("problem with the r\n");
-        while (r && r->pids)
-        {
-            // printf("wait the id : {%d}\n", r->pids[i]);
-            if (r->pids[i] == -1)
-                break;
-            waitpid(r->pids[i], NULL, 0);
-            i++;
-        }
+        //     // printf("no problem with the r\n");
+        // int i = 0;
+        // if (!r || !r->pids)
+        //     printf("problem with the r\n");
+        // while (r && r->pids)
+        // {
+        //     // printf("wait the id : {%d}\n", r->pids[i]);
+        //     if (r->pids[i] == -1)
+        //         break;
+        //     waitpid(r->pids[i], NULL, 0);
+        //     i++;
+        // }
         // while (1);
         // while (1)
         // {
@@ -73,7 +73,8 @@ int main(int ac, char **av, char  **ev)
         // }
         // open_out_files(((t_command *)(root->right))->outfiles, env);
         // print_tree(root, 0);
-        open_out_files(((t_command *)(root->right))->outfiles, env);
+        // printf("<<<%d>>>\n", open_out_files(((t_command *)(root->right))->outfiles, env));
+        printf("<<<%d>>>\n", open_in_files(((t_command *)(root->right))->in_files, env));
         print_tree(root, 0);
         // printf("%s\n", env_expander((((t_command *)root->right))->command_arg->content, (((t_command *)root->right))->command_arg->index_list, env));
         // print_tree(root, 0);
