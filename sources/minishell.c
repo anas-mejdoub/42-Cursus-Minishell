@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 16:20:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:23:54 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int main(int ac, char **av, char  **ev)
             continue;
         // t_env *env;
         t_command *root = parser(elem);
+
         // print_tree(root, 0);
         // int *arr = NULL;
         t_exec_ret *r =  executor(root, env, '\0');
