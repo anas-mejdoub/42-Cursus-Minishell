@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 16:09:24 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:20:49 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,20 @@ int main(int ac, char **av, char  **ev)
         t_command *root = parser(elem);
         // print_tree(root, 0);
         // int *arr = NULL;
-        // t_exec_ret *r =  executor(root, env, '\0');
+        t_exec_ret *r =  executor(root, env, '\0');
         
         //     // printf("no problem with the r\n");
-        // int i = 0;
-        // if (!r || !r->pids)
-        //     printf("problem with the r\n");
-        // while (r && r->pids)
-        // {
-        //     // printf("wait the id : {%d}\n", r->pids[i]);
-        //     if (r->pids[i] == -1)
-        //         break;
-        //     waitpid(r->pids[i], NULL, 0);
-        //     i++;
-        // }
+        int i = 0;
+        if (!r || !r->pids)
+            printf("problem with the r\n");
+        while (r && r->pids)
+        {
+            // printf("wait the id : {%d}\n", r->pids[i]);
+            if (r->pids[i] == -1)
+                break;
+            waitpid(r->pids[i], NULL, 0);
+            i++;
+        }
         // while (1);
         // while (1)
         // {
