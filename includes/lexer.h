@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/29 16:26:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:55:34 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,6 @@ typedef struct s_elem
 }	t_elem;
 
 t_elem *lexer(void);
+void handle_sigint(int sig);
 
 #endif

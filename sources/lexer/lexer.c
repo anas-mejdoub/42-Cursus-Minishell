@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 09:32:06 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:55:26 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ t_elem *tokenize(char *line, int *subshell)
 }
 
 
-void handle_sigint(int sig) 
+void handle_sigint(int sig)
 {
     (void)sig;
     printf(BHMAG "\n" RESET);

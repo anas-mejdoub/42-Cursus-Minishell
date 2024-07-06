@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 15:46:32 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:56:19 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,10 +161,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     // close(command->outfd);
                 }
             }
-<<<<<<< HEAD
             // command->args[0] = ft_strtrim(command->args[0], "./");
             // command->path = ft_strtrim(command->path, "/.");
-=======
             
             // if ((!ft_strncmp(command->args[0], "echo", ft_strlen(command->args[0])) && ft_strlen(command->args[0]) == ft_strlen("echo")))
             // {
@@ -180,7 +178,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             // }
                 
             // if (execve(command->path, command->args, NULL) == -1)
->>>>>>> builtin
             if (execve(command->path, command->args, ev) == -1)
             {
                 printf("path ius _%s_ comm _%s_\n", command->path, command->args[0]);
