@@ -1,0 +1,16 @@
+Makefile
+README.md
+a
+dfhg
+fdhg
+g
+hello
+hh
+includes
+minishell
+sources
+test
+test.sh
+test1
+test2
+testt

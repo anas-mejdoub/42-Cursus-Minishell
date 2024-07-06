@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 15:04:06 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/04 10:59:04 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 12:30:57 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,5 @@ typedef struct s_exec_ret
     int ret;
     int *pids;
 } t_exec_ret;
-t_exec_ret *executor(t_command *commands, t_env *env, char c);
+t_exec_ret *executor(t_command *commands, t_env *env, char c, char **ev);
 #endif

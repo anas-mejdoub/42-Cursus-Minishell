@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 11:12:52 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 12:31:45 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char **get_command_args(t_command_args *args, t_env *env)
     }
     return (res);
 }
-t_exec_ret *executor(t_command *command, t_env *env, char c)
+t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
     t_exec_ret *ret;
     t_exec_ret *tmp = NULL;
@@ -105,12 +105,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             ((t_command *)command->right)->outfd = fd[1];
             ((t_command *)command->left)->infd = fd[0];
         }
-        tmp = executor(command->right, env, 'r');
+        if (command && command->right)
+            tmp = executor(command->right, env, 'r', ev);
         if (tmp->pids)
             ret->pids = tmp->pids;
         else
             ret->pids = add_int(ret->pids, tmp->ret);
-        tmp = executor(command->left, env, 'l');
+        tmp = executor(command->left, env, 'l', ev);
         ret->pids = add_int(ret->pids, tmp->ret);
     }
     else 
@@ -118,7 +119,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
         pid_t i = fork();
         if (i == 0)
         {
+            // if (command)
             command->args = get_command_args(command->command_arg, env);
+            if (!command->args)
+                exit (1);
             command->path = get_path(command->args[0], env);
             if (!command->path)
             {
@@ -157,8 +161,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
                     close(command->outfd);
                 }
             }
-            if (execve(command->path, command->args, NULL) == -1)
+            // command->args[0] = ft_strtrim(command->args[0], "./");
+            // command->path = ft_strtrim(command->path, "/.");
+            if (execve(command->path, command->args, ev) == -1)
             {
+                printf("path ius _%s_ comm _%s_\n", command->path, command->args[0]);
                 perror("execve : ");
                 exit(127);
             }

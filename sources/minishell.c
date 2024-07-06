@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 11:30:16 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 12:31:01 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,10 @@ int main(int ac, char **av, char  **ev)
             continue;
         t_command *root = parser(elem);
 
-        t_exec_ret *r =  executor(root, env, '\0');
+        t_exec_ret *r =  executor(root, env, '\0', ev);
         // echo(root->right);
 
-        print_tree(root, 0);
-        free_tree(root);
+        // print_tree(root, 0);
         // int *arr = NULL;
         // t_exec_ret *r =  executor(root, env, '\0');
         
@@ -62,6 +61,8 @@ int main(int ac, char **av, char  **ev)
             waitpid(r->pids[i], NULL, 0);
             i++;
         }
+        
+        free_tree(root);
         // while (1);
         // while (1)
         // {
