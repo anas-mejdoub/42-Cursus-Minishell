@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 15:41:04 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 18:20:01 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ static int	set(t_env_data **env, char *key, char *value)
 	{
 		if (!ft_strncmp(tmp->key, key, ft_strlen(tmp->key)))
 		{
+			if (!value)
+				return (0);
 			free(tmp->value);
 			tmp->value = ft_strdup(value);
 			return (0);
@@ -49,7 +51,10 @@ static int	set(t_env_data **env, char *key, char *value)
 	if (!tmp)
 		return (1);
 	tmp->key = ft_strdup(key);
-	tmp->value = ft_strdup(value);
+	if (!value)
+		tmp->value = NULL;
+	else
+		tmp->value = ft_strdup(value);
 	tmp->next = *env;
 	*env = tmp;
 	

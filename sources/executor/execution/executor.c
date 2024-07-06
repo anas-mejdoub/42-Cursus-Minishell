@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 16:51:06 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 18:23:27 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,13 +124,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (!command->args)
                 exit (1);
             command->path = get_path(command->args[0], env);
-            if (!command->path)
-            {
-                ft_putstr_fd("minishell: ", 2);
-                ft_putstr_fd(command->args[0], 2);
-                ft_putstr_fd(": command not found\n", 2);
-                exit (127);
-            }
+            // if (!command->path)
+            // {
+            //     ft_putstr_fd("minishell: ", 2);
+            //     ft_putstr_fd(command->args[0], 2);
+            //     ft_putstr_fd(": command not found\n", 2);
+            //     exit (127);
+            // }
             if (command->outfiles)
             {
                 command->outfd = open_out_files(command->outfiles, env);
@@ -161,13 +161,18 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     close(command->outfd);
                 }
             }
-            exit(0);
-            // if (execve(command->path, command->args, ev) == -1)
-            // {
-            //     printf("path is _%s_ comm _%s_\n", command->path, command->args[0]);
-            //     perror("execve : ");
-            //     exit(127);
-            // }
+            if ((!ft_strncmp(command->args[0], "export", ft_strlen(command->args[0])) && ft_strlen(command->args[0]) == ft_strlen("export")))
+            {
+                // printf("done\n");
+                export_cmd(command, env);
+                exit (0);
+            }
+            if (execve(command->path, command->args, ev) == -1)
+            {
+                printf("path is _%s_ comm _%s_\n", command->path, command->args[0]);
+                perror("execve : ");
+                exit(127);
+            }
         }
         else if (i > 0)
         {

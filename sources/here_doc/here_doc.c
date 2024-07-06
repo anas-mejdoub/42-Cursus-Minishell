@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 16:55:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 18:06:34 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ char *concat_string(t_list *list)
 	return (str);
 }
 
-void free_list(void *ptr)
-{
-	free(ptr);
-}
+// void free_list(void *ptr)
+// {
+// 	free(ptr);
+// }
 
 char	*expand_here_doc_content(char *str, t_env *env)
 {
@@ -72,7 +72,7 @@ char	*expand_here_doc_content(char *str, t_env *env)
 		}
 	}
 	string_final = concat_string(list);
-	ft_lstclear(&list, free_list);
+	// ft_lstclear(&list, free_list);
 	return (string_final);
 }
 void kill_here_doc(int sig)
@@ -127,16 +127,17 @@ char	*here_doc(char *lim)
 		waitpid(pid, &status, 0);
 		close(fd[1]);
 		char *str = ft_calloc(1, 1);
-		char *temp = NULL;
+		char buffer[1024];
+		int bytesRead;
 		int stdin = dup(STDIN_FILENO);
 		
 		dup2(fd[0], STDIN_FILENO);
-		while (1)
+		while ((bytesRead = read(fd[0], buffer, sizeof(buffer)-1)) > 0)
 		{
-			temp = readline(NULL);
-			if (!temp)
-				break;
-			str = ft_strjoin(str, temp);
+			buffer[bytesRead] = '\0';
+			char *temp = ft_strjoin(str, buffer);
+			free(str);
+			str = temp;
 		}
 		dup2(stdin, STDIN_FILENO);
 		close(fd[0]);
