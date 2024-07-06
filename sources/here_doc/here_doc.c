@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 16:03:25 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 16:09:38 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,9 @@ char	*here_doc(char *lim)
 		return (content);
 	}
 	else
+	{
 		waitpid(pid, &status, 0);
-    signal(SIGINT, handle_sigint);
+	}
+		
 	return (NULL);
 }
