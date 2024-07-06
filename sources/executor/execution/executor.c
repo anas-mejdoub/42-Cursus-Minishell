@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 15:58:08 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:58:48 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,21 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             // command->args[0] = ft_strtrim(command->args[0], "./");
             // command->path = ft_strtrim(command->path, "/.");
+            
+            // if ((!ft_strncmp(command->args[0], "echo", ft_strlen(command->args[0])) && ft_strlen(command->args[0]) == ft_strlen("echo")))
+            // {
+            //     // printf("done\n");
+            //     echo_cmd(command);
+            //     exit (0);
+            // }
+            // if ((!ft_strncmp(command->args[0], "export", ft_strlen(command->args[0])) && ft_strlen(command->args[0]) == ft_strlen("export")))
+            // {
+            //     // printf("done\n");
+            //     export_cmd(command, env);
+            //     exit (0);
+            // }
+                
+            // if (execve(command->path, command->args, NULL) == -1)
             if (execve(command->path, command->args, ev) == -1)
             {
                 printf("path is _%s_ comm _%s_\n", command->path, command->args[0]);
