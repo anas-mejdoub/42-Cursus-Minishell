@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 20:37:32 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 11:12:52 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ char	*ft_freed_join(char *s1, char *s2)
 	free(s1);
 	return (res);
 }
+// void unlink_herdocs(t_command *root)
+// {
+
+// }
 char *get_path(char *command, t_env *env)
 {
     char **paths;
@@ -45,6 +49,8 @@ char *get_path(char *command, t_env *env)
     
     if (!access(command, F_OK))
         return (command);
+    if (!command[0])
+        return NULL;
     paths = ft_split(env->get(env->data, "PATH"), ':');
     i = 0;
     tmp = NULL;
@@ -61,7 +67,6 @@ char *get_path(char *command, t_env *env)
         free(tmp2);
         tmp2 = NULL;
     }
-    
     return 0;
 }
 char **get_command_args(t_command_args *args, t_env *env)
@@ -115,9 +120,15 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
         {
             command->args = get_command_args(command->command_arg, env);
             command->path = get_path(command->args[0], env);
+            if (!command->path)
+            {
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(command->args[0], 2);
+                ft_putstr_fd(": command not found\n", 2);
+                exit (127);
+            }
             if (command->outfiles)
             {
-                // printf("hehehe\n");
                 command->outfd = open_out_files(command->outfiles, env);
                 if (command->outfd == -1)
                     exit(1);
@@ -148,7 +159,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
             }
             if (execve(command->path, command->args, NULL) == -1)
             {
-                printf("str : -%s-\n", command->args[0]);
                 perror("execve : ");
                 exit(127);
             }
