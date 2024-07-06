@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 16:09:38 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 16:55:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,11 @@ char	*here_doc(char *lim)
 	int		a;
 	int		status;
 	pid_t	pid;
+	int fd[2];
 
 	content = NULL;
 	signal (SIGINT, SIG_IGN);
+	pipe(fd);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -115,12 +117,31 @@ char	*here_doc(char *lim)
 			free(content);
 			content = tmp;
 		}
-		return (content);
+		write(fd[1], content, ft_strlen(content));
+		close(fd[1]);
+		close(fd[0]);
+		exit(1);
 	}
-	else
+	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
-	}
+		close(fd[1]);
+		char *str = ft_calloc(1, 1);
+		char *temp = NULL;
+		int stdin = dup(STDIN_FILENO);
 		
+		dup2(fd[0], STDIN_FILENO);
+		while (1)
+		{
+			temp = readline(NULL);
+			if (!temp)
+				break;
+			str = ft_strjoin(str, temp);
+		}
+		dup2(stdin, STDIN_FILENO);
+		close(fd[0]);
+		close(stdin);
+		return (str);
+	}
 	return (NULL);
 }
