@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 11:39:43 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:48:44 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,7 +376,7 @@ char *random_str()
 	return (res);
 }
 
-void handle_here_doc(t_in_files *file)
+void handle_here_doc(t_in_files *file, t_env *env)
 {
 	char *random = random_str();
 	char *file_name = ft_strjoin("/tmp/", random);
@@ -391,13 +391,14 @@ void handle_here_doc(t_in_files *file)
 		return;
 	}
 	char *str1 = here_doc(file->limiter);
-	ft_putstr_fd(str1, i);
+	char *str2 = expand_here_doc_content(str1, env); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	ft_putstr_fd(str2, i);
 	close(i);
 	// unlink(file_name);
 	free(file_name);
 }
 
-void add_to_infiles(t_command *command, t_in_files *file)
+void add_to_infiles(t_command *command, t_in_files *file, t_env *env)
 {
 	if (!command->in_files)
 	{
@@ -406,19 +407,19 @@ void add_to_infiles(t_command *command, t_in_files *file)
 	else
 		get_last_in_file(command->in_files)->next = file;
 	if (file->here_doc)
-		handle_here_doc(file);
+		handle_here_doc(file, env);
 }
 
-void	handle_redir_in(t_command *command, char *filename, bool env_qoute)
+void	handle_redir_in(t_command *command, char *filename, bool env_qoute, t_env *env)
 {
 	if (command->in_redir)
 	{
-		add_to_infiles(command, new_in_file(filename, false, env_qoute));
+		add_to_infiles(command, new_in_file(filename, false, env_qoute), env);
 	}
 	else if (command->here_doc)
 	{
 		command->here_doc = false;
-		add_to_infiles(command, new_in_file(filename, true, env_qoute));
+		add_to_infiles(command, new_in_file(filename, true, env_qoute), env);
 	}
 }
 
@@ -520,7 +521,7 @@ void add_indexs_to_infiles(int *arr, int *len, t_in_files *file)
 		i++;
 	}
 }
-t_command	*parser(t_elem *elements)
+t_command	*parser(t_elem *elements, t_env *env)
 {
 	t_command	*command;
 	t_command	*pipe_node;
@@ -592,7 +593,7 @@ t_command	*parser(t_elem *elements)
 			else
 				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
-			handle_redir_in(command, comm_hand_ret->command, env_dqoute);
+			handle_redir_in(command, comm_hand_ret->command, env_dqoute, env);
 			if (command->in_redir)
 			{
 				command->in_redir = false;

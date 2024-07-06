@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 15:54:27 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
+/*   Updated: 2024/07/06 15:59:33 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 
@@ -42,7 +43,7 @@ int main(int ac, char **av, char  **ev)
         elem = lexer();
         if (!elem)
             continue;
-        t_command *root = parser(elem);
+        t_command *root = parser(elem, env);
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
         // echo(root->right);

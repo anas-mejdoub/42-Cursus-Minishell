@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 15:56:19 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:58:48 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,13 +124,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (!command->args)
                 exit (1);
             command->path = get_path(command->args[0], env);
-            // if (!command->path)
-            // {
-            //     ft_putstr_fd("minishell: ", 2);
-            //     ft_putstr_fd(command->args[0], 2);
-            //     ft_putstr_fd(": command not found\n", 2);
-            //     exit (127);
-            // }
+            if (!command->path)
+            {
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(command->args[0], 2);
+                ft_putstr_fd(": command not found\n", 2);
+                exit (127);
+            }
             if (command->outfiles)
             {
                 command->outfd = open_out_files(command->outfiles, env);
@@ -148,17 +148,17 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 dup2(command->outfd, STDOUT_FILENO);
                 if (command->infd != -1)
                     dup2(command->infd, STDIN_FILENO);
-                // close(command->outfd);
-                // close(command->infd);
+                close(command->outfd);
+                close(command->infd);
             }
             else if (c == 'l')
             {
                 dup2(command->infd, STDIN_FILENO);
-                // close(command->infd);
+                close(command->infd);
                 if (command->outfd != -1)
                 {
                     dup2(command->outfd, STDOUT_FILENO);
-                    // close(command->outfd);
+                    close(command->outfd);
                 }
             }
             // command->args[0] = ft_strtrim(command->args[0], "./");
@@ -180,7 +180,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             // if (execve(command->path, command->args, NULL) == -1)
             if (execve(command->path, command->args, ev) == -1)
             {
-                printf("path ius _%s_ comm _%s_\n", command->path, command->args[0]);
+                printf("path is _%s_ comm _%s_\n", command->path, command->args[0]);
                 perror("execve : ");
                 exit(127);
             }

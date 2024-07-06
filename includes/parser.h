@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 16:09:31 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:42:10 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ typedef struct s_commands
     void *left;
 } t_command;
 
-t_command	*parser(t_elem *elements);
+t_command	*parser(t_elem *elements, t_env *env);
 void print_tree(t_command *root, int n);
 void	free2d(char **str);
 char	**add_to_args(char **args, char *to_append);
