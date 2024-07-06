@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 12:31:45 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 12:57:21 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,11 +161,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     close(command->outfd);
                 }
             }
-            // command->args[0] = ft_strtrim(command->args[0], "./");
-            // command->path = ft_strtrim(command->path, "/.");
             if (execve(command->path, command->args, ev) == -1)
             {
-                printf("path ius _%s_ comm _%s_\n", command->path, command->args[0]);
+                printf("path is _%s_ comm _%s_\n", command->path, command->args[0]);
                 perror("execve : ");
                 exit(127);
             }

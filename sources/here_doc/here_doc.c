@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/29 11:07:57 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:52:08 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*expand_here_doc_content(char *str, t_env *env)
 					i++;
 				if (i != s)
 				{
-					var = env->get(env->data, ft_substr(str, s, i - s + 1));
+					var = env->get(env->data, ft_substr(str, s, i - s));
 					if (var)
 						ft_lstadd_back(&list, ft_lstnew(var));
 					s = i;

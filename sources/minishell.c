@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:16:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 12:31:01 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:42:25 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int main(int ac, char **av, char  **ev)
         elem = lexer();
         if (!elem)
             continue;
-        t_command *root = parser(elem);
+        t_command *root = parser(elem, env);
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
         // echo(root->right);
