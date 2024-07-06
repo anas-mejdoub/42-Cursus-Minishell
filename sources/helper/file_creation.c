@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 19:57:26 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 20:38:07 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int open_in_files(t_in_files *files, t_env *env)
         file_name = ambiguous(files, false, env);
         if (file_name == NULL)
             return (-1);
-        printf("%s\n", file_name);
+        // printf("%s\n", file_name);
         if (access(file_name, F_OK) == 0)
         {
             if (access(file_name, R_OK) == 0)

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/05 19:57:11 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/05 20:37:32 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,9 +122,17 @@ t_exec_ret *executor(t_command *command, t_env *env, char c)
                 if (command->outfd == -1)
                     exit(1);
             }
+            if (command->in_files)
+            {
+                command->infd = open_in_files(command->in_files, env);
+                if (command->infd == -1)
+                    exit(1);
+            }
             if (c == 'r')
             {
                 dup2(command->outfd, STDOUT_FILENO);
+                if (command->infd != -1)
+                    dup2(command->infd, STDIN_FILENO);
                 close(command->outfd);
                 close(command->infd);
             }
