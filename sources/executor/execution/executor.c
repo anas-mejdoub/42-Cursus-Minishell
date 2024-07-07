@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 11:17:51 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 11:33:42 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,7 @@ char	*ft_freed_join(char *s1, char *s2)
 	free(s1);
 	return (res);
 }
-// void unlink_herdocs(t_command *root)
-// {
 
-// }
 char *get_path(char *command, t_env *env)
 {
     char **paths;
@@ -133,18 +130,17 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         pid_t i = fork();
         if (i == 0)
         {
-            // if (command)
             command->args = get_command_args(command->command_arg, env);
             if (!command->args)
                 exit (1);
             command->path = get_path(command->args[0], env);
-            // if (!command->path)
-            // {
-            //     ft_putstr_fd("minishell: ", 2);
-            //     ft_putstr_fd(command->args[0], 2);
-            //     ft_putstr_fd(": command not found\n", 2);
-            //     exit (127);
-            // }
+            if (!command->path && !is_builtin(command))
+            {
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(command->args[0], 2);
+                ft_putstr_fd(": command not found\n", 2);
+                exit (127);
+            }
             if (command->outfiles)
             {
                 command->outfd = open_out_files(command->outfiles, env);
@@ -175,7 +171,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     close(command->outfd);
                 }
             }
-            if (is_builtin(command, env) == 1)
+            if (do_builtin(command, env) == 1)
                 exit(1);
 
             if (execve(command->path, command->args, ev) == -1)
