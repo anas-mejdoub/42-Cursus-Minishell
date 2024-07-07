@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 16:09:48 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:07:43 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         pid_t i = fork();
         if (i == 0)
         {
-            // if (!command->args)
-            //     exit (1);
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
             if (command->command_arg && !command->path && !is_builtin(command))
@@ -168,6 +166,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             close(command->infd);
             if (!command->path && !command->args)
                 exit(0);
+            if (is_builtin(command))
+            {
+                if (do_builtin(command, env) == -1)
+                    exit(1);
+                exit(0);
+            }
             if (execve(command->path, command->args, ev) == -1)
             {
                 perror("execve : ");
