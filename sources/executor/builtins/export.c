@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 11:16:22 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:38:12 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ int export_cmd(t_command *cmd, t_env *env)
             }
         }
         else
+        {
             printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
+            return (-1);
+        }
         i++;
     }
     if (i == 1)

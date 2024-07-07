@@ -6,14 +6,14 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 15:39:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:19:45 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-extern int globalVar;
+ int globalVar;
 # include "../sources/super_libft/libft.h"
 # include "lexer.h"
 # include "parser.h"

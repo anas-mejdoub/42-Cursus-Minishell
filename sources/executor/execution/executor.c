@@ -6,11 +6,15 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 17:07:43 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:39:55 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+
+#include <signal.h>
+#include <stdio.h>
+
 
 char	*ft_freed_join(char *s1, char *s2)
 {
@@ -90,6 +94,10 @@ char **get_command_args(t_command_args *args, t_env *env)
     }
     return (res);
 }
+void handle_intr_sig(int sig)
+{
+    (void)sig;
+}
 t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
     t_exec_ret *ret;
@@ -131,11 +139,14 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         command->args = get_command_args(command->command_arg, env);
         if (c == 'b')
         {
-            do_builtin(command, env);
+            if (do_builtin(command, env) == -1)
+                globalVar = 1 ;
             ret->ret = -1;
             return ret;
         }
+        signal (SIGINT, SIG_IGN);
         pid_t i = fork();
+        signal (SIGINT, handle_intr_sig);
         if (i == 0)
         {
             if (command->command_arg)
@@ -151,13 +162,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             {
                 command->outfd = open_out_files(command->outfiles, env);
                 if (command->outfd < 0)
-                    exit(1);
+                    exit(12);
             }
             if (command->in_files)
             {
                 command->infd = open_in_files(command->in_files, env);
                 if (command->infd < 0)
-                    exit(1);
+                    exit(13);
             }
             dup2(command->outfd, STDOUT_FILENO);
             if (command->infd != -1)

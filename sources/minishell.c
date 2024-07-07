@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 15:50:01 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:34:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void print_tchbi7a(void)
 "░  ░  ░   ░  ░░ ░   ░     ░ ░     ░ ░           \n"
 "      ░   ░  ░  ░   ░  ░    ░  ░    ░  ░        \n" RESET);
 }
-int globalVar;
+// int globalVar;
 int main(int ac, char **av, char  **ev)
 {
     t_env *env;
@@ -53,16 +53,23 @@ int main(int ac, char **av, char  **ev)
         // t_exec_ret *r =  executor(root, env, '\0');
         
         int i = 0;
+        int hehe= 0;
         if (!r || !r->pids)
             printf("problem with the r\n");
         while (r && r->pids)
         {
             if (r->pids[i] == -1)
                 break;
-            waitpid(r->pids[i], &globalVar, 0);
+            waitpid(r->pids[i], &hehe, 0);
+            if (WIFEXITED(hehe))
+                globalVar = WEXITSTATUS(hehe);
+            else if (WIFSIGNALED(hehe))
+                globalVar = WTERMSIG(hehe) + 128;
             i++;
         }
-        
+        // globalVar = 28 << 8;
+        printf("exit : %d\n", globalVar);
+        // printf("hehe : %d\n", WEXIT(hehe));
         free_tree(root);
         // while (1);
         // while (1)
