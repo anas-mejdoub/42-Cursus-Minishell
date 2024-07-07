@@ -6,39 +6,22 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 17:46:05 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 18:04:37 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:53:48 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_builtin.h"
 
-int pwd(void)
+int   pwd_cmd(t_command *cmd)
 {
-    char *current_dir;
-    int size;
+    char tmp[1024];
+    char *ptr;
 
-
-    size = 1024;
-    while (1)
-    {
-        current_dir = malloc(size);
-        if (!current_dir)
-            return (1);
-        if (getcwd(current_dir, size) == NULL)
-        {
-            if (errno == ERANGE)
-            {
-                free(current_dir);
-                size += size;
-                continue;
-            }
-        }
-        else
-        {
-            printf("%s\n", current_dir);
-            free(current_dir);
-            break;
-        }
-    }
-    return (0);
+    if (cmd->args && !(!ft_strncmp(cmd->args[0], "pwd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("pwd")))
+		return (-1);
+    ptr = getcwd(tmp, 1024);
+    if (!ptr)
+        perror("minishell :");
+    printf("%s\n", ptr);
+    return (1);
 }

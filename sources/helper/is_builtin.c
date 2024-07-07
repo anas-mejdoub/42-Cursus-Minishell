@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 18:27:05 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 16:11:40 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:57:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,12 @@ int is_builtin(t_command *cmd)
         return (1);
     else if ((!ft_strncmp(cmd->command_arg->content, "exit", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("exit")))
         return (1);
-    return (0);
-    // else if ((!ft_strncmp(cmd->args[0], "cd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("cd")))
-    // esle if ((!ft_strncmp(cmd->args[0], "pwd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("pwd")))
+    else if ((!ft_strncmp(cmd->command_arg->content, "cd", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("cd")))
+        return (1);
+    else if ((!ft_strncmp(cmd->command_arg->content, "pwd", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("pwd")))
+        return (1);
     // else if ((!ft_strncmp(cmd->args[0], "pwd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("pwd")))
+    return (0);
 
 }
 int do_builtin(t_command *cmd, t_env *env)
@@ -56,8 +58,18 @@ int do_builtin(t_command *cmd, t_env *env)
             return (-1);
         return (1);
     }
-    // else if ((!ft_strncmp(cmd->args[0], "cd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("cd")))
-    // esle if ((!ft_strncmp(cmd->args[0], "pwd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("pwd")))
+    else if ((!ft_strncmp(cmd->args[0], "cd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("cd")))
+    {
+        if (cd_cmd(cmd, env) == -1)
+            return (-1);
+        return (1);
+    }
+    else if ((!ft_strncmp(cmd->args[0], "pwd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("pwd")))
+    {
+        if (pwd_cmd(cmd) == -1)
+            return (-1);
+        return (1);
+    }
     // else if ((!ft_strncmp(cmd->args[0], "pwd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("pwd")))
     return (0);
 
