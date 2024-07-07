@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 12:22:36 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 19:23:52 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static char	*get(t_env_data *env, char *key)
 	if (!env || !key)
 		return (NULL);
 	tmp = env;
+	if (key && !ft_strncmp("?", key, 1) && ft_strlen(key) == 1)
+		return (ft_itoa(globalVar));
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->key, key, ft_strlen(tmp->key)) && ft_strlen(tmp->key) == ft_strlen(key))

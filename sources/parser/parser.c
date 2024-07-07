@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 17:59:34 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:53:49 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -394,7 +394,6 @@ void handle_here_doc(t_in_files *file, t_env *env)
 	char *str2 = expand_here_doc_content(str1, env); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	ft_putstr_fd(str2, i);
 	close(i);
-	// unlink(file_name);
 	free(file_name);
 }
 
@@ -537,7 +536,6 @@ t_command	*parser(t_elem *elements, t_env *env)
 	bool env_dqoute = false;
 	while (elements)
 	{
-		// printf("the elem %s\n", elements->content);
 		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			comm_hand_ret = command_handling(&elements);
