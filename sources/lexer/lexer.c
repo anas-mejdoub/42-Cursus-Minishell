@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 14:55:40 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 15:23:41 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,8 +223,8 @@ void handle_sigint(int sig)
 {
     (void)sig;
     printf(BHMAG "\n" RESET);
-    rl_on_new_line(); 
-    // rl_replace_line("", 0);
+    rl_on_new_line();
+    rl_replace_line("", 0);
     rl_redisplay();
 }
 
@@ -236,7 +236,10 @@ t_elem *lexer()
     subshell = 0;
     t_elem *elem = NULL;
     signal(SIGINT, handle_sigint);
-    char* line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
+    
+    char* line;
+    rl_on_new_line();
+    line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
     if (line == NULL) {
         exit(0);
     }
