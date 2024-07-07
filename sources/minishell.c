@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/06 15:59:33 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 15:50:01 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void print_tchbi7a(void)
 "░  ░  ░   ░  ░░ ░   ░     ░ ░     ░ ░           \n"
 "      ░   ░  ░  ░   ░  ░    ░  ░    ░  ░        \n" RESET);
 }
-
+int globalVar;
 int main(int ac, char **av, char  **ev)
 {
     t_env *env;
@@ -59,7 +59,7 @@ int main(int ac, char **av, char  **ev)
         {
             if (r->pids[i] == -1)
                 break;
-            waitpid(r->pids[i], NULL, 0);
+            waitpid(r->pids[i], &globalVar, 0);
             i++;
         }
         
@@ -93,4 +93,5 @@ int main(int ac, char **av, char  **ev)
     //     // if (content)
     //     //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
     }
+        return (WIFEXITED(globalVar));
 }

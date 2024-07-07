@@ -6,13 +6,15 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 18:27:05 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 12:08:50 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 15:54:47 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
 int is_builtin(t_command *cmd)
 {
+    if (!cmd->command_arg)
+        return (0);
     if ((!ft_strncmp(cmd->command_arg->content, "export", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("export")))
         return (1);
     else if ((!ft_strncmp(cmd->command_arg->content, "env", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("env")))

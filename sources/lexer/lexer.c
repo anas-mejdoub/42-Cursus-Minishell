@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 15:55:26 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 15:48:31 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,7 +238,7 @@ t_elem *lexer()
     signal(SIGINT, handle_sigint);
     char* line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
     if (line == NULL) {
-        exit(0);
+        exit(WIFEXITED(globalVar));
     }
     if (line && *line) {
         add_history(line);
