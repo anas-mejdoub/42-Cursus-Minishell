@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 11:33:42 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:14:34 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,21 +116,29 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             ((t_command *)command->right)->outfd = fd[1];
             ((t_command *)command->left)->infd = fd[0];
         }
-        if (command && command->right)
+        if (command && command->right && is_builtin(command->right) && !command->left)
+            executor(command->right, env, 'b', ev);
+        else if (command && command->right)
             tmp = executor(command->right, env, 'r', ev);
-        if (tmp->pids)
+        if (tmp && tmp->pids)
             ret->pids = tmp->pids;
-        else
+        else if (tmp && tmp->ret != -1)
             ret->pids = add_int(ret->pids, tmp->ret);
         tmp = executor(command->left, env, 'l', ev);
         ret->pids = add_int(ret->pids, tmp->ret);
     }
     else 
     {
+        command->args = get_command_args(command->command_arg, env);
+        if (c == 'b')
+        {
+            do_builtin(command, env);
+            ret->ret = -1;
+            return ret;
+        }
         pid_t i = fork();
         if (i == 0)
         {
-            command->args = get_command_args(command->command_arg, env);
             if (!command->args)
                 exit (1);
             command->path = get_path(command->args[0], env);
@@ -153,24 +161,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 if (command->infd == -1)
                     exit(1);
             }
-            if (c == 'r')
-            {
-                dup2(command->outfd, STDOUT_FILENO);
-                if (command->infd != -1)
-                    dup2(command->infd, STDIN_FILENO);
-                close(command->outfd);
-                close(command->infd);
-            }
-            else if (c == 'l')
-            {
+            dup2(command->outfd, STDOUT_FILENO);
+            if (command->infd != -1)
                 dup2(command->infd, STDIN_FILENO);
-                close(command->infd);
-                if (command->outfd != -1)
-                {
-                    dup2(command->outfd, STDOUT_FILENO);
-                    close(command->outfd);
-                }
-            }
+            close(command->outfd);
+            close(command->infd);
             if (do_builtin(command, env) == 1)
                 exit(1);
 
@@ -186,7 +181,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             close(command->outfd);
             close(command->infd);
             if (i == -1)
-                ft_printf("something wrong !-----------\n");
+                ft_printf("something wrong !\n");
             ret->ret = i;
             ret->pids = NULL;
             return (ret);

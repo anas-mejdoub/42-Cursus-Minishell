@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 18:20:01 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:22:36 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	set(t_env_data **env, char *key, char *value)
 	tmp = *env;
 	while (tmp)
 	{
-		if (!ft_strncmp(tmp->key, key, ft_strlen(tmp->key)))
+		if ((!ft_strncmp(tmp->key, key, ft_strlen(tmp->key))) && ft_strlen(key) == ft_strlen(tmp->key))
 		{
 			if (!value)
 				return (0);
@@ -71,7 +71,7 @@ static int	unset(t_env_data *env, char *key)
 	prev = NULL;
 	while (tmp)
 	{
-		if (!ft_strncmp(tmp->key, key, ft_strlen(tmp->key)))
+		if ((!ft_strncmp(tmp->key, key, ft_strlen(tmp->key))) && ft_strlen(key) == ft_strlen(tmp->key))
 		{
 			prev->next = tmp->next;
 			free(tmp);

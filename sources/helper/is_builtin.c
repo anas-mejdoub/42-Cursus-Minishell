@@ -6,18 +6,18 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 18:27:05 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 11:31:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:08:50 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
 int is_builtin(t_command *cmd)
 {
-    if ((!ft_strncmp(cmd->args[0], "export", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("export")))
+    if ((!ft_strncmp(cmd->command_arg->content, "export", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("export")))
         return (1);
-    else if ((!ft_strncmp(cmd->args[0], "env", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("env")))
+    else if ((!ft_strncmp(cmd->command_arg->content, "env", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("env")))
         return (1);
-    else if ((!ft_strncmp(cmd->args[0], "echo", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("echo")))
+    else if ((!ft_strncmp(cmd->command_arg->content, "echo", ft_strlen(cmd->command_arg->content)) && ft_strlen(cmd->command_arg->content) == ft_strlen("echo")))
         return (1);
     return (0);
     // else if ((!ft_strncmp(cmd->args[0], "exit", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("exit")))
@@ -32,6 +32,7 @@ int do_builtin(t_command *cmd, t_env *env)
     {
         if (export_cmd(cmd, env) == -1)
             return (-1);
+        // printf("TEEES\n");
         return (1);
     }
     else if ((!ft_strncmp(cmd->args[0], "env", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("env")))
@@ -42,7 +43,7 @@ int do_builtin(t_command *cmd, t_env *env)
     }
     else if ((!ft_strncmp(cmd->args[0], "echo", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("echo")))
     {
-        if (env_cmd(cmd, env) == -1)
+        if (echo_cmd(cmd) == -1)
             return (-1);
         return (1);
     }
