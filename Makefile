@@ -6,7 +6,7 @@ SRC =\
 		sources/parser/parser.c \
 		sources/here_doc/here_doc.c \
 		sources/helper/env_helper.c sources/helper/file_creation.c sources/helper/free_tree.c sources/helper/is_builtin.c\
-		sources/executor/builtins/echo.c sources/executor/builtins/pwd.c sources/executor/builtins/env_command.c sources/executor/builtins/export.c\
+		sources/executor/builtins/echo.c sources/executor/builtins/pwd.c sources/executor/builtins/env_command.c sources/executor/builtins/exit.c sources/executor/builtins/export.c\
 		sources/minishell.c 
 		
 

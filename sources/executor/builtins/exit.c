@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 13:14:49 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 15:12:36 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,26 @@
 
 int	exit_comand(t_command *cmd)
 {
-	int a;
-	int exit_status;
+    long long tmp_int;
+    long long exit_status;
+	unsigned long long res;
+	int sign;
 
-	if (cmd->args && !(!ft_strncmp(cmd->args[0], "exit",
-				ft_strlen(cmd->args[0]))
-			&& ft_strlen(cmd->args[0]) == ft_strlen("exit")))
+
+	if (cmd->args && !(!ft_strncmp(cmd->args[0], "exit", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("exit")))
 		return (-1);
 	int i = 1;
+    if (cmd->args[1] == NULL)
+    {
+        printf("exit\n");
+        free_tree(cmd);
+        exit(0);
+    }
+    if (cmd->args[1] != NULL && cmd->args[2] != NULL)
+    {
+        printf("exit\nminishell: exit: too many arguments\n");
+        return (1);
+    }
 	while (cmd->args[i])
 	{
 		int j = 0;
@@ -31,18 +43,12 @@ int	exit_comand(t_command *cmd)
 			j++;
 		if (cmd->args[i][j])
 		{
-			printf("exit\n");
-			printf("minishell: exit: %s: numeric argument required\n", cmd->args[i]);
+			printf("exit\nminishell: exit: %s: numeric argument required\n", cmd->args[i]);
+            free_tree(cmd);
 			exit(255);
 		}
 		else
 		{
-			unsigned long long res;
-            long long exit_status;
-			int sign;
-            int j;
-
-            j = 0;
 			res = 0;
 			sign = 1;
 			while (cmd->args[1][j] == ' ' || (cmd->args[1][j] >= 9 && cmd->args[1][j] <= 13))
@@ -56,17 +62,30 @@ int	exit_comand(t_command *cmd)
 			while (cmd->args[1][j] && ft_isdigit(cmd->args[1][j]))
 			{
 				res = (res * 10) + (cmd->args[1][j] - '0');
-				if ((res > LLONG_MAX && sign == 1) || (res * sign < LLONG_MIN))
+				if ((res > LLONG_MAX && sign == 1) || (res > LLONG_MAX && sign == -1))
                 {
 			        printf("exit\n");
 					printf("minishell: exit: %s: numeric argument required\n", cmd->args[i]);
+                    free_tree(cmd);
                     exit(255);
                 }
 				j++;
 			}
-            printf("exit\n");
+            exit_status = res * sign;
+            while(exit_status < 0)
+            {
+                tmp_int = exit_status + 256;
+                exit_status = tmp_int;
+            }
+            while(exit_status > 255)
+            {
+                tmp_int = exit_status - 256;
+                exit_status = tmp_int;
+            }
+            free_tree(cmd);
             exit(exit_status);
-			// return (res * sign);
 		}
+        i++;
 	}
+    return (0);
 }
