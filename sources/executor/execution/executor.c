@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 12:14:34 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:09:48 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char *get_path(char *command, t_env *env)
     int i;
     char *tmp;
     char *tmp2;
-    
+
     if (!access(command, F_OK))
         return (command);
     if (!command[0])
@@ -57,9 +57,7 @@ char *get_path(char *command, t_env *env)
         tmp = ft_freed_join(paths[i], "/");
         tmp2 = ft_freed_join(tmp, command);
         if (!access(tmp2, F_OK))
-        {
             return (tmp2);
-        }
         i++;
         free(tmp2);
         tmp2 = NULL;
@@ -72,6 +70,7 @@ char **get_command_args(t_command_args *args, t_env *env)
     char *tmp_str;
     char **tmp_arr;
     res = NULL;
+        // printf("LOL\n");
     while (args)
     {
         tmp_str = env_expander(args->content, args->index_list, env);
@@ -139,10 +138,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         pid_t i = fork();
         if (i == 0)
         {
-            if (!command->args)
-                exit (1);
-            command->path = get_path(command->args[0], env);
-            if (!command->path && !is_builtin(command))
+            // if (!command->args)
+            //     exit (1);
+            if (command->command_arg)
+                command->path = get_path(command->args[0], env);
+            if (command->command_arg && !command->path && !is_builtin(command))
             {
                 ft_putstr_fd("minishell: ", 2);
                 ft_putstr_fd(command->args[0], 2);
@@ -152,13 +152,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->outfiles)
             {
                 command->outfd = open_out_files(command->outfiles, env);
-                if (command->outfd == -1)
+                if (command->outfd < 0)
                     exit(1);
             }
             if (command->in_files)
             {
                 command->infd = open_in_files(command->in_files, env);
-                if (command->infd == -1)
+                if (command->infd < 0)
                     exit(1);
             }
             dup2(command->outfd, STDOUT_FILENO);
@@ -166,12 +166,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 dup2(command->infd, STDIN_FILENO);
             close(command->outfd);
             close(command->infd);
-            if (do_builtin(command, env) == 1)
-                exit(1);
-
+            if (!command->path && !command->args)
+                exit(0);
             if (execve(command->path, command->args, ev) == -1)
             {
-                printf("path is _%s_ comm _%s_\n", command->path, command->args[0]);
                 perror("execve : ");
                 exit(127);
             }
