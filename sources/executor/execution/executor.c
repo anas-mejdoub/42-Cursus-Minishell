@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 09:17:42 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 11:17:51 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,13 +138,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (!command->args)
                 exit (1);
             command->path = get_path(command->args[0], env);
-            if (!command->path)
-            {
-                ft_putstr_fd("minishell: ", 2);
-                ft_putstr_fd(command->args[0], 2);
-                ft_putstr_fd(": command not found\n", 2);
-                exit (127);
-            }
+            // if (!command->path)
+            // {
+            //     ft_putstr_fd("minishell: ", 2);
+            //     ft_putstr_fd(command->args[0], 2);
+            //     ft_putstr_fd(": command not found\n", 2);
+            //     exit (127);
+            // }
             if (command->outfiles)
             {
                 command->outfd = open_out_files(command->outfiles, env);
@@ -175,12 +175,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     close(command->outfd);
                 }
             }
-            // if ((!ft_strncmp(command->args[0], "export", ft_strlen(command->args[0])) && ft_strlen(command->args[0]) == ft_strlen("export")))
-            // {
-            //     // printf("done\n");
-            //     export_cmd(command, env);
-            //     exit (0);
-            // }
+            if (is_builtin(command, env) == 1)
+                exit(1);
+
             if (execve(command->path, command->args, ev) == -1)
             {
                 printf("path is _%s_ comm _%s_\n", command->path, command->args[0]);

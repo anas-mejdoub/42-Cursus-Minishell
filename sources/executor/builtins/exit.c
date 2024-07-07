@@ -6,14 +6,12 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 18:15:12 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 10:54:19 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_builtin.h"
 
-int exit_comand(int a, t_command *cmd)
+int exit_comand(t_command *cmd)
 {
-    //free cmd  
-    exit(a);
 }

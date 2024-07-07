@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 18:08:58 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 11:16:22 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 int export_cmd(t_command *cmd, t_env *env)
 {
     int i;
+    t_env_data *tmp_env_data;
     
     if (cmd->args && !(!ft_strncmp(cmd->args[0], "export", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("export")))
         return (-1);
@@ -39,6 +40,7 @@ int export_cmd(t_command *cmd, t_env *env)
             if (cmd->args[i][j] != '=')
             {
                 printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
+                i++;
                 continue;
             }
             else if (cmd->args[i][j] == '=')
@@ -52,6 +54,18 @@ int export_cmd(t_command *cmd, t_env *env)
         else
             printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
         i++;
+    }
+    if (i == 1)
+    {
+        tmp_env_data = env->data;
+        while (tmp_env_data)
+        {
+            printf("declare -x %s", tmp_env_data->key);
+            if (tmp_env_data->value)
+                printf("=%s", tmp_env_data->value);
+            printf("\n");
+            tmp_env_data = tmp_env_data->next;
+        }
     }
     return (0);
 }
