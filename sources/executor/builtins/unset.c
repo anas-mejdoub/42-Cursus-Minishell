@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:00:58 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 17:32:10 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:37:07 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,5 @@ int unset_cmd(t_command *cmd, t_env *env)
         }
         i++;
     }
+    return (0);
 }
