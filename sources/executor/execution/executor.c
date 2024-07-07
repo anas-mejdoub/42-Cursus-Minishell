@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 18:39:55 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 19:27:36 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,11 @@ char *get_path(char *command, t_env *env)
 
     if (!access(command, F_OK))
         return (command);
-    if (!command[0])
+    if (!command[0] || !env || !env->data)
         return NULL;
     paths = ft_split(env->get(env->data, "PATH"), ':');
+    if (!paths)
+        return (NULL);
     i = 0;
     tmp = NULL;
     tmp2 = NULL;
@@ -74,7 +76,6 @@ char **get_command_args(t_command_args *args, t_env *env)
     char *tmp_str;
     char **tmp_arr;
     res = NULL;
-        // printf("LOL\n");
     while (args)
     {
         tmp_str = env_expander(args->content, args->index_list, env);
@@ -140,7 +141,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         if (c == 'b')
         {
             if (do_builtin(command, env) == -1)
-                globalVar = 1 ;
+                globalVar = 1;
+            else
+                globalVar = 0;
             ret->ret = -1;
             return ret;
         }

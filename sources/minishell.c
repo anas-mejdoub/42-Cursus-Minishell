@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 18:34:16 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 19:31:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int main(int ac, char **av, char  **ev)
             i++;
         }
         // globalVar = 28 << 8;
-        printf("exit : %d\n", globalVar);
+        // printf("exit : %d\n", globalVar);
         // printf("hehe : %d\n", WEXIT(hehe));
         free_tree(root);
         // while (1);
@@ -100,5 +100,5 @@ int main(int ac, char **av, char  **ev)
     //     // if (content)
     //     //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
     }
-        return (WIFEXITED(globalVar));
+        return (globalVar);
 }
