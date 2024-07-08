@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/08 09:43:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:46:09 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,6 @@ int main(int ac, char **av, char  **ev)
     // (void)ev;
     print_tchbi7a();
     env = init_env(ev);
-    char **arr = env_to_2d_arr(env);
-    int i = 0;
-    while (arr[i])
-    {
-        printf("%s\n", arr[i]);
-        i++;
-    }
     // printf("%s\n", env->get(env->data, "HOME"));
     t_elem *elem;
     // env_command(env);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 19:27:36 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:45:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     exit(1);
                 exit(0);
             }
-            if (execve(command->path, command->args, ev) == -1)
+            if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
             {
                 perror("execve : ");
                 exit(127);

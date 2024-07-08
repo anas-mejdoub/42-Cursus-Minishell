@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 19:23:52 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 10:00:27 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,23 @@ static int	set(t_env_data **env, char *key, char *value)
 	
 	return (2);
 }
-static int	unset(t_env_data *env, char *key)
+static int	unset(t_env_data **env, char *key)
 {
 	t_env_data	*tmp;
 	t_env_data	*prev;
 
-	if (!env || !key)
+	if (!*env || !key)
 		return (1);
-	tmp = env;
+	tmp = *env;
 	prev = NULL;
 	while (tmp)
 	{
 		if ((!ft_strncmp(tmp->key, key, ft_strlen(tmp->key))) && ft_strlen(key) == ft_strlen(tmp->key))
 		{
-			prev->next = tmp->next;
+			if (prev == NULL)
+				*env = tmp->next;
+			else
+				prev->next = tmp->next;
 			free(tmp);
 			return (0);
 		}
