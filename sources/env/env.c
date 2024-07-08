@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 18:52:21 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:16:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@ static int	fetch_env_data(char **ev, t_env_data **node, t_env_data **tmp)
 	int	i;
 
 	i = 0;
+	if (!ev || !ev[0])
+	{
+		*node = NULL;
+		*tmp = NULL;
+		return (0);
+	}
 	while (ev && ev[i])
 	{
 		int j = 0;
