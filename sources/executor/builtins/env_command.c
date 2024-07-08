@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_command.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:15:58 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 11:00:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:34:46 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int env_cmd(t_command *cmd, t_env *env)
 {
     t_env_data *tmp;
 
+    if (!env)
+        return (0);
     tmp = env->data;
     if (cmd->args && !(!ft_strncmp(cmd->args[0], "env", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("env")))
         return (-1);

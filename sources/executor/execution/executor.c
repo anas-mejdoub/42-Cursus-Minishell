@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/08 10:05:51 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:57:34 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,18 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         command->args = get_command_args(command->command_arg, env);
         if (c == 'b')
         {
+            if (command->outfiles)
+            {
+                command->outfd = open_out_files(command->outfiles, env);
+                if (command->outfd < 0)
+                    exit(1);
+            }
+            if (command->in_files)
+            {
+                command->infd = open_in_files(command->in_files, env);
+                if (command->infd < 0)
+                    exit(1);
+            }
             if (do_builtin(command, env) == -1)
                 globalVar = 1;
             else
@@ -160,6 +172,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             return ret;
         }
         signal (SIGINT, SIG_IGN);
+        globalVar = 0;
         pid_t i = fork();
         signal (SIGINT, handle_intr_sig);
         if (i == 0)

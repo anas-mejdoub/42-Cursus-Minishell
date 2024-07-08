@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 18:19:45 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:01:21 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@
 # include "here_doc.h"
 # include "builtins.h"
 # include "helper.h"
+
+enum e_something {
+    S1GPIPE = 11,
+};
 
 typedef struct s_global_data
 {

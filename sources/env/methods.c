@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 10:00:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:29:27 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	set(t_env_data **env, char *key, char *value)
 {
 	t_env_data	*tmp;
 
-	if (!(*env) || !key)
+	if (!key)
 		return (1);
 	tmp = *env;
 	while (tmp)

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 18:33:22 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 19:40:28 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:31:05 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,12 @@ int cd_cmd(t_command *cmd, t_env *env)
     char *path;
     char *pwd;
     char *oldpwd;
-
+    if (!env)
+        return (0);
     if (cmd->args && !(!ft_strncmp(cmd->args[0], "cd", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("cd")))
 		return (-1);
     oldpwd = working_dir();
+    
     pwd = env->get(env->data, "PWD");
     if (cmd->args[1] == NULL)
         path = env->get(env->data, "HOME");
@@ -39,7 +41,7 @@ int cd_cmd(t_command *cmd, t_env *env)
         path = cmd->args[1];
     if (!path && cmd->args[1] == NULL)
     {
-        printf("minishell: cd: HOME not set");
+        printf("minishell: cd: HOME not set\n");
         return (-1);
     }
 

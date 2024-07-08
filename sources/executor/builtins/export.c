@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 18:38:12 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:27:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ int export_cmd(t_command *cmd, t_env *env)
 {
     int i;
     t_env_data *tmp_env_data;
-    
+    if (!env)
+        return (0);
     if (cmd->args && !(!ft_strncmp(cmd->args[0], "export", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("export")))
         return (-1);
     i = 1;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:00:58 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 09:55:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:22:27 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int unset_cmd(t_command *cmd, t_env *env)
 {
     int i ;
 
+    if (!env || !env->data)
+        return (0);
     if (cmd->args && !(!ft_strncmp(cmd->args[0], "unset", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("unset")))
 		return (-1);
 

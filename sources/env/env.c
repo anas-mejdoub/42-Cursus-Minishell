@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 18:52:21 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:26:57 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@ static int	fetch_env_data(char **ev, t_env_data **node, t_env_data **tmp)
 	int	i;
 
 	i = 0;
+	if (ev == NULL)
+	{
+		*node = NULL;
+		// *tmp = NULL;
+		return (0);
+	}
 	while (ev && ev[i])
 	{
 		int j = 0;
@@ -64,8 +70,8 @@ t_env	*init_env(char **ev)
 	node = NULL;
 	tmp = NULL;
 	len = 0;
-	if (!ev || !ev[0])
-		return (NULL);
+	// if (!ev || !ev[0])
+	// 	return (NULL);
 	while (ev && ev[len++])
 		;
 	env = malloc(sizeof(t_env) * (len + 1));
