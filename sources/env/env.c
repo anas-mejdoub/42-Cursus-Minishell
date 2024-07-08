@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 09:50:01 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:52:21 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ t_env	*init_env(char **ev)
 	node = NULL;
 	tmp = NULL;
 	len = 0;
+	if (!ev || !ev[0])
+		return (NULL);
 	while (ev && ev[len++])
 		;
 	env = malloc(sizeof(t_env) * (len + 1));

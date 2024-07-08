@@ -6,11 +6,15 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 16:09:48 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/07 19:27:36 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+
+#include <signal.h>
+#include <stdio.h>
+
 
 char	*ft_freed_join(char *s1, char *s2)
 {
@@ -46,9 +50,11 @@ char *get_path(char *command, t_env *env)
 
     if (!access(command, F_OK))
         return (command);
-    if (!command[0])
+    if (!command[0] || !env || !env->data)
         return NULL;
     paths = ft_split(env->get(env->data, "PATH"), ':');
+    if (!paths)
+        return (NULL);
     i = 0;
     tmp = NULL;
     tmp2 = NULL;
@@ -70,7 +76,6 @@ char **get_command_args(t_command_args *args, t_env *env)
     char *tmp_str;
     char **tmp_arr;
     res = NULL;
-        // printf("LOL\n");
     while (args)
     {
         tmp_str = env_expander(args->content, args->index_list, env);
@@ -89,6 +94,10 @@ char **get_command_args(t_command_args *args, t_env *env)
         args = args->next;
     }
     return (res);
+}
+void handle_intr_sig(int sig)
+{
+    (void)sig;
 }
 t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
@@ -131,15 +140,18 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         command->args = get_command_args(command->command_arg, env);
         if (c == 'b')
         {
-            do_builtin(command, env);
+            if (do_builtin(command, env) == -1)
+                globalVar = 1;
+            else
+                globalVar = 0;
             ret->ret = -1;
             return ret;
         }
+        signal (SIGINT, SIG_IGN);
         pid_t i = fork();
+        signal (SIGINT, handle_intr_sig);
         if (i == 0)
         {
-            // if (!command->args)
-            //     exit (1);
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
             if (command->command_arg && !command->path && !is_builtin(command))
@@ -153,13 +165,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             {
                 command->outfd = open_out_files(command->outfiles, env);
                 if (command->outfd < 0)
-                    exit(1);
+                    exit(12);
             }
             if (command->in_files)
             {
                 command->infd = open_in_files(command->in_files, env);
                 if (command->infd < 0)
-                    exit(1);
+                    exit(13);
             }
             dup2(command->outfd, STDOUT_FILENO);
             if (command->infd != -1)
@@ -168,6 +180,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             close(command->infd);
             if (!command->path && !command->args)
                 exit(0);
+            if (is_builtin(command))
+            {
+                if (do_builtin(command, env) == -1)
+                    exit(1);
+                exit(0);
+            }
             if (execve(command->path, command->args, ev) == -1)
             {
                 perror("execve : ");
