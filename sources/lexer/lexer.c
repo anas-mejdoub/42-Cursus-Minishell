@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 16:58:04 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:23:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,11 @@ void handle_sigint(int sig)
     rl_redisplay();
 }
 
+void handle_sigquit(int sig)
+{
+    (void)sig;
+}
+
 
 t_elem *lexer()
 {
@@ -236,6 +241,7 @@ t_elem *lexer()
     subshell = 0;
     t_elem *elem = NULL;
     signal(SIGINT, handle_sigint);
+    signal(SIGQUIT, handle_sigquit);
     
     char* line;
     rl_on_new_line();
