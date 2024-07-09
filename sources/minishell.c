@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/08 12:03:35 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/09 15:35:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,19 @@ int main(int ac, char **av, char  **ev)
         if (!elem)
             continue;
         t_command *root = parser(elem, env);
+        // print_tree(root, 0);
+        // while (elem)
+        // {
+        //     printf("~%s~                       ", elem->content);
+        //     printf("~%c~                       ", elem->type == WORD ? 'W' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : elem->type == DREDIR_OUT ? 'D' : elem->type);
+        //     printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
+        //     elem = elem->next;
+        // }
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
         // echo(root->right);
 
-        // print_tree(root, 0);
-        // int *arr = NULL;
-        // t_exec_ret *r =  executor(root, env, '\0');
+        int *arr = NULL;
         
         int i = 0;
         int hehe= 0;
@@ -70,7 +76,7 @@ int main(int ac, char **av, char  **ev)
         // globalVar = 28 << 8;
         // printf("exit : %d\n", globalVar);
         // printf("hehe : %d\n", WEXIT(hehe));
-        free_tree(root);
+        // free_tree(root);
         // while (1);
         // while (1)
         // {
@@ -88,13 +94,6 @@ int main(int ac, char **av, char  **ev)
         // open_out_files(((t_command *)(root->right))->outfiles, env);
         // printf("%s\n", env_expander((((t_command *)root->right))->command_arg->content, (((t_command *)root->right))->command_arg->index_list, env));
         // print_tree(root, 0);
-        // while (elem)
-        // {
-        //     printf("~%s~                       ", elem->content);
-        //     printf("~%c~                       ", elem->type == WORD ? 'W' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : elem->type == DREDIR_OUT ? 'D' : elem->type);
-        //     printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
-        //     elem = elem->next;
-        // }
     //     // char *content  = here_doc("$lim");
     //     // // printf("here doc content without expanding");
     //     // if (content)

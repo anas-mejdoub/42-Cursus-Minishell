@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_creation.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/05 20:38:07 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/09 12:03:54 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,16 @@ int open_out_files(t_out_files *files, t_env *env)
             {
                 last_fd = open_file(file_name, files->append, false, true);
                 if (last_fd == -1)
-                    return (perror("minishell : "), -1);
+                    return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
             }
             else
-                return (perror("minishell : "), -1);
+                return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         else
         {
             last_fd = open_file(file_name, files->append, true, true);
             if (last_fd == -1)
-                return (perror("minishell : "), -1);
+                return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         if (files->next)
             close(last_fd);
@@ -118,13 +118,13 @@ int open_in_files(t_in_files *files, t_env *env)
             {
                 last_fd = open_file(file_name, false, false, false);
                 if (last_fd == -1)
-                    return (perror("minishell : "), -2);
+                    return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
             }
             else
-                return (perror("minishell : "), -3);
+                return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         else
-            return (perror("minishell : "), -4);
+            return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         if (files->next)
             close(last_fd);
         files = files->next;
