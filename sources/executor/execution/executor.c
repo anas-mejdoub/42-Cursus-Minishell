@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/08 16:44:56 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/09 10:40:51 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
     t_exec_ret *ret;
     t_exec_ret *tmp = NULL;
+    bool found_in = false;
     ret = malloc(sizeof(t_exec_ret));
     ret->pids = NULL;
     if (!command)
@@ -150,17 +151,23 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     else 
     {
         command->args = get_command_args(command->command_arg, env);
-            if (command->outfiles)
-            {
-                command->outfd = open_out_files(command->outfiles, env);
-                if (command->outfd < 0)
-                    exit(1);
-            }
             if (command->in_files)
             {
                 command->infd = open_in_files(command->in_files, env);
                 if (command->infd < 0)
-                    exit(1);
+                {
+                    found_in = true;
+                   globalVar = 1;
+                }
+            }
+            if (command->outfiles && !found_in)
+            {
+                command->outfd = open_out_files(command->outfiles, env);
+                if (command->outfd < 0)
+                {
+                   globalVar = 1;
+                    
+                }    
             }
         if (c == 'b')
         {
@@ -179,12 +186,21 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
-            if (command->command_arg && !command->path && !is_builtin(command))
+            if (found_in)
+                exit(1);
+            if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
-                ft_putstr_fd("minishell: ", 2);
-                ft_putstr_fd(command->args[0], 2);
-                ft_putstr_fd(": command not found\n", 2);
+                
+                printf("minishell: ");
+                printf("%s", command->args[0]);
+                printf(": command not found\n");
                 exit (127);
+            }
+            if (  !command->path && !is_builtin(command) && command->command_arg && !access(command->args[0], F_OK) && access(command->args[0], X_OK))
+            {
+                printf("minishell :  Permission denied\n");
+                exit(126);
+                return NULL;
             }
             // if (command->outfiles)
             // {

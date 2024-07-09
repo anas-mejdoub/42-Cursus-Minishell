@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 18:06:34 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:49:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,15 @@ char	*here_doc(char *lim)
 	int		a;
 	int		status;
 	pid_t	pid;
-	int fd[2];
+	// int fd[2];
 
 	content = NULL;
 	signal (SIGINT, SIG_IGN);
-	pipe(fd);
+	// pipe(fd);
+	char *file = random_str();
+	int f = open(file, O_WRONLY | O_CREAT, 0777);
+	if (f < 0)
+		return (NULL);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -117,31 +121,38 @@ char	*here_doc(char *lim)
 			free(content);
 			content = tmp;
 		}
-		write(fd[1], content, ft_strlen(content));
-		close(fd[1]);
-		close(fd[0]);
+		write(f, content, ft_strlen(content));
+		close(f);
+		// close(fd[0]);
 		exit(1);
 	}
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
-		close(fd[1]);
+		// close(fd[1]);
+		close(f);
+		f = open(file, O_RDONLY);
+		if (f < 0)
+			return NULL;
+			
 		char *str = ft_calloc(1, 1);
 		char buffer[1024];
 		int bytesRead;
-		int stdin = dup(STDIN_FILENO);
+		// int stdin = dup(STDIN_FILENO);
 		
-		dup2(fd[0], STDIN_FILENO);
-		while ((bytesRead = read(fd[0], buffer, sizeof(buffer)-1)) > 0)
+		// dup2(f, STDIN_FILENO);
+		while ((bytesRead = read(f, buffer, sizeof(buffer)-1)) > 0)
 		{
 			buffer[bytesRead] = '\0';
 			char *temp = ft_strjoin(str, buffer);
 			free(str);
 			str = temp;
 		}
-		dup2(stdin, STDIN_FILENO);
-		close(fd[0]);
-		close(stdin);
+		// dup2(stdin, STDIN_FILENO);
+		close(f);
+		// close(stdin);
+		unlink(file);
+		free(file);
 		return (str);
 	}
 	return (NULL);
