@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 19:38:34 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:28:28 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,25 @@ int	exit_comand(t_command *cmd)
     long long exit_status;
 	unsigned long long res;
 	int sign;
+	    int fd_in;
+    int fd_out;
 
 
 	if (cmd->args && !(!ft_strncmp(cmd->args[0], "exit", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("exit")))
 		return (-1);
+	if (change_rediraction(cmd, &fd_in, &fd_out) == -1)
+        return (-1);
     if (cmd->args[1] == NULL)
     {
         printf("exit\n");
         free_tree(cmd);
+		restor_rediraction(cmd, &fd_in, &fd_out);
         exit(0);
     }
     if (cmd->args[1] != NULL && cmd->args[2] != NULL)
     {
         printf("exit\nminishell: exit: too many arguments\n");
+		restor_rediraction(cmd, &fd_in, &fd_out);
         return (1);
     }
 		int j = 0;
@@ -41,6 +47,7 @@ int	exit_comand(t_command *cmd)
 		if (cmd->args[1][j])
 		{
 			printf("exit\nminishell: exit: %s: numeric argument required\n", cmd->args[1]);
+			restor_rediraction(cmd, &fd_in, &fd_out);
             free_tree(cmd);
 			exit(255);
 		}
@@ -64,6 +71,7 @@ int	exit_comand(t_command *cmd)
                 {
 			        printf("exit\n");
 					printf("minishell: exit: %s: numeric argument required\n", cmd->args[1]);
+					restor_rediraction(cmd, &fd_in, &fd_out);
                     free_tree(cmd);
                     exit(255);
                 }
@@ -80,8 +88,10 @@ int	exit_comand(t_command *cmd)
                 tmp_int = exit_status - 256;
                 exit_status = tmp_int;
             }
+			restor_rediraction(cmd, &fd_in, &fd_out);
             free_tree(cmd);
             exit(exit_status);
 		}
+	restor_rediraction(cmd, &fd_in, &fd_out);
     return (0);
 }

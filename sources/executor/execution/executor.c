@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/08 09:45:02 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/08 16:44:56 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ char *get_path(char *command, t_env *env)
     char *tmp;
     char *tmp2;
 
-    if (!access(command, F_OK))
-        return (command);
     if (!command[0] || !env || !env->data)
         return NULL;
     paths = ft_split(env->get(env->data, "PATH"), ':');
@@ -62,12 +60,26 @@ char *get_path(char *command, t_env *env)
     {
         tmp = ft_freed_join(paths[i], "/");
         tmp2 = ft_freed_join(tmp, command);
+        if (!access(tmp2, F_OK) && access(tmp2, X_OK) == -1)
+        {
+            ft_putstr_fd("minishell : Permission denied\n", 2);
+            exit(126);
+            return NULL;
+        }
         if (!access(tmp2, F_OK))
             return (tmp2);
         i++;
         free(tmp2);
         tmp2 = NULL;
     }
+    if (!access(command, F_OK) && access(command, X_OK) == -1)
+        {
+            ft_putstr_fd("minishell : Permission denied\n", 2);
+            exit(126);
+            return NULL;
+        }
+    if (!access(command, F_OK))
+        return (command);
     return 0;
 }
 char **get_command_args(t_command_args *args, t_env *env)
@@ -138,6 +150,18 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     else 
     {
         command->args = get_command_args(command->command_arg, env);
+            if (command->outfiles)
+            {
+                command->outfd = open_out_files(command->outfiles, env);
+                if (command->outfd < 0)
+                    exit(1);
+            }
+            if (command->in_files)
+            {
+                command->infd = open_in_files(command->in_files, env);
+                if (command->infd < 0)
+                    exit(1);
+            }
         if (c == 'b')
         {
             if (do_builtin(command, env) == -1)
@@ -148,6 +172,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             return ret;
         }
         signal (SIGINT, SIG_IGN);
+        globalVar = 0;
         pid_t i = fork();
         signal (SIGINT, handle_intr_sig);
         if (i == 0)
@@ -161,18 +186,18 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 ft_putstr_fd(": command not found\n", 2);
                 exit (127);
             }
-            if (command->outfiles)
-            {
-                command->outfd = open_out_files(command->outfiles, env);
-                if (command->outfd < 0)
-                    exit(12);
-            }
-            if (command->in_files)
-            {
-                command->infd = open_in_files(command->in_files, env);
-                if (command->infd < 0)
-                    exit(13);
-            }
+            // if (command->outfiles)
+            // {
+            //     command->outfd = open_out_files(command->outfiles, env);
+            //     if (command->outfd < 0)
+            //         exit(1);
+            // }
+            // if (command->in_files)
+            // {
+            //     command->infd = open_in_files(command->in_files, env);
+            //     if (command->infd < 0)
+            //         exit(1);
+            // }
             dup2(command->outfd, STDOUT_FILENO);
             if (command->infd != -1)
                 dup2(command->infd, STDIN_FILENO);
