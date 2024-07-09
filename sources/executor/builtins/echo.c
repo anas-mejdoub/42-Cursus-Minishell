@@ -3,55 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 09:58:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 12:55:35 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/08 13:06:00 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_builtin.h"
 
-int change_rediraction(t_command *cmd ,int *fd_in, int *fd_out)
-{
-    if (cmd->infd > 0)
-    {
-        *fd_in = dup(STDIN_FILENO);
-        if ((*fd_in) < 0)
-            return (-1);
-        if (dup2(cmd->infd, STDIN_FILENO) < 0)
-            return (-1);
-    }
-    //change rediraction out
-    if (cmd->outfd > 0)
-    {
-        *fd_out = dup(STDOUT_FILENO);
-        if ((*fd_out) < 0)
-            return (-1);
-        if (dup2(cmd->outfd, STDOUT_FILENO) < 0)
-            return (-1);
-    }
-    return (0);
-}
-
-int restor_rediraction(t_command *cmd ,int *fd_in, int *fd_out)
-{
-    //restor rediraction out
-    if (cmd->outfd > 0)
-    {
-        if (dup2(*fd_out, STDOUT_FILENO) < 0)
-            return (-1);
-        close(*fd_out);
-    }
-    //restor rediraction in
-    if (cmd->infd > 0)
-    {
-        if (dup2(*fd_in, STDIN_FILENO) < 0)
-            return (-1);
-        close(*fd_in);
-    }
-    return (0);
-}
 
 int echo_cmd(t_command *cmd)
 {

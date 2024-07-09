@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:40:27 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 09:35:58 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/08 13:05:35 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void free_tree(t_command *cmd);
 int do_builtin(t_command *cmd, t_env *env);
 int is_builtin(t_command *cmd);
 char **env_to_2d_arr(t_env *env);
+int change_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
+int restor_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
 // int     open_out_files(t_out_files *files, t_env *env);
 
 #endif
