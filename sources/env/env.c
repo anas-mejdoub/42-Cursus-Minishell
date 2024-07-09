@@ -6,11 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/07/08 12:16:56 by nbenyahy         ###   ########.fr       */
-=======
-/*   Updated: 2024/07/08 12:26:57 by amejdoub         ###   ########.fr       */
->>>>>>> 8a47890b557a38578f51c6a2f6f7980fc24dc3a9
+/*   Updated: 2024/07/09 09:36:15 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +37,10 @@ static int	fetch_env_data(char **ev, t_env_data **node, t_env_data **tmp)
 	int	i;
 
 	i = 0;
-<<<<<<< HEAD
-	if (!ev || !ev[0])
-	{
-		*node = NULL;
-		*tmp = NULL;
-=======
 	if (ev == NULL)
 	{
 		*node = NULL;
 		// *tmp = NULL;
->>>>>>> 8a47890b557a38578f51c6a2f6f7980fc24dc3a9
 		return (0);
 	}
 	while (ev && ev[i])
