@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 15:19:14 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 17:16:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	exit_comand(t_command *cmd)
         return (-1);
     if (cmd->args[1] == NULL)
     {
-        printf("exit\n");
+        // printf("exit\n");
 		restor_rediraction(cmd, &fd_in, &fd_out);
         free_tree(cmd);
         exit(0);
@@ -52,7 +52,7 @@ int	exit_comand(t_command *cmd)
 		{
 			if (cmd->args[1] != NULL && cmd->args[2] != NULL)
     		{
-        		ft_putchar_fd("exit\nminishell: exit: too many arguments\n", 2);
+        		ft_putstr_fd("exit\nminishell: exit: too many arguments\n", 2);
 				restor_rediraction(cmd, &fd_in, &fd_out);
         		return (1);
     		}

@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:00:58 by nbenyahy          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/07/11 15:21:37 by nbenyahy         ###   ########.fr       */
+=======
+/*   Updated: 2024/07/11 16:22:39 by amejdoub         ###   ########.fr       */
+>>>>>>> exec
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +47,9 @@ int unset_cmd(t_command *cmd, t_env *env)
             else
                 env->unset(&env->data, cmd->args[i]);
         }
+        else
+            printf("minishell: unset: `%s': not a valid identifier\n", cmd->args[i]);
+
         i++;
     }
     if (restor_rediraction(cmd, &fd_in, &fd_out) == -1)
