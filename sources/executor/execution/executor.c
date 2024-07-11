@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 12:58:50 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:21:43 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             close(command->outfd);
             close(command->infd);
             // if (i == -1)
-            //     ft_printf("something wrong !\n");
+            //     ft_("something wrong !\n");
             ret->ret = i;
             ret->pids = NULL;
             return (ret);

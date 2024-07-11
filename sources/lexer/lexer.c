@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 11:25:43 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:27:06 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ int qoute_handler(t_elem **elem, char *line, int *i)
     }
     else
     {
-        printf(RED "synthax error : missing a quote\n" RESET);
+        ft_putstr_fd(RED "synthax error : missing a quote\n" RESET, 2);
+      // printf(RED "synthax error : missing a quote\n" RESET);
         return (1);
     }
 }
@@ -115,7 +116,8 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
     }
     else
     {
-        printf(RED "synthax error : missing a double quote\n" RESET);
+        ft_putstr_fd(RED "synthax error : missing a double quote\n" RESET, 2);
+        // printf(RED "synthax error : missing a double quote\n" RESET);
         return (1);
     }
 }
@@ -262,13 +264,16 @@ t_elem *lexer()
     }
     if (subshell != 0)
     {
-        printf(RED "syntax error : missing a parenthese symbole\n" RESET);
+        // printf(RED "syntax error : missing a parenthese symbole\n" RESET);
+        ft_putstr_fd(RED "synthax error : missing a parenthese symbole\n" RESET, 2);
+
         return(free_elem(elem), NULL);
     }
     t_list *list = syntax_error(elem);
     if (list)
     {
-        printf(RED "syntax error : unexpected token\n" RESET);
+        // printf(RED "syntax error : unexpected token\n" RESET);
+        ft_putstr_fd(RED "syntax error : unexpected token\n" RESET, 2);
         list = list->next;
         while (list)
         {

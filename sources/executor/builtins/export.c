@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 11:04:38 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:20:38 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ int export_cmd(t_command *cmd, t_env *env)
             }
             if (cmd->args[i][j] != '=')
             {
-                printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
+                ft_putstr_fd("minishell: export: `", 2);
+			    ft_putstr_fd(cmd->args[i], 2);
+			    ft_putstr_fd("': not a valid identifier\n", 2);
+                // printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
                 i++;
                 continue;
             }
@@ -58,7 +61,10 @@ int export_cmd(t_command *cmd, t_env *env)
         }
         else
         {
-            printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
+            ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(cmd->args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+            // printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
             i++;
             continue;
             // return (restor_rediraction(cmd, &fd_in, &fd_out), -1);

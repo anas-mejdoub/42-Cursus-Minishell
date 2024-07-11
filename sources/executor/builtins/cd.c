@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 18:33:22 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:13:48 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:28:11 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ int cd_cmd(t_command *cmd, t_env *env)
         path = cmd->args[1];
     if (!path && cmd->args[1] == NULL)
     {
-        printf("minishell: cd: HOME not set\n");
+        ft_putendl_fd("minishell: cd: HOME not set", 2);
+        // printf("minishell: cd: HOME not set\n");
         return (restor_rediraction(cmd, &fd_in, &fd_out), -1);
     }
 

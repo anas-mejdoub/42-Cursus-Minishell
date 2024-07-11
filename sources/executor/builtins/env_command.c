@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:15:58 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:35:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:16:58 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,13 @@ int env_cmd(t_command *cmd, t_env *env)
     if (change_rediraction(cmd, &fd_in, &fd_out) == -1)
         return (-1);
     if (cmd->args[1])
-        return (restor_rediraction(cmd, &fd_in, &fd_out), printf("minishell: `%s': env command with no arg or opt\n", cmd->args[1]), -1);
+    {
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd->args[1], 2);
+        ft_putstr_fd(": env command with no arg or opt\n", 2);
+        return (-1);
+    }
+        // return (restor_rediraction(cmd, &fd_in, &fd_out), printf("minishell: `%s': env command with no arg or opt\n", cmd->args[1]), -1);
     while (tmp)
     {
         if (tmp->value)

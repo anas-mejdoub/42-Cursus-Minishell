@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:00:58 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:17:42 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:21:37 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ int unset_cmd(t_command *cmd, t_env *env)
                 j++;
             if (cmd->args[i][j])
             {
-                printf("minishell: unset: `%s': not a valid identifier\n", cmd->args[i]);
+                ft_putstr_fd("minishell: unset: `", 2);
+			    ft_putstr_fd(cmd->args[i], 2);
+			    ft_putstr_fd("': not a valid identifier\n", 2);
+                // printf("minishell: unset: `%s': not a valid identifier\n", cmd->args[i]);
                 return (restor_rediraction(cmd, &fd_in, &fd_out), -1);
             }
             else

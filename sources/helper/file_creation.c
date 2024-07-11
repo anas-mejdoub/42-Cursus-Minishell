@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_creation.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 15:06:59 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:23:41 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,13 @@ char  *ambiguous(void *files, bool type ,t_env *env)
         else
             file_name = env_expander(file1->filename, file1->index_list, env);
         if (file1->index_list && !file1->in_qoute && (ft_strchr(file_name, ' ') || file_name[0] == '\0'))
-            return (printf("minishell: %s: ambiguous redirect\n", file1->filename), NULL);
+        {
+            ft_putstr_fd("minishell: ", 2);
+            ft_putstr_fd(file1->filename, 2);
+            ft_putstr_fd(": ambiguous redirect\n", 2);
+            return (NULL);
+        }
+            // return (printf("minishell: %s: ambiguous redirect\n", file1->filename), NULL);
         else
             return (file_name);
     }
@@ -40,7 +46,13 @@ char  *ambiguous(void *files, bool type ,t_env *env)
         else
             file_name = env_expander(file2->filename, file2->index_list, env);
         if (file2->index_list && !file2->in_qoute && (ft_strchr(file_name, ' ') || file_name[0] == '\0'))
-            return (printf("minishell: %s: ambiguous redirect\n", file2->filename), NULL);
+        {
+            ft_putstr_fd("minishell: ", 2);
+            ft_putstr_fd(file1->filename, 2);
+            ft_putstr_fd(": ambiguous redirect\n", 2);
+            return (NULL);
+        }
+            // return (printf("minishell: %s: ambiguous redirect\n", file2->filename), NULL);
         else
             return (file_name);
     }

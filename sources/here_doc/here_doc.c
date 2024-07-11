@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 11:45:16 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:24:37 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	*here_doc(char *lim)
 	int f = open(file, O_WRONLY | O_CREAT, 0777);
 	if (f < 0)
 	{
-		printf("%s\n", file);
+		// printf("%s\n", file);
 		return (NULL);
 	}
 	pid = fork();

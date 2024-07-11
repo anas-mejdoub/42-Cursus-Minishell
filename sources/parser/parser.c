@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 15:00:32 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:27:41 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,7 +387,8 @@ int handle_here_doc(t_in_files *file, t_env *env)
 	int i = open(file_name, O_CREAT | O_WRONLY | O_RDONLY , 0777);
 	if (i == -1)
 	{
-		printf("problem with opennig here doc\n");
+		
+		ft_putstr_fd("problem with opennig here doc\n", 2);
 		return -1;
 	}
 	char *str1 = here_doc(file->limiter);
