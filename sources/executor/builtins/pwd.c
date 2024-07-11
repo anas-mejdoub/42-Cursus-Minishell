@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 17:46:05 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 13:17:04 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:38:57 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int   pwd_cmd(t_command *cmd)
       return (-1);
     ptr = getcwd(tmp, 1024);
     if (!ptr)
-        perror("minishell :");
+      // printf(")
+        // perror("minishell :");
     printf("%s\n", ptr);
       if (restor_rediraction(cmd, &fd_in, &fd_out) == -1)
         return (-1);

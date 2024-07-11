@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 15:00:32 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:56:23 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -495,7 +495,7 @@ void add_indexs_to_outfiles(int *arr, int *len, t_out_files *file)
 	int i = 0;
 	while (arr)
 	{
-		printf ("i is %d\n", i);
+		// printf ("i is %d\n", i);
 		if (arr[i] == -1)
 			break;
 		
@@ -521,7 +521,7 @@ void add_indexs_to_infiles(int *arr, int *len, t_in_files *file)
 	int i = 0;
 	while (arr)
 	{
-		printf ("i is %d\n", i);
+		// printf ("i is %d\n", i);
 		if (arr[i] == -1)
 			break;
 		add_to_in_index(file, new_index(arr[i], len[i]));
