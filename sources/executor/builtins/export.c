@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:17:04 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 11:04:38 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,9 @@ int export_cmd(t_command *cmd, t_env *env)
         else
         {
             printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
-            return (restor_rediraction(cmd, &fd_in, &fd_out), -1);
+            i++;
+            continue;
+            // return (restor_rediraction(cmd, &fd_in, &fd_out), -1);
         }
         i++;
     }
@@ -70,7 +72,7 @@ int export_cmd(t_command *cmd, t_env *env)
         {
             printf("declare -x %s", tmp_env_data->key);
             if (tmp_env_data->value)
-                printf("=%s", tmp_env_data->value);
+                printf("=\"%s\"", tmp_env_data->value);
             printf("\n");
             tmp_env_data = tmp_env_data->next;
         }

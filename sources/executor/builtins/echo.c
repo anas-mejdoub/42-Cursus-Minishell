@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 09:58:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 13:06:00 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 11:10:36 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,18 @@ int echo_cmd(t_command *cmd)
         return (-1);
     if (change_rediraction(cmd, &fd_in, &fd_out) == -1)
         return (-1);
-    if (cmd->args && cmd->args[1] && cmd->args[1][0] == '-' && cmd->args[1][1])
+    while (cmd->args && cmd->args[i] && cmd->args[i][0] && cmd->args[i][0] == '-')
     {
-        char *str = ft_strtrim(cmd->args[1] +  1, "n");
-        if (str[0] == '\0')
+        if (cmd->args && cmd->args[i] && cmd->args[i][0] == '-' && cmd->args[i][1])
         {
-            new_line = 0;
-            i++;
+            char *str = ft_strtrim(cmd->args[i] +  1, "n");
+            if (str[0] == '\0')
+            {
+                new_line = 0;
+                // i++;
+            }
         }
+        i++;
     }
     while (cmd->args && cmd->args[i])
     {
@@ -43,7 +47,6 @@ int echo_cmd(t_command *cmd)
         if (cmd->args[i])
             printf(" ");
     }
-
     if (new_line)
         printf("\n");
     if (restor_rediraction(cmd, &fd_in, &fd_out) == -1)

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/07 18:53:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 11:44:28 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,7 +376,7 @@ char *random_str()
 	return (res);
 }
 
-void handle_here_doc(t_in_files *file, t_env *env)
+int handle_here_doc(t_in_files *file, t_env *env)
 {
 	char *random = random_str();
 	char *file_name = ft_strjoin("/tmp/", random);
@@ -388,16 +388,19 @@ void handle_here_doc(t_in_files *file, t_env *env)
 	if (i == -1)
 	{
 		printf("problem with opennig here doc\n");
-		return;
+		return -1;
 	}
 	char *str1 = here_doc(file->limiter);
+	if (str1 == NULL)
+		return (-1);
 	char *str2 = expand_here_doc_content(str1, env); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	ft_putstr_fd(str2, i);
 	close(i);
 	free(file_name);
+	return (0);
 }
 
-void add_to_infiles(t_command *command, t_in_files *file, t_env *env)
+int add_to_infiles(t_command *command, t_in_files *file, t_env *env)
 {
 	if (!command->in_files)
 	{
@@ -407,9 +410,10 @@ void add_to_infiles(t_command *command, t_in_files *file, t_env *env)
 		get_last_in_file(command->in_files)->next = file;
 	if (file->here_doc)
 		handle_here_doc(file, env);
+	return (0);
 }
 
-void	handle_redir_in(t_command *command, char *filename, bool env_qoute, t_env *env)
+int	handle_redir_in(t_command *command, char *filename, bool env_qoute, t_env *env)
 {
 	if (command->in_redir)
 	{
@@ -418,8 +422,9 @@ void	handle_redir_in(t_command *command, char *filename, bool env_qoute, t_env *
 	else if (command->here_doc)
 	{
 		command->here_doc = false;
-		add_to_infiles(command, new_in_file(filename, true, env_qoute), env);
+		return (add_to_infiles(command, new_in_file(filename, true, env_qoute), env));
 	}
+	return (0);
 }
 
 t_out_files *get_last_file(t_out_files *files)
@@ -591,7 +596,8 @@ t_command	*parser(t_elem *elements, t_env *env)
 			else
 				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
-			handle_redir_in(command, comm_hand_ret->command, env_dqoute, env);
+			if (handle_redir_in(command, comm_hand_ret->command, env_dqoute, env) == -1);
+				return (NULL);
 			if (command->in_redir)
 			{
 				command->in_redir = false;

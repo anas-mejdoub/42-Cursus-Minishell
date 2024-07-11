@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:49:02 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 11:45:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ char	*expand_here_doc_content(char *str, t_env *env)
 void kill_here_doc(int sig)
 {
 	(void)sig;
-	exit(0);
+	exit(1);
 }
 
 char	*here_doc(char *lim)
@@ -89,15 +89,16 @@ char	*here_doc(char *lim)
 	int		a;
 	int		status;
 	pid_t	pid;
-	// int fd[2];
 
 	content = NULL;
 	signal (SIGINT, SIG_IGN);
-	// pipe(fd);
-	char *file = random_str();
+	char *file =ft_strjoin("/tmp/" ,random_str());
 	int f = open(file, O_WRONLY | O_CREAT, 0777);
 	if (f < 0)
+	{
+		printf("%s\n", file);
 		return (NULL);
+	}
 	pid = fork();
 	if (pid == 0)
 	{
@@ -113,7 +114,7 @@ char	*here_doc(char *lim)
 			{
 				free(content);
 				content = NULL;
-				exit(1);
+				exit(0);
 			}
 			if (!ft_strncmp(line, lim, ft_strlen(lim)) && ft_strlen(lim) == ft_strlen(line))
 				break ;
@@ -121,16 +122,22 @@ char	*here_doc(char *lim)
 			free(content);
 			content = tmp;
 		}
+		// if(!content)
+		// 	content = ft_calloc(1,1);
 		write(f, content, ft_strlen(content));
 		close(f);
-		// close(fd[0]);
-		exit(1);
+		exit(0);
 	}
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
-		// close(fd[1]);
 		close(f);
+		if (WEXITSTATUS(status) == 1)
+		{
+			// printf("here1\n");	
+			return (NULL);
+		}
+		// close(fd[1]);
 		f = open(file, O_RDONLY);
 		if (f < 0)
 			return NULL;
@@ -153,6 +160,8 @@ char	*here_doc(char *lim)
 		// close(stdin);
 		unlink(file);
 		free(file);
+		// if (!str)
+		// 	str = ft_calloc(1,1);
 		return (str);
 	}
 	return (NULL);

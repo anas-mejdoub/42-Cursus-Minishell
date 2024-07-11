@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:28:28 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 11:01:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,9 @@ int	exit_comand(t_command *cmd)
     if (cmd->args[1] == NULL)
     {
         printf("exit\n");
+		restor_rediraction(cmd, &fd_in, &fd_out);
         free_tree(cmd);
-		restor_rediraction(cmd, &fd_in, &fd_out);
         exit(0);
-    }
-    if (cmd->args[1] != NULL && cmd->args[2] != NULL)
-    {
-        printf("exit\nminishell: exit: too many arguments\n");
-		restor_rediraction(cmd, &fd_in, &fd_out);
-        return (1);
     }
 		int j = 0;
 		if (cmd->args[1][0] == '-' || cmd->args[1][0] == '+')
@@ -53,6 +47,12 @@ int	exit_comand(t_command *cmd)
 		}
 		else
 		{
+			if (cmd->args[1] != NULL && cmd->args[2] != NULL)
+    		{
+        		printf("exit\nminishell: exit: too many arguments\n");
+				restor_rediraction(cmd, &fd_in, &fd_out);
+        		return (1);
+    		}
 			j = 0;
 			res = 0;
 			sign = 1;

@@ -1,12 +1,12 @@
-double free in env,
-echo problem "echo -nnn -nnnn",
-tabs,
+double free in env, √
+echo problem "echo -nnn -nnnn", √
+tabs,√
 error in STDERROR,
-exit,
-cltr+c  exit status,
-env unset for $?,
+exit, √
+cltr+c  exit status,√
+env unset for $?, √
 pipes and fork protection,
-export problem "export 34dsv= a=b",
-path problem "../ls or ./ls",
+export problem "export 34dsv= a=b", √
+path problem "../ls or ./ls",√
 heredoc problem "echo hello << lim {then click ctr+c at heredoc input}",
 

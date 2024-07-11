@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:33:33 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 11:25:43 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int is_token(char c)
 {
-    if (c != WHITE_SPACE && c != NEW_LINE && c != QOUTE && c != DOUBLE_QUOTE && 
+    if (c != WHITE_SPACE && c != '\t' && c != NEW_LINE && c != QOUTE && c != DOUBLE_QUOTE && 
         c != ENV && c != PIPE_LINE && c != REDIR_IN && c != REDIR_OUT &&  
         c!= START_SUBSHELL && c!= END_SUBSHELL && c != WILDCARD)
         return (1);
@@ -125,7 +125,7 @@ int general_tokens(char *line, t_elem **elem, int *i, int *subshell)
     char *content;
 
     content = NULL;
-    if (line[(*i)] == WHITE_SPACE || line[(*i)] == NEW_LINE || line[(*i)] == PIPE_LINE || line[(*i)] == REDIR_IN || line[(*i)] == REDIR_OUT ||
+    if (line[(*i)] == WHITE_SPACE || line[(*i)] == '\t' || line[(*i)] == NEW_LINE || line[(*i)] == PIPE_LINE || line[(*i)] == REDIR_IN || line[(*i)] == REDIR_OUT ||
          line[(*i)] == START_SUBSHELL || line[(*i)] == END_SUBSHELL || line[(*i)] == WILDCARD || line[(*i)] == '&')
     {
         if (line[(*i)] == START_SUBSHELL)
@@ -151,6 +151,11 @@ int general_tokens(char *line, t_elem **elem, int *i, int *subshell)
         {
             allocate_node(elem, ft_strdup("<<"), GENERAL, HERE_DOC);
             (*i) += 2;
+        }
+        else if (line[(*i)] == '\t')
+        {
+            allocate_node(elem, ft_strdup(" "), GENERAL, WHITE_SPACE);
+            (*i)++;
         }
         else if (line[(*i)] != '&')
         {
@@ -222,6 +227,7 @@ t_elem *tokenize(char *line, int *subshell)
 void handle_sigint(int sig)
 {
     (void)sig;
+    globalVar = 1;
     printf(BHMAG "\n" RESET);
     rl_on_new_line();
     rl_replace_line("", 0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/09 10:40:51 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 10:38:27 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,11 @@ char *get_path(char *command, t_env *env)
         return NULL;
     paths = ft_split(env->get(env->data, "PATH"), ':');
     if (!paths)
+    {
+        if (!access(command, F_OK))
+            return command;
         return (NULL);
+    }
     i = 0;
     tmp = NULL;
     tmp2 = NULL;
@@ -78,8 +82,9 @@ char *get_path(char *command, t_env *env)
             exit(126);
             return NULL;
         }
-    if (!access(command, F_OK))
+    if (!access(command, F_OK) && command[0] == '.' && command[1] && command[1] == '/')   {
         return (command);
+    }
     return 0;
 }
 char **get_command_args(t_command_args *args, t_env *env)
@@ -196,24 +201,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 printf(": command not found\n");
                 exit (127);
             }
-            if (  !command->path && !is_builtin(command) && command->command_arg && !access(command->args[0], F_OK) && access(command->args[0], X_OK))
+            if (!command->path && !is_builtin(command) && command->command_arg && !access(command->args[0], F_OK) && access(command->args[0], X_OK))
             {
                 printf("minishell :  Permission denied\n");
                 exit(126);
                 return NULL;
             }
-            // if (command->outfiles)
-            // {
-            //     command->outfd = open_out_files(command->outfiles, env);
-            //     if (command->outfd < 0)
-            //         exit(1);
-            // }
-            // if (command->in_files)
-            // {
-            //     command->infd = open_in_files(command->in_files, env);
-            //     if (command->infd < 0)
-            //         exit(1);
-            // }
             dup2(command->outfd, STDOUT_FILENO);
             if (command->infd != -1)
                 dup2(command->infd, STDIN_FILENO);
@@ -229,7 +222,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
             {
-                perror("execve : ");
+                printf("minishell: ");
+                printf("%s", command->args[0]);
+                printf(": command not found\n");
                 exit(127);
             }
         }

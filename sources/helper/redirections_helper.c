@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:04:43 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 16:48:46 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 10:59:40 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int change_rediraction(t_command *cmd ,int *fd_in, int *fd_out)
 {
+    if (!cmd)
+        return (-1);
     if (cmd->infd > 0)
     {
         *fd_in = dup(STDIN_FILENO);
@@ -35,6 +37,8 @@ int change_rediraction(t_command *cmd ,int *fd_in, int *fd_out)
 
 int restor_rediraction(t_command *cmd ,int *fd_in, int *fd_out)
 {
+    if (!cmd)
+        return (-1);
     if (cmd->outfd > 0)
     {
         if (dup2(*fd_out, STDOUT_FILENO) < 0)
