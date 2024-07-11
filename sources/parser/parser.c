@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 11:44:28 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 13:03:49 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,7 +409,10 @@ int add_to_infiles(t_command *command, t_in_files *file, t_env *env)
 	else
 		get_last_in_file(command->in_files)->next = file;
 	if (file->here_doc)
-		handle_here_doc(file, env);
+	{
+		if (handle_here_doc(file, env) == -1)
+			return -1;
+	}
 	return (0);
 }
 
@@ -596,7 +599,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 			else
 				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
-			if (handle_redir_in(command, comm_hand_ret->command, env_dqoute, env) == -1);
+			if (handle_redir_in(command, comm_hand_ret->command, env_dqoute, env) == -1)
 				return (NULL);
 			if (command->in_redir)
 			{

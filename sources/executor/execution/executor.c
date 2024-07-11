@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 10:38:27 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 12:58:50 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 if (command->infd < 0)
                 {
                     found_in = true;
-                   globalVar = 1;
+                    globalVar = 1;
                 }
             }
             if (command->outfiles && !found_in)
@@ -170,8 +170,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 command->outfd = open_out_files(command->outfiles, env);
                 if (command->outfd < 0)
                 {
-                   globalVar = 1;
-                    
+                    globalVar = 1;
                 }    
             }
         if (c == 'b')
@@ -196,14 +195,14 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
                 
-                printf("minishell: ");
-                printf("%s", command->args[0]);
-                printf(": command not found\n");
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(command->args[0], 2);
+                ft_putstr_fd(": command not found\n", 2);
                 exit (127);
             }
             if (!command->path && !is_builtin(command) && command->command_arg && !access(command->args[0], F_OK) && access(command->args[0], X_OK))
             {
-                printf("minishell :  Permission denied\n");
+                ft_putstr_fd("minishell :  Permission denied\n", 2);
                 exit(126);
                 return NULL;
             }
@@ -222,9 +221,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
             {
-                printf("minishell: ");
-                printf("%s", command->args[0]);
-                printf(": command not found\n");
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(command->args[0], 2);
+                ft_putstr_fd(": command not found\n", 2);
                 exit(127);
             }
         }
@@ -232,14 +231,14 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             close(command->outfd);
             close(command->infd);
-            if (i == -1)
-                ft_printf("something wrong !\n");
+            // if (i == -1)
+            //     ft_printf("something wrong !\n");
             ret->ret = i;
             ret->pids = NULL;
             return (ret);
         }
         else if (i < 0)
-            printf("THE FORK FAILED ! \n");
+            ft_putstr_fd("THE FORK FAILED ! \n", 2);
     }
     return (ret);
 }
