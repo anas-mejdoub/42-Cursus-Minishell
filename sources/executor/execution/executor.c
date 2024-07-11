@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 15:32:16 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 16:55:52 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ void handle_intr_sig(int sig)
 }
 t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
+    int fd[2];
     t_exec_ret *ret;
     t_exec_ret *tmp = NULL;
     bool found_in = false;
@@ -133,12 +134,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     {
         if (command->type_node == PIPE_LINE_NODE )
         {
-            int fd[2];
             if (command->outfd != -1)
                 ((t_command *)command->left)->outfd = command->outfd;
             int k = pipe(fd);
             if (k == -1)
             {
+                close(fd[1]);
+                close(fd[0]);
                 ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);
                 globalVar = 1;
                 return NULL;
@@ -147,18 +149,26 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             ((t_command *)command->left)->infd = fd[0];
         }
         if (command && command->right && is_builtin(command->right) && !command->left)
-            executor(command->right, env, 'b', ev);
+            tmp = executor(command->right, env, 'b', ev);
         else if (command && command->right)
             tmp = executor(command->right, env, 'r', ev);
         if (!tmp)
+        {
+            close(fd[1]);
+            close(fd[0]);
             return NULL;
+        }
         if (tmp && tmp->pids)
             ret->pids = tmp->pids;
         else if (tmp && tmp->ret != -1)
             ret->pids = add_int(ret->pids, tmp->ret);
         tmp = executor(command->left, env, 'l', ev);
         if (!tmp)
+        {
+            close(fd[1]);
+            close(fd[0]);
             return NULL;
+        }
         ret->pids = add_int(ret->pids, tmp->ret);
     }
     else 

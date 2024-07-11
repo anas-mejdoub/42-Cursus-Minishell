@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 11:01:16 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 17:01:18 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	exit_comand(t_command *cmd)
         return (-1);
     if (cmd->args[1] == NULL)
     {
-        printf("exit\n");
+        // printf("exit\n");
 		restor_rediraction(cmd, &fd_in, &fd_out);
         free_tree(cmd);
         exit(0);
@@ -40,7 +40,7 @@ int	exit_comand(t_command *cmd)
 			j++;
 		if (cmd->args[1][j])
 		{
-			printf("exit\nminishell: exit: %s: numeric argument required\n", cmd->args[1]);
+			printf("minishell: exit: %s: numeric argument required\n", cmd->args[1]);
 			restor_rediraction(cmd, &fd_in, &fd_out);
             free_tree(cmd);
 			exit(255);
@@ -49,7 +49,7 @@ int	exit_comand(t_command *cmd)
 		{
 			if (cmd->args[1] != NULL && cmd->args[2] != NULL)
     		{
-        		printf("exit\nminishell: exit: too many arguments\n");
+        		printf("minishell: exit: too many arguments\n");
 				restor_rediraction(cmd, &fd_in, &fd_out);
         		return (1);
     		}
@@ -69,7 +69,7 @@ int	exit_comand(t_command *cmd)
 				res = (res * 10) + (cmd->args[1][j] - '0');
 				if ((res > LLONG_MAX && sign == 1) || (res > LLONG_MAX && sign == -1))
                 {
-			        printf("exit\n");
+			        // printf("exit\n");
 					printf("minishell: exit: %s: numeric argument required\n", cmd->args[1]);
 					restor_rediraction(cmd, &fd_in, &fd_out);
                     free_tree(cmd);
