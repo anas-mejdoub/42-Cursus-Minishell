@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 15:21:43 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:58:13 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 ((t_command *)command->left)->outfd = command->outfd;
             int k = pipe(fd);
             if (k == -1)
-                exit(99);
+            {
+                ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);
+                globalVar = 1;
+                return NULL;
+            }
             ((t_command *)command->right)->outfd = fd[1];
             ((t_command *)command->left)->infd = fd[0];
         }
@@ -146,11 +150,15 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             executor(command->right, env, 'b', ev);
         else if (command && command->right)
             tmp = executor(command->right, env, 'r', ev);
+        if (!tmp)
+            return NULL;
         if (tmp && tmp->pids)
             ret->pids = tmp->pids;
         else if (tmp && tmp->ret != -1)
             ret->pids = add_int(ret->pids, tmp->ret);
         tmp = executor(command->left, env, 'l', ev);
+        if (!tmp)
+            return NULL;
         ret->pids = add_int(ret->pids, tmp->ret);
     }
     else 
@@ -185,6 +193,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         signal (SIGINT, SIG_IGN);
         globalVar = 0;
         pid_t i = fork();
+        if (i < 0)
+        {
+            ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);
+            globalVar = 1;
+            return (NULL);
+        }
         signal (SIGINT, handle_intr_sig);
         if (i == 0)
         {
