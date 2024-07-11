@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_creation.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 12:03:54 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:06:59 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,34 @@ int open_out_files(t_out_files *files, t_env *env)
             {
                 last_fd = open_file(file_name, files->append, false, true);
                 if (last_fd == -1)
-                    return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+                {
+                    ft_putstr_fd("minishell : ", 2);
+                    ft_putstr_fd(file_name, 2);
+                    ft_putendl_fd(strerror(errno), 2);
+                    return -1;
+                    // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+                }
             }
             else
-                return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+            {
+                ft_putstr_fd("minishell : ", 2);
+                    ft_putstr_fd(file_name, 2);
+                    ft_putendl_fd(strerror(errno), 2);
+                    return -1;
+            }
+                // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         else
         {
             last_fd = open_file(file_name, files->append, true, true);
             if (last_fd == -1)
-                return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+            {
+                ft_putstr_fd("minishell : ", 2);
+                    ft_putstr_fd(file_name, 2);
+                    ft_putendl_fd(strerror(errno), 2);
+                    return -1;
+            }
+                // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         if (files->next)
             close(last_fd);
@@ -118,13 +136,30 @@ int open_in_files(t_in_files *files, t_env *env)
             {
                 last_fd = open_file(file_name, false, false, false);
                 if (last_fd == -1)
-                    return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+                {
+                    ft_putstr_fd("minishell : ", 2);
+                    ft_putstr_fd(file_name, 2);
+                    ft_putendl_fd(strerror(errno), 2);
+                    return -1;
+                }
             }
             else
-                return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+            {
+                ft_putstr_fd("minishell : ", 2);
+                    ft_putstr_fd(file_name, 2);
+                    ft_putendl_fd(strerror(errno), 2);
+                    return -1;
+                // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+            }
         }
         else
-            return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+        {
+                ft_putstr_fd("minishell : ", 2);
+                ft_putstr_fd(file_name, 2);
+                ft_putendl_fd(strerror(errno), 2);
+                return -1;
+            // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
+        }
         if (files->next)
             close(last_fd);
         files = files->next;

@@ -8,5 +8,5 @@ env unset for $?, √
 pipes and fork protection,
 export problem "export 34dsv= a=b", √
 path problem "../ls or ./ls",√
-heredoc problem "echo hello << lim {then click ctr+c at heredoc input}",
+heredoc problem "echo hello << lim {then click ctr+c at heredoc input}",√
 

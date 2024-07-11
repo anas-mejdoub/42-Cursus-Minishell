@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 13:03:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:00:32 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -600,7 +600,10 @@ t_command	*parser(t_elem *elements, t_env *env)
 				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
 			if (handle_redir_in(command, comm_hand_ret->command, env_dqoute, env) == -1)
+			{
+				globalVar = 1;
 				return (NULL);
+			}
 			if (command->in_redir)
 			{
 				command->in_redir = false;
