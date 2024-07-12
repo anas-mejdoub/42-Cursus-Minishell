@@ -6,11 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/07/11 15:58:13 by amejdoub         ###   ########.fr       */
-=======
-/*   Updated: 2024/07/11 16:55:52 by amejdoub         ###   ########.fr       */
->>>>>>> exec
+/*   Updated: 2024/07/12 12:32:50 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +170,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             return NULL;
         }
         ret->pids = add_int(ret->pids, tmp->ret);
+    }
+    else if (command->type_node == SUBSHELL_NODE)
+    {
+        
     }
     else 
     {

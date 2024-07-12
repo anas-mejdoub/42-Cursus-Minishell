@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/07/11 15:27:06 by nbenyahy         ###   ########.fr       */
-=======
-/*   Updated: 2024/07/11 16:46:12 by amejdoub         ###   ########.fr       */
->>>>>>> exec
+/*   Updated: 2024/07/12 17:47:46 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +253,7 @@ t_elem *lexer()
     
     char* line;
     rl_on_new_line();
-    line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
+    line = readline(BHMAG "➜ minishell$ " RESET);
     if (line == NULL)
         exit(globalVar);
     if (line && *line)

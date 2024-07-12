@@ -6,11 +6,38 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 15:58:06 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/12 18:55:34 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int allocate_node1(t_elem **elem, char *content, int state, int token)
+{
+    t_elem *new_node;
+    t_elem *last_node;
+    
+    if (!content || content[0] == '\0')
+        return (0);
+    new_node = malloc(sizeof(t_elem));
+    if (!new_node)
+        return (1);
+    new_node->state = state;
+    new_node->type = token;
+    new_node->content = content;
+    new_node->len = ft_strlen(content);
+    new_node->next = NULL;
+    
+    if (!(*elem))
+        (*elem) = new_node;
+    else {
+        last_node = *elem;
+        while (last_node->next)
+            last_node = last_node->next;
+        last_node->next = new_node;
+    }
+    return (0);
+}
 
 t_command	*new_node(void)
 {
@@ -88,7 +115,11 @@ void	print_tree(t_command *root, int n)
 {
 	if (!root)
 		return ;
-	if (root->type_node != NODE)
+	if (root->type_node == NODE)
+		printf("simple node \n");
+	if (root->type_node == SUBSHELL_NODE)
+		printf("subshell opened\n");
+	else if (root->type_node != NODE)
 		printf("root %d\n", root->type_node);
 	else if (n == 1)
 		printf("----right----\n");
@@ -96,8 +127,9 @@ void	print_tree(t_command *root, int n)
 		printf("----left----\n");
 	else
 		printf("n is %d this time \n", n);
-	if (root->type_node == NODE)
+	// if (root->type_node == NODE || root->type_node == SUBSHELL_NODE)
 		print_2d(root);
+	printf("END\n");
 	print_tree(root->right, 1);
 	print_tree(root->left, 2);
 }
@@ -182,6 +214,8 @@ int set_type_node(int type_elem)
 		return AND_NODE;
 	else if (type_elem == OR)
 		return OR_NODE;
+	else if (type_elem == START_SUBSHELL)
+		return (SUBSHELL_NODE);
 	return (0);
 }
 t_command	*handle_pipe_node(t_command *command, int type_elem)
@@ -193,6 +227,7 @@ t_command	*handle_pipe_node(t_command *command, int type_elem)
 		return (NULL);
 	
 	pipe_node->right = command;
+	pipe_node->left = NULL;
 	pipe_node->type_node = set_type_node(type_elem);
 	return (pipe_node);
 }
@@ -529,12 +564,23 @@ void add_indexs_to_infiles(int *arr, int *len, t_in_files *file)
 		i++;
 	}
 }
+void print_node(t_elem *el)
+{
+	while (el)
+	{
+		printf("elem %s\n", el->content);
+		el = el->next;
+	}
+	printf("end of set\n");
+}
 t_command	*parser(t_elem *elements, t_env *env)
 {
 	t_command	*command;
 	t_command	*pipe_node;
 	bool		first_time;
 	t_command_h_ret *comm_hand_ret;
+	t_elem *subshell_set = NULL;
+	int lvl = 0;
 
 	comm_hand_ret = NULL;
 	first_time = true;
@@ -545,7 +591,48 @@ t_command	*parser(t_elem *elements, t_env *env)
 	bool env_dqoute = false;
 	while (elements)
 	{
-		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
+		// printf("elem : %s\n", elements->content);
+		if (elements->type == START_SUBSHELL)
+		{
+			elements = elements->next;
+			// printf ("subshell opened\n");
+			while (elements)
+			{
+				// printf("elem %s\n", elements->content);
+				if (elements->type == END_SUBSHELL && lvl == 0)
+				{
+					elements = elements->next;
+					break;
+				}
+				if (elements->type == START_SUBSHELL)
+				{
+					lvl++;
+				}
+				if (elements->type == END_SUBSHELL)
+				{
+					lvl--;
+				}
+				allocate_node1(&subshell_set, elements->content, elements->state, elements->type);
+				elements = elements->next;
+			}
+				t_command *sub = new_node();
+				sub->type_node = SUBSHELL_NODE;
+				sub->right =  parser(subshell_set, env);
+				if (((t_command *)sub->right)->type_node == ROOT_NODE)
+					printf("AS EXCPECTED %s\n", ((t_command *)((t_command *)sub->right)->right)->command_arg->content);
+				// printf("first of the subset %s\n", subshell_set->content);
+				if (pipe_node->right && !pipe_node->left)
+				{
+					pipe_node->left = sub;
+				}
+				else if (!pipe_node->right)
+				{
+
+					printf("YEEES\n");
+					pipe_node->right = sub;
+				}
+		}
+		if (elements && (elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			comm_hand_ret = command_handling(&elements);
 			if (comm_hand_ret->env)
@@ -556,7 +643,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 				add_to_command(command, new_arg(comm_hand_ret->command, false));
 			add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens, get_last_arg(command->command_arg));
 		}
-		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
+		else if (elements && (elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
 		{
 			pipe_node = handle_pipe_node(pipe_node, elements->type);
 			if (!pipe_node)
@@ -564,22 +651,23 @@ t_command	*parser(t_elem *elements, t_env *env)
 			command = new_node();
 			pipe_node->left = command;
 		}
-		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time)
+		else if (elements && (elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time)
 		{
+			// printf("pipeline ||||\n");
 			first_time = false;
 			command = new_node();
 			pipe_node->left = command;
 			pipe_node->type_node = set_type_node(elements->type);
 		}
-		else if (elements->type == REDIR_IN)
+		else if (elements && elements->type == REDIR_IN)
 			command->in_redir = true;
-		else if (elements->type == REDIR_OUT)
+		else if (elements && elements->type == REDIR_OUT)
 			command->out_redir = true;
-		else if (elements->type == DREDIR_OUT)
+		else if (elements &&elements->type == DREDIR_OUT)
 		{
 			command->dredir = true;
 		}
-		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir))
+		else if (elements && ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir)))
 		{
 			if (elements->state == IN_DQUOTE)
 				env_dqoute = true;
@@ -589,11 +677,11 @@ t_command	*parser(t_elem *elements, t_env *env)
 			handle_redir_out(command, comm_hand_ret->command, env_dqoute);
 			add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_file(command->outfiles));
 		}
-		else if (elements->type == HERE_DOC)
+		else if (elements && elements->type == HERE_DOC)
 		{
 			command->here_doc = true;
 		}
-		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))  && (command->here_doc || command->in_redir))
+		else if (elements && ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))  && (command->here_doc || command->in_redir)))
 		{
 			if (elements->state == IN_DQUOTE)
 				env_dqoute = true;
@@ -611,7 +699,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 				add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_in_file(command->in_files));
 			}
 		}
-		else if (elements->type == QOUTE && elements->next && ((t_elem *)elements->next)->type == QOUTE && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
+		else if (elements && elements->type == QOUTE && elements->next && ((t_elem *)elements->next)->type == QOUTE && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
 		{
 			add_to_command(command, new_arg(ft_strdup(""), false));
 		}
