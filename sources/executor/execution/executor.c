@@ -6,11 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/07/11 15:58:13 by amejdoub         ###   ########.fr       */
-=======
-/*   Updated: 2024/07/11 16:55:52 by amejdoub         ###   ########.fr       */
->>>>>>> exec
+/*   Updated: 2024/07/11 19:20:02 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +139,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             int k = pipe(fd);
             if (k == -1)
             {
+                // printf("the pipe res is %d\n", k);
                 close(fd[1]);
                 close(fd[0]);
                 ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);

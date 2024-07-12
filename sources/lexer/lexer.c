@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/07/11 15:27:06 by nbenyahy         ###   ########.fr       */
-=======
-/*   Updated: 2024/07/11 16:46:12 by amejdoub         ###   ########.fr       */
->>>>>>> exec
+/*   Updated: 2024/07/11 19:15:21 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +232,7 @@ void handle_sigint(int sig)
     globalVar = 1;
     printf(BHMAG "\n" RESET);
     rl_on_new_line();
-    // rl_replace_line("", 0);
+    rl_replace_line("", 0);
     rl_redisplay();
 }
 
