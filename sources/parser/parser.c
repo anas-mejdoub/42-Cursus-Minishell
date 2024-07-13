@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/13 10:51:27 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 12:06:39 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,15 +115,15 @@ void	print_tree(t_command *root, int n)
 {
 	if (!root)
 		return ;
-	if (root->type_node == NODE)
-		printf("simple node \n");
+	// if (root->type_node != NODE)
+	// if (root->type_node == NODE)
+	// 	printf("simple node \n");
 	if (root->type_node == SUBSHELL_NODE)
 		printf("subshell opened\n");
-	else if (root->type_node != NODE)
-		printf("root %d\n", root->type_node);
-	else if (n == 1)
+	printf("type of node %d\n", root->type_node);
+	if (n == 1)
 		printf("----right----\n");
-	else if (n == 2)
+	if (n == 2)
 		printf("----left----\n");
 	else
 		printf("n is %d this time \n", n);
@@ -617,6 +617,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 			}
 				// t_command *sub = new_node();
 				// sub->type_node = SUBSHELL_NODE;
+				printf("B4R the change is %d", command->type_node);
 				command->type_node = SUBSHELL_NODE;
 				t_command *tmp = parser(subshell_set, env);
 				if (tmp->type_node == ROOT_NODE)
