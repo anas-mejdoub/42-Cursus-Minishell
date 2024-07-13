@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/12 18:55:34 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 10:51:27 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -615,22 +615,29 @@ t_command	*parser(t_elem *elements, t_env *env)
 				allocate_node1(&subshell_set, elements->content, elements->state, elements->type);
 				elements = elements->next;
 			}
-				t_command *sub = new_node();
-				sub->type_node = SUBSHELL_NODE;
-				sub->right =  parser(subshell_set, env);
-				if (((t_command *)sub->right)->type_node == ROOT_NODE)
-					printf("AS EXCPECTED %s\n", ((t_command *)((t_command *)sub->right)->right)->command_arg->content);
+				// t_command *sub = new_node();
+				// sub->type_node = SUBSHELL_NODE;
+				command->type_node = SUBSHELL_NODE;
+				t_command *tmp = parser(subshell_set, env);
+				if (tmp->type_node == ROOT_NODE)
+				{
+					if (((t_command *)tmp->right)->type_node != ROOT_NODE)
+						tmp = tmp->right;
+				}
+				command->right =  tmp;
+				// if (((t_command *)command->right)->type_node == ROOT_NODE)
+				// 	printf("AS EXCPECTED %s\n", ((t_command *)((t_command *)co->right)->right)->command_arg->content);
 				// printf("first of the subset %s\n", subshell_set->content);
-				if (pipe_node->right && !pipe_node->left)
-				{
-					pipe_node->left = sub;
-				}
-				else if (!pipe_node->right)
-				{
+				// if (pipe_node->right && !pipe_node->left)
+				// {
+				// 	pipe_node->left = co;
+				// }
+				// else if (!pipe_node->right)
+				// {
 
-					printf("YEEES\n");
-					pipe_node->right = sub;
-				}
+				// 	printf("YEEES\n");
+				// 	pipe_node->right = sub;
+				// }
 		}
 		if (elements && (elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
