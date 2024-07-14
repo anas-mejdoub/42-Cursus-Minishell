@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/14 09:17:23 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/14 10:33:24 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,6 +279,13 @@ t_command_h_ret *command_handling(t_elem **element)
 				res->env = true;
 	while (*element)
 	{
+		if (((*element)->type == QOUTE &&  ((t_elem *)(*element)->next) && ((t_elem *)(*element)->next)->type == QOUTE) || ((*element)->type == DOUBLE_QUOTE && ((t_elem *)(*element)->next)  && ((t_elem *)(*element)->next)->type == DOUBLE_QUOTE))
+		{
+			if (!res->command)	
+			// 	res->command = ft_strjoin(res->command, ft_strdup(""));
+			// else
+				res->command = ft_strdup("");
+		}
 		if (((*element)->type == DOUBLE_QUOTE || (*element)->type == QOUTE))
 		{
 			res->including_null = true;
@@ -293,6 +300,8 @@ t_command_h_ret *command_handling(t_elem **element)
 		{
 			if (ft_strchr("><|()&", (*element)->type))
 				*element = tmp;
+		// printf("hehe\n");
+			
 			return res;
 		}
 		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
@@ -551,12 +560,14 @@ t_command	*parser(t_elem *elements, t_env *env)
 	bool env_dqoute = false;
 	while (elements)
 	{
-		if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
+		if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			add_to_command(command, new_arg(ft_strdup(""), true, false));
+			// printf("here\n");
 			elements = elements->next;
 		}
 		else if ((elements->type == WORD || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
+		// if ((elements->type == WORD || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			comm_hand_ret = command_handling(&elements);
 			if (comm_hand_ret->env)
@@ -599,6 +610,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 			else
 				env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
+			// printf ("res is '%s'\n", comm_hand_ret->command);
 			handle_redir_out(command, comm_hand_ret->command, env_dqoute);
 			add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_file(command->outfiles));
 		}

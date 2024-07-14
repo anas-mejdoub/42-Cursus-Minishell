@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/13 19:43:20 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/14 11:26:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,11 +199,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     globalVar = 1;
                 }    
             }
-            // if (command->infd == -2 || command->outfd == -2)
-            //     return (NULL);
-        if (c == 'b' && !(found_in || command->outfd == -2))
+        if (c == 'b')
         {
-            if (do_builtin(command, env) == -1)
+            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, env) == -1)
                 globalVar = 1;
             else
                 globalVar = 0;
@@ -224,7 +222,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
-            if (found_in || command->outfd == -2)
+            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
                 exit(1);
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
@@ -249,7 +247,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(0);
             if (is_builtin(command))
             {
-                if (do_builtin(command, env) == -1)
+                if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true)  || do_builtin(command, env) == -1)
                     exit(1);
                 exit(0);
             }

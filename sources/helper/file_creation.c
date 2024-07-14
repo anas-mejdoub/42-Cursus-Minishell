@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/13 13:00:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/14 11:24:37 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@ char  *ambiguous(void *files, bool type ,t_env *env)
     file2 = NULL;
     if (type == true)
     { 
-        // printf("gggggggg\n");
+        // printf("-%s-\n", file1->filename);
         file1 = (t_out_files *)files;
         if (!file1->index_list)
             file_name = file1->filename;
         else
             file_name = env_expander(file1->filename, file1->index_list, env);
-        if (!file_name || (file1 && file1->index_list && !file1->in_qoute && (ft_strchr(file_name, ' ') || file_name[0] == '\0')))
+        // printf("--%s--\n", file_name);
+        if (!file_name || (file1 && file1->index_list && !file1->in_qoute && (ft_strchr(file_name, ' ') || ft_strchr(file_name, '\t') || file_name[0] == '\0')))
         {
             ft_putstr_fd("minishell: ", 2);
             ft_putstr_fd(file1->filename, 2);
@@ -91,7 +92,7 @@ int open_out_files(t_out_files *files, t_env *env)
     {
         file_name = ambiguous(files, true, env);
         if (file_name == NULL)
-            return (-2);
+            return (-1);
         // printf("%s\n", file_name);
         if (access(file_name, F_OK) == 0)
         {
@@ -110,7 +111,7 @@ int open_out_files(t_out_files *files, t_env *env)
             }
             else
             {
-                ft_putstr_fd("minishell : ", 2);
+                    ft_putstr_fd("minishell : ", 2);
                     ft_putstr_fd(file_name, 2);
                     ft_putstr_fd(" ", 2);
                     ft_putendl_fd(strerror(errno), 2);
@@ -148,7 +149,7 @@ int open_in_files(t_in_files *files, t_env *env)
     {
         file_name = ambiguous(files, false, env);
         if (file_name == NULL)
-            return (-2);
+            return (-1);
         // printf("%s\n", file_name);
         if (access(file_name, F_OK) == 0)
         {
