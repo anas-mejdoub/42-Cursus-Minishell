@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/14 10:33:24 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/14 15:59:26 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -605,10 +605,22 @@ t_command	*parser(t_elem *elements, t_env *env)
 		}
 		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir))
 		{
-			if (elements->state == IN_DQUOTE)
+			t_elem *tmp = elements;
+
+			// if (tmp->type == DOUBLE_QUOTE)
+			// 	tmp= tmp->next;
+			while (tmp && tmp->type != ENV && tmp->type != WHITE_SPACE && tmp->type != PIPE_LINE && tmp->type != REDIR_IN && tmp->type != REDIR_OUT && tmp->type != DREDIR_OUT)
+			{
+				tmp = tmp->next;
+			}
+			if (tmp && tmp->state == IN_DQUOTE && tmp->type == ENV)
 				env_dqoute = true;
 			else
 				env_dqoute = false;
+			// if (elements->state == IN_DQUOTE)
+			// 	env_dqoute = true;
+			// else
+			// 	env_dqoute = false;
 			comm_hand_ret = command_handling(&elements);
 			// printf ("res is '%s'\n", comm_hand_ret->command);
 			handle_redir_out(command, comm_hand_ret->command, env_dqoute);

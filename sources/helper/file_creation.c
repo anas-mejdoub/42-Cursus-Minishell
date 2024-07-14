@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/14 11:24:37 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/14 12:57:14 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ char  *ambiguous(void *files, bool type ,t_env *env)
             file_name = file1->filename;
         else
             file_name = env_expander(file1->filename, file1->index_list, env);
+            // printf("--%s--\n", file_name);
+            // printf("--%d--\n", file1->in_qoute);
         // printf("--%s--\n", file_name);
         if (!file_name || (file1 && file1->index_list && !file1->in_qoute && (ft_strchr(file_name, ' ') || ft_strchr(file_name, '\t') || file_name[0] == '\0')))
         {
