@@ -6,11 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/07/11 15:27:06 by nbenyahy         ###   ########.fr       */
-=======
-/*   Updated: 2024/07/11 16:46:12 by amejdoub         ###   ########.fr       */
->>>>>>> exec
+/*   Updated: 2024/07/13 12:17:24 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +74,7 @@ int qoute_handler(t_elem **elem, char *line, int *i)
     else
     {
         ft_putstr_fd(RED "synthax error : missing a quote\n" RESET, 2);
+        globalVar = 2;
       // printf(RED "synthax error : missing a quote\n" RESET);
         return (1);
     }
@@ -121,6 +118,7 @@ int double_qoute_handler(t_elem **elem, char *line, int *i)
     else
     {
         ft_putstr_fd(RED "synthax error : missing a double quote\n" RESET, 2);
+        globalVar = 2;
         // printf(RED "synthax error : missing a double quote\n" RESET);
         return (1);
     }
@@ -270,6 +268,7 @@ t_elem *lexer()
     {
         // printf(RED "syntax error : missing a parenthese symbole\n" RESET);
         ft_putstr_fd(RED "synthax error : missing a parenthese symbole\n" RESET, 2);
+        globalVar = 2;
 
         return(free_elem(elem), NULL);
     }
@@ -277,7 +276,8 @@ t_elem *lexer()
     if (list)
     {
         // printf(RED "syntax error : unexpected token\n" RESET);
-        ft_putstr_fd(RED "syntax error : unexpected token\n" RESET, 2);
+        ft_putstr_fd(RED "minishell: syntax error\n" RESET, 2);
+        globalVar = 2;
         list = list->next;
         while (list)
         {

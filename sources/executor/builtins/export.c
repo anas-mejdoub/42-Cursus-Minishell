@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 15:20:38 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/13 17:45:05 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 int export_cmd(t_command *cmd, t_env *env)
 {
+    int ret = 0;
     int i;
         int fd_in;
     int fd_out;
@@ -47,6 +48,8 @@ int export_cmd(t_command *cmd, t_env *env)
                 ft_putstr_fd("minishell: export: `", 2);
 			    ft_putstr_fd(cmd->args[i], 2);
 			    ft_putstr_fd("': not a valid identifier\n", 2);
+                ret = -1;
+                globalVar = 1;
                 // printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
                 i++;
                 continue;
@@ -64,6 +67,8 @@ int export_cmd(t_command *cmd, t_env *env)
             ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(cmd->args[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
+            ret = -1;
+            globalVar = 1;
             // printf("minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
             i++;
             continue;
@@ -78,12 +83,24 @@ int export_cmd(t_command *cmd, t_env *env)
         {
             printf("declare -x %s", tmp_env_data->key);
             if (tmp_env_data->value)
-                printf("=\"%s\"", tmp_env_data->value);
+            {
+                printf("=\"");
+                int k = 0;
+                while (tmp_env_data->value[k])
+                {
+                    if (tmp_env_data->value[k] == '\"' || tmp_env_data->value[k] == '$')
+                        printf("\\");
+                    printf("%c", tmp_env_data->value[k]);
+                    k++;
+                }
+                printf("\"");
+            }
+                // printf("=\"%s\"", tmp_env_data->value);
             printf("\n");
             tmp_env_data = tmp_env_data->next;
         }
     }
     if (restor_rediraction(cmd, &fd_in, &fd_out) == -1)
         return (-1);
-    return (0);
+    return (ret);
 }

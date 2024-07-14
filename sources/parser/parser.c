@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 15:58:06 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/14 09:17:23 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	print_tree(t_command *root, int n)
 	print_tree(root->left, 2);
 }
 
-t_command_args *new_arg(char *content, bool env)
+t_command_args *new_arg(char *content, bool including_null,bool env)
 {
 	t_command_args* new;
 
@@ -111,6 +111,7 @@ t_command_args *new_arg(char *content, bool env)
 		return (NULL);
 	new->content = content;
 	new->env = env;
+	new->including_null = including_null;
 	new->next = NULL;
 	// new->env_arr = NULL;
 	new->index_list = NULL;
@@ -272,11 +273,16 @@ t_command_h_ret *command_handling(t_elem **element)
 	res->arr = NULL;
 	res->env = false;
 	res->lens = NULL;
+	res->including_null = false;
 	t_elem *tmp = NULL;
 	if ((*element)->type == ENV)
 				res->env = true;
 	while (*element)
 	{
+		if (((*element)->type == DOUBLE_QUOTE || (*element)->type == QOUTE))
+		{
+			res->including_null = true;
+		}
 		if ((*element)->type == ENV)
 		{
 			res->arr = add_int(res->arr, env_index((*element)->content, res->command));
@@ -545,15 +551,22 @@ t_command	*parser(t_elem *elements, t_env *env)
 	bool env_dqoute = false;
 	while (elements)
 	{
-		if ((elements->type == WORD || elements->type == ENV) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
+		if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
+		{
+			add_to_command(command, new_arg(ft_strdup(""), true, false));
+			elements = elements->next;
+		}
+		else if ((elements->type == WORD || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			comm_hand_ret = command_handling(&elements);
 			if (comm_hand_ret->env)
 			{
-				add_to_command(command, new_arg(comm_hand_ret->command, true));
+				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null, true));
 			}
 			else
-				add_to_command(command, new_arg(comm_hand_ret->command, false));
+			{
+				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null,false));
+			}
 			add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens, get_last_arg(command->command_arg));
 		}
 		else if ((elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
@@ -611,10 +624,10 @@ t_command	*parser(t_elem *elements, t_env *env)
 				add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_in_file(command->in_files));
 			}
 		}
-		else if (elements->type == QOUTE && elements->next && ((t_elem *)elements->next)->type == QOUTE && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
-		{
-			add_to_command(command, new_arg(ft_strdup(""), false));
-		}
+		// else if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
+		// {
+		// 	add_to_command(command, new_arg(ft_strdup(""), true, false));
+		// }
 		if (elements)
 			elements = elements->next;
 		else
