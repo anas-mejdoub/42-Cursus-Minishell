@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/13 12:06:39 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 13:02:45 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -617,7 +617,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 			}
 				// t_command *sub = new_node();
 				// sub->type_node = SUBSHELL_NODE;
-				printf("B4R the change is %d", command->type_node);
+				// printf("B4R the change is %d", command->type_node);
 				command->type_node = SUBSHELL_NODE;
 				t_command *tmp = parser(subshell_set, env);
 				if (tmp->type_node == ROOT_NODE)

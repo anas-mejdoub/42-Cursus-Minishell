@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/12 12:32:50 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/14 14:56:51 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             if (command->outfd != -1)
                 ((t_command *)command->left)->outfd = command->outfd;
+            if (command->infd != -1)
+                ((t_command *)command->right)->infd = command->infd;
             int k = pipe(fd);
             if (k == -1)
             {
@@ -173,7 +175,65 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     }
     else if (command->type_node == SUBSHELL_NODE)
     {
+        if (command->outfd != -1)
+        {
+            ((t_command *)command->right)->outfd = command->outfd;
+        }
+        if (command->infd != -1)
+        {
+            ((t_command *)command->right)->infd = command->infd;
+        }
         
+        // if (((t_command *)command->right)->type_node == PIPE_LINE_NODE)
+            // printf("the next is pipe line node \n");
+        int f = fork();
+        if (f == 0)
+        {
+            ret = executor(command->right, env, 'r', ev);
+            int kk = 0;
+            if (ret->pids)
+            {
+                int eter = 0;
+                while (1)
+                {
+                    if (ret->pids[eter] == -1)
+                        break;
+                    waitpid(ret->pids[eter], &kk, 0);
+                    if (WIFEXITED(kk))
+                        globalVar = WEXITSTATUS(kk);
+                    else if (WIFSIGNALED(kk))
+                        globalVar = WTERMSIG(kk) + 128;
+                    eter++;
+                }
+                // printf("the returned arr is not null\n");
+            }
+            else
+            {
+                waitpid(ret->ret, &kk, 0);
+                if (WIFEXITED(kk))
+                        globalVar = WEXITSTATUS(kk);
+                else if (WIFSIGNALED(kk))
+                        globalVar = WTERMSIG(kk) + 128;
+                // printf("exit status is %d\n", WEXITSTATUS(kk));
+            }
+            close(command->outfd);
+            // printf("return is %d\n", ret->ret);
+            exit (globalVar);
+        }
+        else if (f > 0)
+        {
+            int hh = 0;
+            // printf("%d\n", f);
+            waitpid(f, &hh, 0);
+            close(command->outfd);
+            close(command->infd);
+            globalVar = WEXITSTATUS(hh);
+            
+            
+            ret->ret = -1;
+            ret->pids = NULL;
+            return (ret);
+        }
     }
     else 
     {
@@ -190,6 +250,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->outfiles && !found_in)
             {
                 command->outfd = open_out_files(command->outfiles, env);
+                // printf("After overwrite the fd %d\n", command->outfd);
                 if (command->outfd < 0)
                 {
                     globalVar = 1;
@@ -216,6 +277,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         signal (SIGINT, handle_intr_sig);
         if (i == 0)
         {
+            // printf("%s", command->args[0]);
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
             if (found_in)
@@ -234,9 +296,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(126);
                 return NULL;
             }
-            dup2(command->outfd, STDOUT_FILENO);
+            if (command->outfd != -1)
+                dup2(command->outfd, STDOUT_FILENO);
             if (command->infd != -1)
                 dup2(command->infd, STDIN_FILENO);
+        // printf("2-b4r overwrite the fd %d %s\n", command->outfd, command->args[0]);
             close(command->outfd);
             close(command->infd);
             if (!command->path && !command->args)
@@ -246,6 +310,19 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 if (do_builtin(command, env) == -1)
                     exit(1);
                 exit(0);
+            }
+            if (command->command_arg && !ft_strncmp(command->args[0], "cat", ft_strlen(command->args[0])) && command->args[1] == NULL && !command->in_files && !command->outfiles && command->infd == -1 && command->outfd == -1)
+            {
+                // printf("YES\n");
+                while (1)
+                {
+                    char *str = get_next_line(0);
+                    if (!ft_strncmp(str, "\n", ft_strlen(str)))
+                        exit (0);
+                    else
+                        printf("%s", str);
+                    free(str);
+                }
             }
             if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
             {

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/12 18:07:54 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/14 14:48:36 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int main(int ac, char **av, char  **ev)
             continue;
         t_command *root = parser(elem, env);
         
-        print_tree(root, 0);
+        // print_tree(root, 0);
         // while (elem)
         // {
         //     printf("~%s~                       ", elem->content);
@@ -54,26 +54,26 @@ int main(int ac, char **av, char  **ev)
         //     elem = elem->next;
         // }
 
-        // t_exec_ret *r =  executor(root, env, '\0', ev);
+        t_exec_ret *r =  executor(root, env, '\0', ev);
         // // echo(root->right);
 
         // int *arr = NULL;
         
-        // int i = 0;
-        // int hehe= 0;
-        // // if (!r || !r->pids)
-        // //     printf("problem with the r\n");
-        // while (r && r->pids)
-        // {
-        //     if (r->pids[i] == -1)
-        //         break;
-        //     waitpid(r->pids[i], &hehe, 0);
-        //     if (WIFEXITED(hehe))
-        //         globalVar = WEXITSTATUS(hehe);
-        //     else if (WIFSIGNALED(hehe))
-        //         globalVar = WTERMSIG(hehe) + 128;
-        //     i++;
-        // }
+        int i = 0;
+        int hehe= 0;
+        if (!r || !r->pids)
+            printf("problem with the r\n");
+        while (r && r->pids)
+        {
+            if (r->pids[i] == -1)
+                break;
+            waitpid(r->pids[i], &hehe, 0);
+            if (WIFEXITED(hehe))
+                globalVar = WEXITSTATUS(hehe);
+            else if (WIFSIGNALED(hehe))
+                globalVar = WTERMSIG(hehe) + 128;
+            i++;
+        }
         // globalVar = 28 << 8;
         // printf("exit : %d\n", globalVar);
         // printf("hehe : %d\n", WEXIT(hehe));
