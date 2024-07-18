@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 09:58:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 11:10:36 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 19:57:17 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,12 @@ int echo_cmd(t_command *cmd)
             if (str[0] == '\0')
             {
                 new_line = 0;
-                // i++;
+                i++;
             }
+            else
+                break;
         }
-        i++;
+        // i++;
     }
     while (cmd->args && cmd->args[i])
     {

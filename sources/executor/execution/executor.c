@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 19:20:02 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:13:01 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,20 @@ char **get_command_args(t_command_args *args, t_env *env)
     while (args)
     {
         tmp_str = env_expander(args->content, args->index_list, env);
+        // printf("%d\n", args->including_null);
+        if (tmp_str[0] == '\0' && args->index_list && !args->including_null)
+        {
+            // ft_putendl_fd(tmp_str, 2);
+            args = args->next;
+            continue;
+        }
         if (ft_strchr(tmp_str, ' ') && args->env)
         {
             tmp_arr = ft_split(tmp_str, ' ');
             int i = 0;
             while (tmp_arr[i])
             {
+                // if (tmp_arr[i] == '\0')
                 res = add_to_args(res, tmp_arr[i]);
                 i++;
             }
@@ -194,7 +202,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
         if (c == 'b')
         {
-            if (do_builtin(command, env) == -1)
+            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, env) == -1)
                 globalVar = 1;
             else
                 globalVar = 0;
@@ -215,7 +223,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
-            if (found_in)
+            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
                 exit(1);
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
@@ -240,10 +248,16 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(0);
             if (is_builtin(command))
             {
-                if (do_builtin(command, env) == -1)
+                if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true)  || do_builtin(command, env) == -1)
                     exit(1);
                 exit(0);
             }
+            // for (int a = 0; command->args[a]; a++)
+            // {
+            //     ft_putendl_fd("hhhh",2);
+            //     ft_putendl_fd(command->args[a],2);
+            //     ft_putendl_fd("hhhh",2);
+            // }
             if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
             {
                 ft_putstr_fd("minishell: ", 2);

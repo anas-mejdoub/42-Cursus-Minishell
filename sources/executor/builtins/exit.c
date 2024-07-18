@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 17:16:41 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/11 19:31:48 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	exit_comand(t_command *cmd)
         // printf("exit\n");
 		restor_rediraction(cmd, &fd_in, &fd_out);
         free_tree(cmd);
-        exit(0);
+        exit(globalVar);
     }
 		int j = 0;
 		if (cmd->args[1][0] == '-' || cmd->args[1][0] == '+')
@@ -40,7 +40,7 @@ int	exit_comand(t_command *cmd)
 			j++;
 		if (cmd->args[1][j])
 		{
-			ft_putstr_fd("exit\nminishell: exit: ", 2);
+			ft_putstr_fd("minishell: exit: ", 2);
 			ft_putstr_fd(cmd->args[1], 2);
 			ft_putstr_fd(": numeric argument required\n", 2);
 			// printf("exit\nminishell: exit: %s: numeric argument required\n", cmd->args[1]);
@@ -52,9 +52,10 @@ int	exit_comand(t_command *cmd)
 		{
 			if (cmd->args[1] != NULL && cmd->args[2] != NULL)
     		{
-        		ft_putstr_fd("exit\nminishell: exit: too many arguments\n", 2);
+        		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 				restor_rediraction(cmd, &fd_in, &fd_out);
-        		return (1);
+				// globalVar = 1;
+        		return (-1);
     		}
 			j = 0;
 			res = 0;
@@ -72,7 +73,7 @@ int	exit_comand(t_command *cmd)
 				res = (res * 10) + (cmd->args[1][j] - '0');
 				if ((res > LLONG_MAX && sign == 1) || (res > LLONG_MAX && sign == -1))
                 {
-					ft_putstr_fd("exit\nminishell: exit: ", 2);
+					ft_putstr_fd("minishell: exit: ", 2);
 					ft_putstr_fd(cmd->args[1], 2);
 					ft_putstr_fd(": numeric argument required\n", 2);
 			        // printf("exit\n");

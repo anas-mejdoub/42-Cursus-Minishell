@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/09 09:43:14 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/13 19:16:58 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_command_h_ret
     int index;
     int *arr;
     int *lens;
+    bool    including_null;
     bool env;
 } t_command_h_ret;
 typedef struct s_in_files
@@ -65,6 +66,7 @@ typedef struct s_command_args
 {
     char *content;
     t_env_index *index_list;
+    bool    including_null;
     bool env;
     struct s_command_args *next;
 }t_command_args;
