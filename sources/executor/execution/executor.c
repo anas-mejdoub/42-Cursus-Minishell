@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/14 11:26:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/19 17:18:51 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,12 @@ char **get_command_args(t_command_args *args, t_env *env)
     while (args)
     {
         tmp_str = env_expander(args->content, args->index_list, env);
+        if (tmp_str == NULL)
+        {
+            args = args->next;
+           continue; 
+        }
+            
         // printf("%d\n", args->including_null);
         if (tmp_str[0] == '\0' && args->index_list && !args->including_null)
         {
@@ -182,6 +188,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     else 
     {
         command->args = get_command_args(command->command_arg, env);
+        if (command->args == NULL)
+        {
+            return (NULL);
+        }
             if (command->in_files)
             {
                 command->infd = open_in_files(command->in_files, env);

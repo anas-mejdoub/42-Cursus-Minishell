@@ -10,3 +10,5 @@ export problem "export 34dsv= a=b", √
 path problem "../ls or ./ls",√
 heredoc problem "echo hello << lim {then click ctr+c at heredoc input}",√
 
+appends√          cd√               env√              exit√             export√           heredocs (done expect qoute and dqoute cases)        mkdir√            pipes √           redirections √    syntax-errors √
+cat √            echo √           execution (error names)        exit-status √      files √           misc (error names)             nested-minishell (seg fault)       pwd √             rmdir  √          unset √

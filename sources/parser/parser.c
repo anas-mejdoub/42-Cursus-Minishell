@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/14 15:59:26 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/19 17:14:11 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,7 +347,7 @@ t_in_files *new_in_file(char *filename, bool here_doc, bool env_qoute)
 		return (NULL);
 	new->filename = filename;
 	new->here_doc = here_doc;
-	new->in_qoute = env_qoute;
+	new->ambiguous = env_qoute;
 	new->limiter = NULL;
 	new->index_list = NULL;
 	new->next = NULL;
@@ -455,7 +455,7 @@ t_out_files *get_last_file(t_out_files *files)
 	return (files);
 }
 
-t_out_files *new_file(char *filename, bool append, bool env_dqoute)
+t_out_files *new_file(char *filename, bool append, bool ambiguous)
 {
 	t_out_files *new;
 	new = malloc(sizeof(t_out_files));
@@ -463,7 +463,7 @@ t_out_files *new_file(char *filename, bool append, bool env_dqoute)
 		return (NULL);
 	new->filename = filename;
 	new->append = append;
-	new->in_qoute = env_dqoute;
+	new->ambiguous = ambiguous;
 	new->next = NULL;
 	new->index_list = NULL;
 	return (new);
@@ -475,14 +475,14 @@ void add_to_outfiles(t_command *command, t_out_files *file)
 	else
 		get_last_file(command->outfiles)->next = file;
 }
-void	handle_redir_out(t_command *command, char *filename, bool env_dqoute)
+void	handle_redir_out(t_command *command, char *filename, bool ambiguous)
 {
 	command->out_redir = false;
 	bool append = false;
 	if (command->dredir)
 		append = true;
 	command->dredir = false;
-	add_to_outfiles(command, new_file(filename, append, env_dqoute));
+	add_to_outfiles(command, new_file(filename, append, ambiguous));
 }
 void add_indexs_to_args(int *arr, int *lens, t_command_args *args)
 {
@@ -557,7 +557,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 	pipe_node = new_node();
 	pipe_node->type_node = ROOT_NODE;
 	pipe_node->right = command;
-	bool env_dqoute = false;
+	bool ambiguous = false;
 	while (elements)
 	{
 		if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
@@ -606,25 +606,12 @@ t_command	*parser(t_elem *elements, t_env *env)
 		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir))
 		{
 			t_elem *tmp = elements;
-
-			// if (tmp->type == DOUBLE_QUOTE)
-			// 	tmp= tmp->next;
-			while (tmp && tmp->type != ENV && tmp->type != WHITE_SPACE && tmp->type != PIPE_LINE && tmp->type != REDIR_IN && tmp->type != REDIR_OUT && tmp->type != DREDIR_OUT)
-			{
-				tmp = tmp->next;
-			}
-			if (tmp && tmp->state == IN_DQUOTE && tmp->type == ENV)
-				env_dqoute = true;
-			else
-				env_dqoute = false;
-			// if (elements->state == IN_DQUOTE)
-			// 	env_dqoute = true;
-			// else
-			// 	env_dqoute = false;
+			bool err = imbg(tmp, env);
+			ambiguous = err;
 			comm_hand_ret = command_handling(&elements);
-			// printf ("res is '%s'\n", comm_hand_ret->command);
-			handle_redir_out(command, comm_hand_ret->command, env_dqoute);
+			handle_redir_out(command, comm_hand_ret->command, ambiguous);
 			add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_file(command->outfiles));
+
 		}
 		else if (elements->type == HERE_DOC)
 		{
@@ -632,12 +619,11 @@ t_command	*parser(t_elem *elements, t_env *env)
 		}
 		else if ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))  && (command->here_doc || command->in_redir))
 		{
-			if (elements->state == IN_DQUOTE)
-				env_dqoute = true;
-			else
-				env_dqoute = false;
+			t_elem *tmp = elements;
+			bool err = imbg(tmp, env);
+			ambiguous = err;
 			comm_hand_ret = command_handling(&elements);
-			if (handle_redir_in(command, comm_hand_ret->command, env_dqoute, env) == -1)
+			if (handle_redir_in(command, comm_hand_ret->command, ambiguous, env) == -1)
 			{
 				globalVar = 1;
 				return (NULL);

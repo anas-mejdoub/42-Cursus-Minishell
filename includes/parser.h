@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/13 19:16:58 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/19 17:13:40 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_out_files
 {
     char *filename;
     bool append;
-    bool in_qoute;
+    bool ambiguous;
     t_env_index *index_list;
     struct s_out_files *next;
 } t_out_files;
@@ -56,7 +56,7 @@ typedef struct s_in_files
 {
     char *filename;
     bool here_doc;
-    bool in_qoute;
+    bool ambiguous;
     char *limiter;
     t_env_index *index_list;
     struct s_in_files *next;
