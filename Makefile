@@ -5,6 +5,7 @@ SRC =\
 		sources/lexer/syntax_error.c \
 		sources/parser/parser.c \
 		sources/here_doc/here_doc.c \
+		sources/wildcard/wildcard.c \
 		sources/helper/env_helper.c sources/helper/file_creation.c sources/helper/free_tree.c sources/helper/is_builtin.c sources/helper/env_to_2d_arr.c sources/helper/redirections_helper.c\
 		sources/executor/builtins/echo.c sources/executor/builtins/pwd.c sources/executor/builtins/env_command.c sources/executor/builtins/exit.c sources/executor/builtins/export.c sources/executor/builtins/cd.c sources/executor/builtins/unset.c\
 		sources/minishell.c 

@@ -66,7 +66,8 @@
     "unistd.h": "c",
     "local_builtin.h": "c",
     "local_lexer.h": "c",
-    "executor.h": "c"
+    "executor.h": "c",
+    "here_doc.h": "c"
   },
   "editor.fontFamily": "fira code"
 }

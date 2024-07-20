@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/19 17:18:51 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/19 17:50:53 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         ret->pids = add_int(ret->pids, tmp->ret);
     }
-    else 
+    else
     {
         command->args = get_command_args(command->command_arg, env);
         if (command->args == NULL)

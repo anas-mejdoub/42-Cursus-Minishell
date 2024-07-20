@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/14 16:38:25 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/20 14:40:32 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,7 @@ t_elem *lexer()
     rl_on_new_line();
     line = readline(BHMAG "➜ tchbi7a-shell$ " RESET);
     if (line == NULL)
-        exit(globalVar);
+        exit(globalVar);    
     if (line && *line)
     {
         add_history(line);
