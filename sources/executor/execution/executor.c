@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 16:24:09 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:26:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             return (ret);
         }
     }
-     else if (command->type_node == NODE)
+    else if (command->type_node == NODE)
     {
         command->args = get_command_args(command->command_arg, env);
             if (command->in_files)
@@ -327,15 +327,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(126);
                 return NULL;
             }
-            // int popo = 0;
-            // while (command->to_close)
-            // {
-            //     if (command->to_close[popo] == -1)
-            //         break;
-            //     printf("fd %d\n", command->to_close[popo]);
-            //     popo++;
-            // }
-            // printf("%c in is %d \n", c, command->fd[0]);
             if (command->outfd != -1)
                 dup2(command->outfd, STDOUT_FILENO); //changed
             if (command->infd != -1)
@@ -385,8 +376,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             ret->pids = NULL;
             return (ret);
         }
-        else if (i < 0)
-            ft_putstr_fd("THE FORK FAILED ! \n", 2);
     }
     return (ret);
 }
