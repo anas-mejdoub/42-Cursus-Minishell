@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/14 10:55:54 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 12:57:56 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ void handle_sigint(int sig)
     globalVar = 1;
     printf(BHMAG "\n" RESET);
     rl_on_new_line();
-    // rl_replace_line("", 0);
+    rl_replace_line("", 0);
     rl_redisplay();
 }
 
@@ -249,7 +249,7 @@ t_elem *lexer()
     subshell = 0;
     t_elem *elem = NULL;
     signal(SIGINT, handle_sigint);
-    signal(SIGQUIT, handle_sigquit);
+    signal(SIGQUIT, SIG_IGN);
     
     char* line;
     rl_on_new_line();

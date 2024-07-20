@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/14 14:56:51 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:24:09 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,17 @@ char	*ft_freed_join(char *s1, char *s2)
 	res[i] = '\0';
 	free(s1);
 	return (res);
+}
+void close_fds(int *arr)
+{
+    int i = 0;
+    while (arr)
+    {
+        if (arr[i] == -1)
+            break;
+        close (arr[i]);
+        i++;
+    }
 }
 
 char *get_path(char *command, t_env *env)
@@ -89,6 +100,10 @@ char *get_path(char *command, t_env *env)
 }
 char **get_command_args(t_command_args *args, t_env *env)
 {
+    int fd[2];
+    
+    fd[0] = -1;
+    fd[1] = -1;
     char **res;
     char *tmp_str;
     char **tmp_arr;
@@ -119,6 +134,8 @@ void handle_intr_sig(int sig)
 t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
     int fd[2];
+    fd[0] = -1;
+    fd[1] = -1;
     t_exec_ret *ret;
     t_exec_ret *tmp = NULL;
     bool found_in = false;
@@ -134,11 +151,19 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     {
         if (command->type_node == PIPE_LINE_NODE )
         {
+            ((t_command *)command->left)->to_close = add_int(command->to_close, command->fd[0]);
+            ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
             if (command->outfd != -1)
+            {
                 ((t_command *)command->left)->outfd = command->outfd;
+            }
             if (command->infd != -1)
                 ((t_command *)command->right)->infd = command->infd;
             int k = pipe(fd);
+            ((t_command *)command->left)->fd[0] = fd[0];
+            ((t_command *)command->left)->fd[1] = fd[1];
+            ((t_command *)command->right)->fd[0] = fd[0];
+            ((t_command *)command->right)->fd[1] = fd[1];
             if (k == -1)
             {
                 close(fd[1]);
@@ -154,6 +179,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             tmp = executor(command->right, env, 'b', ev);
         else if (command && command->right)
             tmp = executor(command->right, env, 'r', ev);
+        close (fd[1]);
         if (!tmp)
         {
             close(fd[1]);
@@ -165,6 +191,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         else if (tmp && tmp->ret != -1)
             ret->pids = add_int(ret->pids, tmp->ret);
         tmp = executor(command->left, env, 'l', ev);
+        close(fd[0]);
         if (!tmp)
         {
             close(fd[1]);
@@ -175,6 +202,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     }
     else if (command->type_node == SUBSHELL_NODE)
     {
+        
+        ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
+        ((t_command *)command->right)->fd[0] = command->fd[0];
+        ((t_command *)command->right)->fd[1] = command->fd[1];
+        
+        command->to_close = add_int(command->to_close, command->fd[0]);
+        // printf("the first is %d\n", command->to_close[0]);
         if (command->outfd != -1)
         {
             ((t_command *)command->right)->outfd = command->outfd;
@@ -183,12 +217,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             ((t_command *)command->right)->infd = command->infd;
         }
-        
-        // if (((t_command *)command->right)->type_node == PIPE_LINE_NODE)
-            // printf("the next is pipe line node \n");
         int f = fork();
         if (f == 0)
         {
+            // close_fds(command->to_close);
+            // close(command->fd[0]);
             ret = executor(command->right, env, 'r', ev);
             int kk = 0;
             if (ret->pids)
@@ -205,7 +238,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                         globalVar = WTERMSIG(kk) + 128;
                     eter++;
                 }
-                // printf("the returned arr is not null\n");
             }
             else
             {
@@ -214,28 +246,27 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                         globalVar = WEXITSTATUS(kk);
                 else if (WIFSIGNALED(kk))
                         globalVar = WTERMSIG(kk) + 128;
-                // printf("exit status is %d\n", WEXITSTATUS(kk));
             }
             close(command->outfd);
-            // printf("return is %d\n", ret->ret);
             exit (globalVar);
         }
         else if (f > 0)
         {
             int hh = 0;
-            // printf("%d\n", f);
-            waitpid(f, &hh, 0);
+            // waitpid(f, &hh, 0);
             close(command->outfd);
             close(command->infd);
+            if (c == 'r')
+                close(command->fd[1]);
+            if (c == 'l')
+                close(command->fd[0]);
             globalVar = WEXITSTATUS(hh);
-            
-            
-            ret->ret = -1;
+            ret->ret = f;
             ret->pids = NULL;
             return (ret);
         }
     }
-    else 
+     else if (command->type_node == NODE)
     {
         command->args = get_command_args(command->command_arg, env);
             if (command->in_files)
@@ -250,7 +281,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->outfiles && !found_in)
             {
                 command->outfd = open_out_files(command->outfiles, env);
-                // printf("After overwrite the fd %d\n", command->outfd);
                 if (command->outfd < 0)
                 {
                     globalVar = 1;
@@ -258,7 +288,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
         if (c == 'b')
         {
-            if (do_builtin(command, env) == -1)
+            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, env) == -1)
                 globalVar = 1;
             else
                 globalVar = 0;
@@ -267,6 +297,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         signal (SIGINT, SIG_IGN);
         globalVar = 0;
+        
         pid_t i = fork();
         if (i < 0)
         {
@@ -277,10 +308,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         signal (SIGINT, handle_intr_sig);
         if (i == 0)
         {
-            // printf("%s", command->args[0]);
+            signal(SIGQUIT, SIG_DFL);
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
-            if (found_in)
+            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
                 exit(1);
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
@@ -296,33 +327,41 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(126);
                 return NULL;
             }
+            // int popo = 0;
+            // while (command->to_close)
+            // {
+            //     if (command->to_close[popo] == -1)
+            //         break;
+            //     printf("fd %d\n", command->to_close[popo]);
+            //     popo++;
+            // }
+            // printf("%c in is %d \n", c, command->fd[0]);
             if (command->outfd != -1)
-                dup2(command->outfd, STDOUT_FILENO);
+                dup2(command->outfd, STDOUT_FILENO); //changed
             if (command->infd != -1)
-                dup2(command->infd, STDIN_FILENO);
-        // printf("2-b4r overwrite the fd %d %s\n", command->outfd, command->args[0]);
+                dup2(command->infd, STDIN_FILENO); // changed 
+            if (c == 'r')
+            {
+                
+                close(command->fd[0]);
+                if (command->to_close != NULL)
+                    close_fds(command->to_close);
+            }
+            if (c == 'l')
+            {
+                if (command->to_close != NULL)
+                    close_fds(command->to_close);
+                close(command->fd[1]);
+            }
             close(command->outfd);
             close(command->infd);
             if (!command->path && !command->args)
                 exit(0);
             if (is_builtin(command))
             {
-                if (do_builtin(command, env) == -1)
+                if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true)  || do_builtin(command, env) == -1)
                     exit(1);
                 exit(0);
-            }
-            if (command->command_arg && !ft_strncmp(command->args[0], "cat", ft_strlen(command->args[0])) && command->args[1] == NULL && !command->in_files && !command->outfiles && command->infd == -1 && command->outfd == -1)
-            {
-                // printf("YES\n");
-                while (1)
-                {
-                    char *str = get_next_line(0);
-                    if (!ft_strncmp(str, "\n", ft_strlen(str)))
-                        exit (0);
-                    else
-                        printf("%s", str);
-                    free(str);
-                }
             }
             if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
             {
@@ -336,8 +375,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             close(command->outfd);
             close(command->infd);
-            // if (i == -1)
-            //     ft_("something wrong !\n");
+            if (c == 'r')
+                close(command->fd[1]);
+            if (c == 'l')
+            {
+                close(command->fd[0]);
+            }
             ret->ret = i;
             ret->pids = NULL;
             return (ret);

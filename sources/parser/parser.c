@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/13 13:02:45 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:03:09 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@ t_command	*new_node(void)
 	if (!new)
 		return (0);
 	new->right = NULL;
+	new->fd[0] = -1;
+	new->fd[1] = -1;
+	new->to_close = NULL;
 	new->left = NULL;
 	new->path = NULL;
 	new->pipe = false;
@@ -566,6 +569,7 @@ void add_indexs_to_infiles(int *arr, int *len, t_in_files *file)
 }
 void print_node(t_elem *el)
 {
+	printf("start of set\n");
 	while (el)
 	{
 		printf("elem %s\n", el->content);
@@ -615,11 +619,16 @@ t_command	*parser(t_elem *elements, t_env *env)
 				allocate_node1(&subshell_set, elements->content, elements->state, elements->type);
 				elements = elements->next;
 			}
+			// print_node(subshell_set);
+			// printf("-------------------------\n");
 				// t_command *sub = new_node();
 				// sub->type_node = SUBSHELL_NODE;
 				// printf("B4R the change is %d", command->type_node);
 				command->type_node = SUBSHELL_NODE;
 				t_command *tmp = parser(subshell_set, env);
+				subshell_set = NULL;
+				// printf("sub will be printed \n");
+				// print_tree(tmp, 0);
 				if (tmp->type_node == ROOT_NODE)
 				{
 					if (((t_command *)tmp->right)->type_node != ROOT_NODE)

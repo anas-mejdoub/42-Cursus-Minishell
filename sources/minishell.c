@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/14 14:48:36 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:03:22 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int main(int ac, char **av, char  **ev)
     while (1)
     {
         elem = lexer();
+        // printf("2\n");
         if (!elem)
             continue;
         t_command *root = parser(elem, env);
@@ -74,6 +75,7 @@ int main(int ac, char **av, char  **ev)
                 globalVar = WTERMSIG(hehe) + 128;
             i++;
         }
+        // printf("1\n");
         // globalVar = 28 << 8;
         // printf("exit : %d\n", globalVar);
         // printf("hehe : %d\n", WEXIT(hehe));
@@ -100,5 +102,6 @@ int main(int ac, char **av, char  **ev)
     //     // if (content)
     //     //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
     }
+    // printf("heh\n");
         return (globalVar);
 }
