@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 16:55:47 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 19:03:55 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ char **get_command_args(t_command_args *args, t_env *env)
         if (tmp_str == NULL)
         {
             args = args->next;
-           continue; 
+            continue; 
         }
             
         // printf("%d\n", args->including_null);
@@ -147,6 +147,7 @@ void handle_intr_sig(int sig)
 }
 t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
+            int status;
     int fd[2];
     fd[0] = -1;
     fd[1] = -1;
@@ -159,6 +160,106 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     {
         ret->ret = -1;
         ret->pids = NULL;
+        return (ret);
+    }
+    if (command->type_node == AND_NODE)
+    {
+        if (command->outfd != -1)
+            ((t_command *)command->left)->outfd = command->outfd;
+        if (command->infd != -1)
+            ((t_command *)command->right)->infd = command->infd;
+        ((t_command *)command->left)->fd[0] = fd[0];
+        ((t_command *)command->left)->fd[1] = fd[1];
+        ((t_command *)command->right)->fd[0] = fd[0];
+        ((t_command *)command->right)->fd[1] = fd[1];
+        tmp = executor(command->right, env, 'r', ev);
+        if (!tmp)
+            return NULL;
+        if (tmp && tmp->pids)
+        {
+            int ir = 0;
+            while (tmp && tmp->pids)
+            {
+                if (tmp->pids[ir] == -1)
+                    break;
+                waitpid(tmp->pids[ir], &status, 0);
+                if (WIFEXITED(status))
+                    globalVar = WEXITSTATUS(status);
+                else if (WIFSIGNALED(status))
+                    globalVar = WTERMSIG(status) + 128;
+                ir++;
+            }
+            ret->pids = tmp->pids;
+        }
+        else if (tmp && tmp->ret != -1)
+        {
+            waitpid(tmp->ret, &status, 0);
+            if (WIFEXITED(status))
+                globalVar = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                globalVar = WTERMSIG(status) + 128;
+            ret->pids = add_int(ret->pids, tmp->ret);
+        }
+        if (globalVar == 0)
+        {
+            tmp = executor(command->left, env, 'l', ev);
+            if (!tmp)
+                return NULL;
+            if (tmp && tmp->pids)
+                ret->pids = tmp->pids;
+            else if (tmp && tmp->ret != -1)
+                ret->pids = add_int(ret->pids, tmp->ret);
+        }
+    }
+    if (command->type_node == OR_NODE)
+    {
+        printf ("OOOOR\n");
+        if (command->outfd != -1)
+            ((t_command *)command->left)->outfd = command->outfd;
+        if (command->infd != -1)
+            ((t_command *)command->right)->infd = command->infd;
+        ((t_command *)command->left)->fd[0] = fd[0];
+        ((t_command *)command->left)->fd[1] = fd[1];
+        ((t_command *)command->right)->fd[0] = fd[0];
+        ((t_command *)command->right)->fd[1] = fd[1];
+        tmp = executor(command->right, env, 'r', ev);
+        if (!tmp)
+            return NULL;
+        if (tmp && tmp->pids)
+        {
+            int ir = 0;
+            while (tmp && tmp->pids)
+            {
+                if (tmp->pids[ir] == -1)
+                    break;
+                waitpid(tmp->pids[ir], &status, 0);
+                if (WIFEXITED(status))
+                    globalVar = WEXITSTATUS(status);
+                else if (WIFSIGNALED(status))
+                    globalVar = WTERMSIG(status) + 128;
+                ir++;
+            }
+            ret->pids = tmp->pids;
+        }
+        else if (tmp && tmp->ret != -1)
+        {
+            waitpid(tmp->ret, &status, 0);
+            if (WIFEXITED(status))
+                globalVar = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                globalVar = WTERMSIG(status) + 128;
+            ret->pids = add_int(ret->pids, tmp->ret);
+        }
+        if (globalVar != 0)
+        {
+            tmp = executor(command->left, env, 'l', ev);
+            if (!tmp)
+                return NULL;
+            if (tmp && tmp->pids)
+                ret->pids = tmp->pids;
+            else if (tmp && tmp->ret != -1)
+                ret->pids = add_int(ret->pids, tmp->ret);
+        }
         return (ret);
     }
     if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
@@ -221,6 +322,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         ((t_command *)command->right)->fd[0] = command->fd[0];
         ((t_command *)command->right)->fd[1] = command->fd[1];
         
+        // while (command->outfiles)
+        // {
+        //     printf("%s\n", command->outfiles->filename);
+        //     command->outfiles = command->outfiles->next;
+        // }
         command->to_close = add_int(command->to_close, command->fd[0]);
         // printf("the first is %d\n", command->to_close[0]);
         if (command->outfd != -1)
@@ -231,11 +337,26 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             ((t_command *)command->right)->infd = command->infd;
         }
+        if (command->in_files)
+            {
+                ((t_command *)command->right)->infd = open_in_files(command->in_files, env);
+                if (((t_command *)command->right)->infd < 0)
+                {
+                    found_in = true;
+                    globalVar = 1;
+                }
+            }
+            if (command->outfiles && !found_in)
+            {
+                ((t_command *)command->right)->outfd = open_out_files(command->outfiles, env);
+                if (((t_command *)command->right)->outfd < 0)
+                {
+                    globalVar = 1;
+                }    
+            }
         int f = fork();
         if (f == 0)
         {
-            // close_fds(command->to_close);
-            // close(command->fd[0]);
             ret = executor(command->right, env, 'r', ev);
             int kk = 0;
             if (ret->pids)

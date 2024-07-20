@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 17:19:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/20 19:48:09 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ int main(int ac, char **av, char  **ev)
         int i = 0;
         int hehe= 0;
         if (!r || !r->pids)
-            printf("problem with the r\n");
+            continue;
+            // printf("problem with the r\n");
         while (r && r->pids)
         {
             if (r->pids[i] == -1)
