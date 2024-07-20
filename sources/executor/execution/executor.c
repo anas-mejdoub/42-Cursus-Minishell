@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 16:55:47 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 17:32:46 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,6 +221,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         ((t_command *)command->right)->fd[0] = command->fd[0];
         ((t_command *)command->right)->fd[1] = command->fd[1];
         
+        // while (command->outfiles)
+        // {
+        //     printf("%s\n", command->outfiles->filename);
+        //     command->outfiles = command->outfiles->next;
+        // }
         command->to_close = add_int(command->to_close, command->fd[0]);
         // printf("the first is %d\n", command->to_close[0]);
         if (command->outfd != -1)
@@ -231,11 +236,26 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             ((t_command *)command->right)->infd = command->infd;
         }
+        if (command->in_files)
+            {
+                ((t_command *)command->right)->infd = open_in_files(command->in_files, env);
+                if (((t_command *)command->right)->infd < 0)
+                {
+                    found_in = true;
+                    globalVar = 1;
+                }
+            }
+            if (command->outfiles && !found_in)
+            {
+                ((t_command *)command->right)->outfd = open_out_files(command->outfiles, env);
+                if (((t_command *)command->right)->outfd < 0)
+                {
+                    globalVar = 1;
+                }    
+            }
         int f = fork();
         if (f == 0)
         {
-            // close_fds(command->to_close);
-            // close(command->fd[0]);
             ret = executor(command->right, env, 'r', ev);
             int kk = 0;
             if (ret->pids)
