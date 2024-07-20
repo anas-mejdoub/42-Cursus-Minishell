@@ -13,11 +13,11 @@ SRC =\
 
 OBJ = $(SRC:.c=.o)
 
-LIBFT = sources/super_libft/libft.a # -L /goinfre/$(USER)/homebrew/opt/readline/lib 
+LIBFT = sources/super_libft/libft.a  -L /goinfre/$(USER)/homebrew/opt/readline/lib 
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -g -I includes/   -fsanitize=address -g #-I/goinfre/$(USER)/homebrew/opt/readline/include 
+CFLAGS = -Wall -Wextra -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include -fsanitize=address
 
 NAME = minishell
 

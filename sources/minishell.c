@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 16:47:33 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:03:22 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,11 @@ int main(int ac, char **av, char  **ev)
     while (1)
     {
         elem = lexer();
+        // printf("2\n");
         if (!elem)
             continue;
         t_command *root = parser(elem, env);
+        
         // print_tree(root, 0);
         // while (elem)
         // {
@@ -54,14 +56,14 @@ int main(int ac, char **av, char  **ev)
         // }
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
-        // echo(root->right);
+        // // echo(root->right);
 
-        int *arr = NULL;
+        // int *arr = NULL;
         
         int i = 0;
         int hehe= 0;
-        // if (!r || !r->pids)
-        //     printf("problem with the r\n");
+        if (!r || !r->pids)
+            printf("problem with the r\n");
         while (r && r->pids)
         {
             if (r->pids[i] == -1)
@@ -73,6 +75,7 @@ int main(int ac, char **av, char  **ev)
                 globalVar = WTERMSIG(hehe) + 128;
             i++;
         }
+        // printf("1\n");
         // globalVar = 28 << 8;
         // printf("exit : %d\n", globalVar);
         // printf("hehe : %d\n", WEXIT(hehe));
@@ -99,5 +102,6 @@ int main(int ac, char **av, char  **ev)
     //     // if (content)
     //     //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
     }
+    // printf("heh\n");
         return (globalVar);
 }

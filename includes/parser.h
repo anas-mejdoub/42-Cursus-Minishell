@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/19 17:13:40 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:57:51 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ enum e_type_node
     AND_NODE = 3,
     OR_NODE = 4,
     ROOT_NODE,
+    SUBSHELL_NODE,
 };
 
 
@@ -73,6 +74,8 @@ typedef struct s_command_args
 
 typedef struct s_commands
 {
+    int fd[2];
+    int *to_close;
     t_command_args *command_arg;
     char **args;
     int type_node;

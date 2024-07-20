@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/19 17:50:53 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:55:47 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,17 @@ char	*ft_freed_join(char *s1, char *s2)
 	res[i] = '\0';
 	free(s1);
 	return (res);
+}
+void close_fds(int *arr)
+{
+    int i = 0;
+    while (arr)
+    {
+        if (arr[i] == -1)
+            break;
+        close (arr[i]);
+        i++;
+    }
 }
 
 char *get_path(char *command, t_env *env)
@@ -89,6 +100,10 @@ char *get_path(char *command, t_env *env)
 }
 char **get_command_args(t_command_args *args, t_env *env)
 {
+    int fd[2];
+    
+    fd[0] = -1;
+    fd[1] = -1;
     char **res;
     char *tmp_str;
     char **tmp_arr;
@@ -133,6 +148,8 @@ void handle_intr_sig(int sig)
 t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
     int fd[2];
+    fd[0] = -1;
+    fd[1] = -1;
     t_exec_ret *ret;
     t_exec_ret *tmp = NULL;
     bool found_in = false;
@@ -148,9 +165,19 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     {
         if (command->type_node == PIPE_LINE_NODE )
         {
+            ((t_command *)command->left)->to_close = add_int(command->to_close, command->fd[0]);
+            ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
             if (command->outfd != -1)
+            {
                 ((t_command *)command->left)->outfd = command->outfd;
+            }
+            if (command->infd != -1)
+                ((t_command *)command->right)->infd = command->infd;
             int k = pipe(fd);
+            ((t_command *)command->left)->fd[0] = fd[0];
+            ((t_command *)command->left)->fd[1] = fd[1];
+            ((t_command *)command->right)->fd[0] = fd[0];
+            ((t_command *)command->right)->fd[1] = fd[1];
             if (k == -1)
             {
                 close(fd[1]);
@@ -166,6 +193,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             tmp = executor(command->right, env, 'b', ev);
         else if (command && command->right)
             tmp = executor(command->right, env, 'r', ev);
+        close (fd[1]);
         if (!tmp)
         {
             close(fd[1]);
@@ -177,6 +205,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         else if (tmp && tmp->ret != -1)
             ret->pids = add_int(ret->pids, tmp->ret);
         tmp = executor(command->left, env, 'l', ev);
+        close(fd[0]);
         if (!tmp)
         {
             close(fd[1]);
@@ -185,7 +214,73 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         ret->pids = add_int(ret->pids, tmp->ret);
     }
-    else
+    else if (command->type_node == SUBSHELL_NODE)
+    {
+        
+        ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
+        ((t_command *)command->right)->fd[0] = command->fd[0];
+        ((t_command *)command->right)->fd[1] = command->fd[1];
+        
+        command->to_close = add_int(command->to_close, command->fd[0]);
+        // printf("the first is %d\n", command->to_close[0]);
+        if (command->outfd != -1)
+        {
+            ((t_command *)command->right)->outfd = command->outfd;
+        }
+        if (command->infd != -1)
+        {
+            ((t_command *)command->right)->infd = command->infd;
+        }
+        int f = fork();
+        if (f == 0)
+        {
+            // close_fds(command->to_close);
+            // close(command->fd[0]);
+            ret = executor(command->right, env, 'r', ev);
+            int kk = 0;
+            if (ret->pids)
+            {
+                int eter = 0;
+                while (1)
+                {
+                    if (ret->pids[eter] == -1)
+                        break;
+                    waitpid(ret->pids[eter], &kk, 0);
+                    if (WIFEXITED(kk))
+                        globalVar = WEXITSTATUS(kk);
+                    else if (WIFSIGNALED(kk))
+                        globalVar = WTERMSIG(kk) + 128;
+                    eter++;
+                }
+            }
+            else
+            {
+                waitpid(ret->ret, &kk, 0);
+                if (WIFEXITED(kk))
+                        globalVar = WEXITSTATUS(kk);
+                else if (WIFSIGNALED(kk))
+                        globalVar = WTERMSIG(kk) + 128;
+            }
+            close(command->outfd);
+            exit (globalVar);
+        }
+        else if (f > 0)
+        {
+            int hh = 0;
+            // waitpid(f, &hh, 0);
+            close(command->outfd);
+            close(command->infd);
+            if (c == 'r')
+                close(command->fd[1]);
+            if (c == 'l')
+                close(command->fd[0]);
+            globalVar = WEXITSTATUS(hh);
+            ret->ret = f;
+            ret->pids = NULL;
+            return (ret);
+        }
+    }
+    else if (command->type_node == NODE)
     {
         command->args = get_command_args(command->command_arg, env);
         if (command->args == NULL)
@@ -220,6 +315,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         signal (SIGINT, SIG_IGN);
         globalVar = 0;
+        
         pid_t i = fork();
         if (i < 0)
         {
@@ -230,6 +326,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         signal (SIGINT, handle_intr_sig);
         if (i == 0)
         {
+            signal(SIGQUIT, SIG_DFL);
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
@@ -248,9 +345,23 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(126);
                 return NULL;
             }
-            dup2(command->outfd, STDOUT_FILENO);
+            if (command->outfd != -1)
+                dup2(command->outfd, STDOUT_FILENO); //changed
             if (command->infd != -1)
-                dup2(command->infd, STDIN_FILENO);
+                dup2(command->infd, STDIN_FILENO); // changed 
+            if (c == 'r')
+            {
+                
+                close(command->fd[0]);
+                if (command->to_close != NULL)
+                    close_fds(command->to_close);
+            }
+            if (c == 'l')
+            {
+                if (command->to_close != NULL)
+                    close_fds(command->to_close);
+                close(command->fd[1]);
+            }
             close(command->outfd);
             close(command->infd);
             if (!command->path && !command->args)
@@ -279,14 +390,16 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             close(command->outfd);
             close(command->infd);
-            // if (i == -1)
-            //     ft_("something wrong !\n");
+            if (c == 'r')
+                close(command->fd[1]);
+            if (c == 'l')
+            {
+                close(command->fd[0]);
+            }
             ret->ret = i;
             ret->pids = NULL;
             return (ret);
         }
-        else if (i < 0)
-            ft_putstr_fd("THE FORK FAILED ! \n", 2);
     }
     return (ret);
 }
