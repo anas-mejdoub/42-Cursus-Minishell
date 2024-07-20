@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/11 16:47:33 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 17:02:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,9 @@ int main(int ac, char **av, char  **ev)
     // env_command(env);
     while (1)
     {
+        // char *cnt =  wildcard("*");
+        // printf("%s\n",cnt);
         elem = lexer();
-        if (!elem)
-            continue;
-        t_command *root = parser(elem, env);
-        // print_tree(root, 0);
         // while (elem)
         // {
         //     printf("~%s~                       ", elem->content);
@@ -52,6 +50,11 @@ int main(int ac, char **av, char  **ev)
         //     printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
         //     elem = elem->next;
         // }
+        // continue;
+        if (!elem)
+            continue;
+        t_command *root = parser(elem, env);
+        // print_tree(root, 0);
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
         // echo(root->right);
