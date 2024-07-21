@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/21 12:46:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 16:51:20 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,14 +161,19 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     if (command->type_node == AND_NODE)
     {
         if (command->outfd != -1)
-            ((t_command *)command->left)->outfd = command->outfd;
+        {
+            ((t_command *)command->right)->outfd = command->outfd;
+            ((t_command *)command->left)->outfd = dup(command->outfd);
+        }
         if (command->infd != -1)
+        {
             ((t_command *)command->right)->infd = command->infd;
-        ((t_command *)command->left)->fd[0] = fd[0];
-        ((t_command *)command->left)->fd[1] = fd[1];
-        ((t_command *)command->right)->fd[0] = fd[0];
-        ((t_command *)command->right)->fd[1] = fd[1];
-        tmp = executor(command->right, env, 'r', ev);
+        }
+        ((t_command *)command->left)->fd[0] = command->fd[0];
+        ((t_command *)command->left)->fd[1] = command->fd[1];
+        ((t_command *)command->right)->fd[0] = command->fd[0];
+        ((t_command *)command->right)->fd[1] = command->fd[1];
+        tmp = executor(command->right, env, '\0', ev);
         if (tmp && tmp->pids)
         {
             int ir = 0;
@@ -198,7 +203,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         if (globalVar == 0)
         {
-            tmp = executor(command->left, env, 'l', ev);
+            tmp = executor(command->left, env, '\0', ev);
             if (!tmp)
                 return NULL;
             if (tmp && tmp->pids)
@@ -213,14 +218,18 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     if (command->type_node == OR_NODE)
     {
         if (command->outfd != -1)
+        {
+            // printf ("")
             ((t_command *)command->left)->outfd = command->outfd;
+            ((t_command *)command->right)->outfd = command->outfd;
+        }
         if (command->infd != -1)
             ((t_command *)command->right)->infd = command->infd;
         ((t_command *)command->left)->fd[0] = fd[0];
         ((t_command *)command->left)->fd[1] = fd[1];
         ((t_command *)command->right)->fd[0] = fd[0];
         ((t_command *)command->right)->fd[1] = fd[1];
-        tmp = executor(command->right, env, 'r', ev);
+        tmp = executor(command->right, env, '\0', ev);
         if (tmp && tmp->pids)
         {
             int ir = 0;
@@ -253,7 +262,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         if (globalVar != 0)
         {
-            tmp = executor(command->left, env, 'l', ev);
+            tmp = executor(command->left, env, '\0', ev);
             if (!tmp)
                 return NULL;
             if (tmp && tmp->pids)
@@ -279,9 +288,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 ((t_command *)command->right)->infd = command->infd;
             int k = pipe(fd);
             ((t_command *)command->left)->fd[0] = fd[0];
-            ((t_command *)command->left)->fd[1] = fd[1];
-            ((t_command *)command->right)->fd[0] = fd[0];
-            ((t_command *)command->right)->fd[1] = fd[1];
+        ((t_command *)command->left)->fd[1] = fd[1];
+        ((t_command *)command->right)->fd[0] = fd[0];
+        ((t_command *)command->right)->fd[1] = fd[1];
             if (k == -1)
             {
                 close(fd[1]);
@@ -328,6 +337,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         command->to_close = add_int(command->to_close, command->fd[0]);
         if (command->outfd != -1)
         {
+            printf("the subshell out is %d\n", command->outfd);
             ((t_command *)command->right)->outfd = command->outfd;
         }
         if (command->infd != -1)
@@ -463,7 +473,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 return NULL;
             }
             if (command->outfd != -1)
-                dup2(command->outfd, STDOUT_FILENO);
+            {
+               dup2(command->outfd, STDOUT_FILENO);
+                // printf("duplicated command %s\n", command->args[0]);
+            }
             if (command->infd != -1)
                 dup2(command->infd, STDIN_FILENO);
             if (c == 'r')
@@ -475,6 +488,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             if (c == 'l')
             {
+                
+                printf("the out is %d command is %s\n",command->outfd, command->args[0]);
                 if (command->to_close != NULL)
                     close_fds(command->to_close);
                 close(command->fd[1]);
@@ -499,8 +514,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         else if (i > 0)
         {
-            close(command->outfd);
-            close(command->infd);
+            if (!c)
+            {
+                close(command->outfd);
+                close(command->infd);
+            }
             if (c == 'r')
                 close(command->fd[1]);
             if (c == 'l')
