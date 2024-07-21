@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/21 11:00:29 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 12:25:55 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ int main(int ac, char **av, char  **ev)
         // print_tree(root, 0);
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
-        // // echo(root->right);
+        // // // echo(root->right);
 
-        // int *arr = NULL;
+        // // int *arr = NULL;
         
         int i = 0;
         int hehe= 0;

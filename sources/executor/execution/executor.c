@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/21 11:14:54 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 12:46:49 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,12 +115,9 @@ char **get_command_args(t_command_args *args, t_env *env)
         {
             args = args->next;
             continue; 
-        }
-            
-        // printf("%d\n", args->including_null);
+        }   
         if (tmp_str[0] == '\0' && args->index_list && !args->including_null)
         {
-            // ft_putendl_fd(tmp_str, 2);
             args = args->next;
             continue;
         }
@@ -130,7 +127,6 @@ char **get_command_args(t_command_args *args, t_env *env)
             int i = 0;
             while (tmp_arr[i])
             {
-                // if (tmp_arr[i] == '\0')
                 res = add_to_args(res, tmp_arr[i]);
                 i++;
             }
@@ -173,11 +169,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         ((t_command *)command->right)->fd[0] = fd[0];
         ((t_command *)command->right)->fd[1] = fd[1];
         tmp = executor(command->right, env, 'r', ev);
-        // if (!tmp)
-        //     return NULL;
         if (tmp && tmp->pids)
         {
-            // printf("first\n");
             int ir = 0;
             while (tmp && tmp->pids)
             {
@@ -188,18 +181,14 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     globalVar = WEXITSTATUS(status);
                 else if (WIFSIGNALED(status))
                 {
-
-                // printf ("signaled\n");
                     globalVar = WTERMSIG(status) + 128;
                 }
                 ir++;
             }
             ret->pids = tmp->pids;
-            // printf("global is %d\n",globalVar);
         }
         else if (tmp && tmp->ret != -1)
         {
-            // printf("secoond\n");
             waitpid(tmp->ret, &status, 0);
             if (WIFEXITED(status))
                 globalVar = WEXITSTATUS(status);
@@ -207,13 +196,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 globalVar = WTERMSIG(status) + 128;
             ret->pids = add_int(ret->pids, tmp->ret);
         }
-        // printf ("the global var is %d\n", globalVar);
         if (globalVar == 0)
         {
-            // if (!command->left )
-            //     printf("NULLLLL\n");
-            if (((t_command *)command->left)->command_arg)
-                printf("the command is %s\n", ((t_command *)command->left)->command_arg->content);
             tmp = executor(command->left, env, 'l', ev);
             if (!tmp)
                 return NULL;
@@ -237,8 +221,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         ((t_command *)command->right)->fd[0] = fd[0];
         ((t_command *)command->right)->fd[1] = fd[1];
         tmp = executor(command->right, env, 'r', ev);
-        // if (!tmp)
-        //     return NULL;
         if (tmp && tmp->pids)
         {
             int ir = 0;
@@ -269,10 +251,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             ret->pids = add_int(ret->pids, tmp->ret);
         }
-        // printf ("inside the or the global var is %d\n", globalVar);
         if (globalVar != 0)
         {
-            // printf ("hjgxfhdghg\n");
             tmp = executor(command->left, env, 'l', ev);
             if (!tmp)
                 return NULL;
@@ -340,18 +320,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     }
     else if (command->type_node == SUBSHELL_NODE)
     {
-        // printf ("subshell entered\n");
         ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
         ((t_command *)command->right)->fd[0] = command->fd[0];
         ((t_command *)command->right)->fd[1] = command->fd[1];
         
-        // while (command->outfiles)
-        // {
-        //     printf("%s\n", command->outfiles->filename);
-        //     command->outfiles = command->outfiles->next;
-        // }
+        
         command->to_close = add_int(command->to_close, command->fd[0]);
-        // printf("the first is %d\n", command->to_close[0]);
         if (command->outfd != -1)
         {
             ((t_command *)command->right)->outfd = command->outfd;
@@ -411,7 +385,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         else if (f > 0)
         {
             int hh = 0;
-            // waitpid(f, &hh, 0);
             close(command->outfd);
             close(command->infd);
             if (c == 'r')
@@ -490,9 +463,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 return NULL;
             }
             if (command->outfd != -1)
-                dup2(command->outfd, STDOUT_FILENO); //changed
+                dup2(command->outfd, STDOUT_FILENO);
             if (command->infd != -1)
-                dup2(command->infd, STDIN_FILENO); // changed 
+                dup2(command->infd, STDIN_FILENO);
             if (c == 'r')
             {
                 
@@ -516,12 +489,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     exit(1);
                 exit(0);
             }
-            // for (int a = 0; command->args[a]; a++)
-            // {
-            //     ft_putendl_fd("hhhh",2);
-            //     ft_putendl_fd(command->args[a],2);
-            //     ft_putendl_fd("hhhh",2);
-            // }
             if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
             {
                 ft_putstr_fd("minishell: ", 2);
