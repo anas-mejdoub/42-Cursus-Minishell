@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 16:55:47 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 09:52:14 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ char **get_command_args(t_command_args *args, t_env *env)
     res = NULL;
     while (args)
     {
-        tmp_str = env_expander(args->content, args->index_list, env);
+        tmp_str = env_expander(args->content, args->index_list, env, args->wildcard);
         if (tmp_str == NULL)
         {
             args = args->next;
@@ -124,7 +124,7 @@ char **get_command_args(t_command_args *args, t_env *env)
             args = args->next;
             continue;
         }
-        if (ft_strchr(tmp_str, ' ') && args->env)
+        if (ft_strchr(tmp_str, ' ') && (args->env || args->wildcard))
         {
             tmp_arr = ft_split(tmp_str, ' ');
             int i = 0;

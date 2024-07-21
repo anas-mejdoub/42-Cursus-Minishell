@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:04:43 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/19 16:39:54 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 09:59:35 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,20 +92,14 @@ bool imbg(t_elem *tmp, t_env *env)
     {
         if (tmp && tmp->type == WORD && tmp->state == GENERAL)
         {
-            // if (tmp->content[0])
-            // {
-                arr = add_to_args(arr, tmp->content);
-                index++;
-            // }
+            arr = add_to_args(arr, tmp->content);
+            index++;
             tmp = tmp->next;      
         }
         else if (tmp && (tmp->state == IN_DQUOTE || tmp->state == IN_QUOTE))
         {
-            // if (tmp->content[0])
-            // {     
-                arr = add_to_args(arr, tmp->content);
-                index++;
-            // }
+            arr = add_to_args(arr, tmp->content);
+            index++;
             tmp = tmp->next;
             tmp = tmp->next;
         }
@@ -117,12 +111,9 @@ bool imbg(t_elem *tmp, t_env *env)
             {
                 a = ft_strjoin(a, tmp->content);  
                 tmp = tmp->next;
-            }
-            // if (a[0])
-            // {       
-                arr = add_to_args(arr, a);
-                index++;
-            // }
+            }    
+            arr = add_to_args(arr, a);
+            index++;
             tmp = tmp->next;
         }
         else if (tmp && tmp->type == ENV && tmp->state == GENERAL)
@@ -143,43 +134,31 @@ bool imbg(t_elem *tmp, t_env *env)
     while (j < size)
     {
         char *ptr = ft_strtrim(arr[*arr_env[j]], " ");
-        // printf("**%s--,%s\n", ptr, arr[*arr_env[j]]);
         if (arr[1] == NULL && (!ptr || ptr[0] == '\0'))
         {
-            // printf("0\n");
             err = true;
         }
         else if (arr[*arr_env[j]][0] != '\0' && ft_strchr(ft_strtrim(arr[*arr_env[j]], " ") ,' '))
         {
-            // printf("1\n");
             err = true;
         }
         else if (arr[*arr_env[j]][0] == ' ' && *arr_env[j] != 0 && arr[*arr_env[j] - 1] && (arr[*arr_env[j] - 1] && arr[*arr_env[j] - 1][0] != '\0'))
         {
-            // printf("2\n");
             err = true;
         }
         else if (arr[*arr_env[j]][0] != '\0' && ft_strlen(arr[*arr_env[j]]) != 0 && arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && arr[*arr_env[j] + 1] && (arr[*arr_env[j] + 1] && arr[*arr_env[j] + 1][0] != '\0'))
         {
-            // printf("3\n");
             err = true;
         }
         else if (ft_strlen(arr[*arr_env[j]]) != 0 && arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && j + 1 < size && arr[*arr_env[j + 1]][0] != ' ')
         {
-            // printf("3\n");
             err = true;
         }
         if (err)
         {
-            // printf("hehe\n");
             break;
         }
         j++;
     }
-    // for (int j = 0; arr[j]; j++)
-    //     printf("--%s--\n", arr[j]);
-    // for (int i = 0; i < size ; i++)
-    //     printf("***%d\n", *arr_env[i]);
-    // exit(1);
     return (err);
 }

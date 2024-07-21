@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 19:20:22 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 11:47:31 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char *add_string_back(char **s1, char **s2)
     return (*s1);
 }
 
-char  *env_expander(char *content, t_env_index *indexs, t_env *env)
+char  *env_expander(char *content, t_env_index *indexs, t_env *env, bool wild_card)
 {
     int i;
     int start;
@@ -35,6 +35,12 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env)
     i = 0;
     start = i;
     tmp_index = indexs;
+    // printf("hehe\n");
+    if (wild_card)
+    {   
+        char *new_content = wildcard(content, -17);
+        content = new_content;
+    }
     if (!indexs)
         return (content);
     str = ft_calloc(1, 1);
@@ -53,6 +59,10 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env)
             i++;
             tmp_str = ft_substr(content, start + 1 , tmp_index->len - 1);
             char *s = env->get(env->data, tmp_str);
+            if (ft_strchr(s, '*'))
+            {
+                s = wildcard(s, '*');
+            }
             add_string_back(&str, &s);
             start = i + tmp_index->len - 1;
             tmp_index = tmp_index->next;

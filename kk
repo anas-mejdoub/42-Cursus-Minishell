@@ -1,0 +1,11 @@
+Makefile
+README.md
+includes
+kk
+mini-ms-tester
+minishell
+minishell_path
+minishell_prefix
+results
+sources
+test_cases

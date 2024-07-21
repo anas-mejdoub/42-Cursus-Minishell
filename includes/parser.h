@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 16:57:51 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/20 17:45:11 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,14 @@ typedef struct s_out_files
     bool append;
     bool ambiguous;
     t_env_index *index_list;
+    bool    wildcard;
     struct s_out_files *next;
 } t_out_files;
 typedef struct s_command_h_ret
 {
     char *command;
     int index;
+    bool    wildcard;
     int *arr;
     int *lens;
     bool    including_null;
@@ -60,6 +62,7 @@ typedef struct s_in_files
     bool ambiguous;
     char *limiter;
     t_env_index *index_list;
+    bool    wildcard;
     struct s_in_files *next;
 } t_in_files;
 
@@ -67,6 +70,7 @@ typedef struct s_command_args
 {
     char *content;
     t_env_index *index_list;
+    bool    wildcard;
     bool    including_null;
     bool env;
     struct s_command_args *next;

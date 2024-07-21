@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/20 14:43:57 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 09:57:18 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ t_list    *syntax_error(t_elem *elem)
             elem = elem->next;
             while (elem && elem->type == WHITE_SPACE)
                 elem = elem->next;
-            if (!elem || (elem->type != WORD && elem->type != ENV && elem->type != QOUTE && elem->type != DOUBLE_QUOTE))
+            if (!elem || (elem->type != WORD && elem->type != ENV && elem->type != QOUTE && elem->type != DOUBLE_QUOTE && elem->type != WILDCARD))
                 return (original);
         }
         else if (elem)

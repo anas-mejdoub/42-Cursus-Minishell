@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:16:54 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/20 15:38:34 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 11:47:47 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,17 @@ static char **dir_content(void)
     return(arr);
 }
 
-static bool matching_pattern(char* s1,  char* s2) {
+static bool matching_pattern(char* s1,  char* s2, char reg) {
     if (*s2 == '\0')
         return *s1 == '\0';
-    if (*s2 == '*')
-        return matching_pattern(s1, s2 + 1) || (*s1 && matching_pattern(s1 + 1, s2));
+    if (*s2 == reg)
+        return matching_pattern(s1, s2 + 1, reg) || (*s1 && matching_pattern(s1 + 1, s2, reg));
     if (*s1 == *s2)
-        return matching_pattern(s1 + 1, s2 + 1);
+        return matching_pattern(s1 + 1, s2 + 1, reg);
     return false;
 }
 
-char *wildcard(char *pattern)
+char *wildcard(char *pattern, char reg)
 {
     char **content;
     char **arr_final = NULL;
@@ -63,14 +63,37 @@ char *wildcard(char *pattern)
 
     while (content[i])
     {
-        if (matching_pattern(content[i], pattern))
+        // printf("%s\n",content[i]);
+        if (matching_pattern(content[i], pattern, reg) == true)
+        {
+            // printf("%s\n",content[i]);
             arr_final = add_to_args(arr_final, content[i]);
+        }
         i++;
     }
     if (arr_final == NULL)
-        return (pattern);
+    {
+        // printf("bchon ymak\n");
+        char *new_ptr;
+        new_ptr = malloc(ft_strlen(pattern) + 1);
+        int  j = 0;
+        while (pattern[j])
+        {
+            if (pattern[j] == -17)
+            {
+                new_ptr[j] = '*';
+            }
+            else
+                new_ptr[j] = pattern[j];
+            j++;
+        }
+        new_ptr[j] = '\0';
+
+        return (new_ptr);
+    }
     else
     {
+        // printf("mchi t7awa\n");
         final_content = ft_calloc(1,1);
         i = 0;
         while (arr_final[i])

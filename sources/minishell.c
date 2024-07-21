@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 17:19:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 09:09:00 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int main(int ac, char **av, char  **ev)
             continue;
         t_command *root = parser(elem, env);
         // print_tree(root, 0);
+        // continue;
+        
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
         // // echo(root->right);
