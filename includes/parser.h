@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 16:57:51 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 10:26:24 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ enum e_type_node
     SUBSHELL_NODE,
 };
 
+enum e_node_rank
+{
+    P = 1,
+    A = 2,
+    O = 2,
+};
 
 
 typedef struct s_env_index

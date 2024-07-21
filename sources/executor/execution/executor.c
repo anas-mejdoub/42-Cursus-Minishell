@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 19:03:55 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 11:14:54 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,10 +173,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         ((t_command *)command->right)->fd[0] = fd[0];
         ((t_command *)command->right)->fd[1] = fd[1];
         tmp = executor(command->right, env, 'r', ev);
-        if (!tmp)
-            return NULL;
+        // if (!tmp)
+        //     return NULL;
         if (tmp && tmp->pids)
         {
+            // printf("first\n");
             int ir = 0;
             while (tmp && tmp->pids)
             {
@@ -186,13 +187,19 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 if (WIFEXITED(status))
                     globalVar = WEXITSTATUS(status);
                 else if (WIFSIGNALED(status))
+                {
+
+                // printf ("signaled\n");
                     globalVar = WTERMSIG(status) + 128;
+                }
                 ir++;
             }
             ret->pids = tmp->pids;
+            // printf("global is %d\n",globalVar);
         }
         else if (tmp && tmp->ret != -1)
         {
+            // printf("secoond\n");
             waitpid(tmp->ret, &status, 0);
             if (WIFEXITED(status))
                 globalVar = WEXITSTATUS(status);
@@ -200,8 +207,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 globalVar = WTERMSIG(status) + 128;
             ret->pids = add_int(ret->pids, tmp->ret);
         }
+        // printf ("the global var is %d\n", globalVar);
         if (globalVar == 0)
         {
+            // if (!command->left )
+            //     printf("NULLLLL\n");
+            if (((t_command *)command->left)->command_arg)
+                printf("the command is %s\n", ((t_command *)command->left)->command_arg->content);
             tmp = executor(command->left, env, 'l', ev);
             if (!tmp)
                 return NULL;
@@ -210,10 +222,12 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             else if (tmp && tmp->ret != -1)
                 ret->pids = add_int(ret->pids, tmp->ret);
         }
+        else
+            return NULL;
+        return (ret);
     }
     if (command->type_node == OR_NODE)
     {
-        printf ("OOOOR\n");
         if (command->outfd != -1)
             ((t_command *)command->left)->outfd = command->outfd;
         if (command->infd != -1)
@@ -223,8 +237,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         ((t_command *)command->right)->fd[0] = fd[0];
         ((t_command *)command->right)->fd[1] = fd[1];
         tmp = executor(command->right, env, 'r', ev);
-        if (!tmp)
-            return NULL;
+        // if (!tmp)
+        //     return NULL;
         if (tmp && tmp->pids)
         {
             int ir = 0;
@@ -236,7 +250,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 if (WIFEXITED(status))
                     globalVar = WEXITSTATUS(status);
                 else if (WIFSIGNALED(status))
+                {
+
                     globalVar = WTERMSIG(status) + 128;
+                }
                 ir++;
             }
             ret->pids = tmp->pids;
@@ -247,11 +264,15 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (WIFEXITED(status))
                 globalVar = WEXITSTATUS(status);
             else if (WIFSIGNALED(status))
+            {
                 globalVar = WTERMSIG(status) + 128;
+            }
             ret->pids = add_int(ret->pids, tmp->ret);
         }
+        // printf ("inside the or the global var is %d\n", globalVar);
         if (globalVar != 0)
         {
+            // printf ("hjgxfhdghg\n");
             tmp = executor(command->left, env, 'l', ev);
             if (!tmp)
                 return NULL;
@@ -260,6 +281,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             else if (tmp && tmp->ret != -1)
                 ret->pids = add_int(ret->pids, tmp->ret);
         }
+        else
+            return NULL;
         return (ret);
     }
     if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
@@ -317,7 +340,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     }
     else if (command->type_node == SUBSHELL_NODE)
     {
-        
+        // printf ("subshell entered\n");
         ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
         ((t_command *)command->right)->fd[0] = command->fd[0];
         ((t_command *)command->right)->fd[1] = command->fd[1];
@@ -359,7 +382,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             ret = executor(command->right, env, 'r', ev);
             int kk = 0;
-            if (ret->pids)
+            if (ret && ret->pids)
             {
                 int eter = 0;
                 while (1)
@@ -374,7 +397,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     eter++;
                 }
             }
-            else
+            else if (ret && ret->ret != -1)
             {
                 waitpid(ret->ret, &kk, 0);
                 if (WIFEXITED(kk))

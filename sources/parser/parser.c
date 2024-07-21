@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/20 16:58:14 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 11:21:39 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,17 +121,27 @@ void	print_tree(t_command *root, int n)
 	// if (root->type_node != NODE)
 	// if (root->type_node == NODE)
 	// 	printf("simple node \n");
+	printf("START\n");
+	// if (root->type_node == SUBSHELL_NODE)
+	// 	printf("subshell opened\n");
+	if (root->type_node == PIPE_LINE_NODE)
+		printf ("PIPE LINE node\n");
+	if (root->type_node == AND_NODE)
+		printf ("AND node\n");
+	if (root->type_node == OR_NODE)
+		printf ("OR node\n");
 	if (root->type_node == SUBSHELL_NODE)
-		printf("subshell opened\n");
-	printf("type of node %d\n", root->type_node);
+		printf ("SUBSHELL_NODE\n");
+
+	// printf("type of node %d\n", root->type_node);
 	if (n == 1)
 		printf("----right----\n");
 	if (n == 2)
 		printf("----left----\n");
-	else
-		printf("n is %d this time \n", n);
+	// else
+	// 	printf("n is %d this time \n", n);
 	// if (root->type_node == NODE || root->type_node == SUBSHELL_NODE)
-		print_2d(root);
+	print_2d(root);
 	printf("END\n");
 	print_tree(root->right, 1);
 	print_tree(root->left, 2);
@@ -592,6 +602,16 @@ void print_node(t_elem *el)
 	}
 	printf("end of set\n");
 }
+int get_rank(int n)
+{
+	if (n == PIPE_LINE)
+		return P;
+	if (n == AND)
+		return A;
+	if (n == OR)
+		return O;
+	return (0);
+}
 t_command	*parser(t_elem *elements, t_env *env)
 {
 	t_command	*command;
@@ -600,6 +620,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 	t_command_h_ret *comm_hand_ret;
 	t_elem *subshell_set = NULL;
 	int lvl = 0;
+	int rank = 0;
 
 	comm_hand_ret = NULL;
 	first_time = true;
@@ -613,19 +634,13 @@ t_command	*parser(t_elem *elements, t_env *env)
 		if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			add_to_command(command, new_arg(ft_strdup(""), true, false));
-			// printf("here\n");
 			elements = elements->next;
 		}
-		// else if ((elements->type == WORD || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
-		// if ((elements->type == WORD || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
-		// printf("elem : %s\n", elements->content);
 		if (elements && elements->type == START_SUBSHELL)
 		{
 			elements = elements->next;
-			// printf ("subshell opened\n");
 			while (elements)
 			{
-				// printf("elem %s\n", elements->content);
 				if (elements->type == END_SUBSHELL && lvl == 0)
 				{
 					elements = elements->next;
@@ -642,35 +657,19 @@ t_command	*parser(t_elem *elements, t_env *env)
 				allocate_node1(&subshell_set, elements->content, elements->state, elements->type);
 				elements = elements->next;
 			}
-			// print_node(subshell_set);
-			// printf("-------------------------\n");
-				// t_command *sub = new_node();
-				// sub->type_node = SUBSHELL_NODE;
-				// printf("B4R the change is %d", command->type_node);
 				command->type_node = SUBSHELL_NODE;
 				t_command *tmp = parser(subshell_set, env);
+				if (!tmp)
+				{
+					return NULL;
+				}
 				subshell_set = NULL;
-				// printf("sub will be printed \n");
-				// print_tree(tmp, 0);
 				if (tmp->type_node == ROOT_NODE)
 				{
 					if (((t_command *)tmp->right)->type_node != ROOT_NODE)
 						tmp = tmp->right;
 				}
 				command->right =  tmp;
-				// if (((t_command *)command->right)->type_node == ROOT_NODE)
-				// 	printf("AS EXCPECTED %s\n", ((t_command *)((t_command *)co->right)->right)->command_arg->content);
-				// printf("first of the subset %s\n", subshell_set->content);
-				// if (pipe_node->right && !pipe_node->left)
-				// {
-				// 	pipe_node->left = co;
-				// }
-				// else if (!pipe_node->right)
-				// {
-
-				// 	printf("YEEES\n");
-				// 	pipe_node->right = sub;
-				// }
 		}
 		else if ((elements->type == WORD || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
@@ -687,15 +686,35 @@ t_command	*parser(t_elem *elements, t_env *env)
 		}
 		else if (elements && (elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
 		{
-			pipe_node = handle_pipe_node(pipe_node, elements->type);
-			if (!pipe_node)
-				return (NULL);
-			command = new_node();
-			pipe_node->left = command;
+			if (get_rank(elements->type) >= rank)
+			{
+				// printf("1-content is %s\n", elements->content);
+				pipe_node = handle_pipe_node(pipe_node, elements->type);
+				if (!pipe_node)
+					return (NULL);
+				command = new_node();
+				pipe_node->left = command;
+			}
+			else
+			{
+				// printf("2-content is %s\n", elements->content);
+				command = handle_pipe_node(command, elements->type);
+				pipe_node->left = command;
+				command->left = new_node();
+				// if (!command->left)
+				// 	printf("NULL\n");
+				command = command->left;
+			}
+			rank = get_rank(elements->type);
 		}
 		else if (elements && (elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time)
 		{
-			// printf("pipeline ||||\n");
+			if (elements->type == PIPE_LINE)
+				rank = P;
+			if (elements->type ==AND)
+				rank = A;
+			if (elements->type == OR)
+				rank = O;
 			first_time = false;
 			command = new_node();
 			pipe_node->left = command;
@@ -740,10 +759,6 @@ t_command	*parser(t_elem *elements, t_env *env)
 				add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_in_file(command->in_files));
 			}
 		}
-		// else if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next))
-		// {
-		// 	add_to_command(command, new_arg(ft_strdup(""), true, false));
-		// }
 		if (elements)
 			elements = elements->next;
 		else
