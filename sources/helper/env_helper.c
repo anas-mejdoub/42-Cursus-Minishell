@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/21 11:47:31 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 13:05:01 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,41 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env, bool wild_ca
             char *s = env->get(env->data, tmp_str);
             if (ft_strchr(s, '*'))
             {
-                s = wildcard(s, '*');
+                char *final_string = ft_calloc(1,1);
+                if (ft_strchr(s, ' ') || ft_strchr(s, '\t'))
+                {
+                    char **arr = ft_split(s, ' ');
+                    int k = 0;
+                    while (arr[k])
+                    {
+                        if (ft_strchr(arr[k], '\t'))
+                        {
+                            char **arr2 = ft_split(arr[k], '\n');
+                            int y = 0;
+                            while (arr2[y])
+                            {
+                                if (ft_strchr(arr2[y], '*'))
+                                    final_string = ft_strjoin(final_string, wildcard(arr2[y], '*'));
+                                else
+                                    final_string = ft_strjoin(final_string, arr2[y]);
+                                y++;
+                                if (arr[k])
+                                    final_string = ft_strjoin(final_string, " ");
+                            }
+                        }
+                        else if (ft_strchr(arr[k], '*'))
+                            final_string = ft_strjoin(final_string, wildcard(arr[k], '*'));
+                        else
+                            final_string = ft_strjoin(final_string, wildcard(arr[k], '*'));
+                        k++;
+                        if (arr[k])
+                            final_string = ft_strjoin(final_string, " ");
+
+                    }
+                    s = final_string;
+                }
+                else
+                    s = wildcard(s, '*');
             }
             add_string_back(&str, &s);
             start = i + tmp_index->len - 1;
