@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:04:43 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/21 09:59:35 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:34:19 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,26 +133,167 @@ bool imbg(t_elem *tmp, t_env *env)
     int j = 0;
     while (j < size)
     {
+        printf("hehe\n");
         char *ptr = ft_strtrim(arr[*arr_env[j]], " ");
-        if (arr[1] == NULL && (!ptr || ptr[0] == '\0'))
+        // if (arr[1] == NULL)
+        //     printf("hdsfgdsfgds\n");
+        if ((arr[1] == NULL || *arr_env[j] == 0) && (!ptr || (ptr[0] == '\0' && arr[*arr_env[j]][0] == '\0')))
         {
+            printf("1\n");
+            if (arr[1] == NULL)
+                err = true;
+            else
+            {   
+                int u = 0;
+                int g = *arr_env[j];
+                while (u == g && u < size && arr[u])
+                {
+                    printf("ooooo\n");
+                    u++;
+                    if (u < size)
+                        g = *arr_env[u];
+                }
+                if (arr[u] == NULL)
+                    err = true;
+            }
+            // err = true;
+        }
+        else if (printf("hehe1\n") && arr[*arr_env[j]][0] != '\0' && ft_strchr(ft_strtrim(arr[*arr_env[j]], " ") ,' '))
+        {
+            printf("2\n");
             err = true;
         }
-        else if (arr[*arr_env[j]][0] != '\0' && ft_strchr(ft_strtrim(arr[*arr_env[j]], " ") ,' '))
+        // else if (printf("hehe1\n") && arr[*arr_env[j]][0] == ' ' && ptr[0] != '\0' && *arr_env[j] != 0 && arr[*arr_env[j] - 1] && (arr[*arr_env[j] - 1] && arr[*arr_env[j] - 1][0] != '\0'))
+        // {
+        //     printf("3\n");
+        //     err = true;
+        // }
+        // else if (printf("hehe1\n") &&arr[*arr_env[j]][0] != '\0' && ft_strlen(arr[*arr_env[j]]) != 0 && arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && arr[*arr_env[j] + 1] && (arr[*arr_env[j] + 1] && arr[*arr_env[j] + 1][0] != '\0') && ptr[0] != '\0')
+        // {
+        //     printf("4\n");
+        //     err = true;
+        // }
+        else if (printf("hehe1\n") && ft_strlen(arr[*arr_env[j]]) != 0 && arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && j + 1 < size && arr[*arr_env[j + 1]][0] != ' ')
         {
+            printf("5\n");
             err = true;
         }
-        else if (arr[*arr_env[j]][0] == ' ' && *arr_env[j] != 0 && arr[*arr_env[j] - 1] && (arr[*arr_env[j] - 1] && arr[*arr_env[j] - 1][0] != '\0'))
+        // else
+        else if (printf("hehe1\n") && (arr[*arr_env[j]][0] == ' ' || (ft_strlen(arr[*arr_env[j]]) != 0 && arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ')))
         {
-            err = true;
-        }
-        else if (arr[*arr_env[j]][0] != '\0' && ft_strlen(arr[*arr_env[j]]) != 0 && arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && arr[*arr_env[j] + 1] && (arr[*arr_env[j] + 1] && arr[*arr_env[j] + 1][0] != '\0'))
-        {
-            err = true;
-        }
-        else if (ft_strlen(arr[*arr_env[j]]) != 0 && arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && j + 1 < size && arr[*arr_env[j + 1]][0] != ' ')
-        {
-            err = true;
+            printf("6\n");
+            // printf("hihi\n");
+            int k = *arr_env[j];
+            if (ft_strchr(ft_strtrim(arr[*arr_env[j]], " ") ,' '))
+            {
+                printf("7\n");
+                err = true;
+                break;
+            }
+            else if (*arr_env[j] != 0 && (arr[*arr_env[j]][0] == ' ' && ptr[0] != '\0'))
+            {
+                printf("firs6\n");
+                k--;
+                if (ptr[0] == '\0')
+                {
+                    while (k >= 0 && arr[k][0] == '\0')
+                        k--;
+                    if (k != 0)
+                    {
+                        printf("14\n");
+                        err = true;
+                    }      
+                }
+                while (k >= 0)
+                {
+                    if (arr[k][0] != '\0')
+                    {
+                        printf("8\n");
+                        err = true;
+                        break;
+                    }
+                    k--;
+                }
+            }
+            else if (arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
+            {
+                printf("seg6\n");
+
+                k++;
+                if (ptr[0] == '\0')
+                {
+                    while (arr[k] && arr[k][0] == '\0')
+                        k++;
+                    if (arr[k] == NULL)
+                    {
+                        printf("10\n");
+                        err = true;
+                    }      
+                }
+                else if (arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
+                {
+                    int o = j;
+                    ++o;
+                    while (o < size && *arr_env[o] == k && arr[*arr_env[o]] && !ft_strchr(ft_strtrim(arr[*arr_env[o]], " "), ' '))
+                    {
+                        o++;
+                        k++;
+                    }
+                    // printf("hehe");
+                    while (arr[k] && arr[k][0] == '\0')
+                        k++;
+                    if (arr[k])
+                    {
+                        printf("11\n");
+                        err = true;
+                    }  
+                }
+                while (arr[k])
+                {
+                    printf("hehe\n");
+                    if (arr[k][0] != '\0' && ft_strchr(ft_strtrim(arr[*arr_env[j]], " ") ,' '))
+                    {
+                        printf("%s9\n",arr[k]);
+                        err = true;
+                        break;
+                    }
+                    k++;
+                }
+            }
+            if (arr[*arr_env[j]][ft_strlen(arr[*arr_env[j]]) - 1] == ' ' && ptr[0] == '\0')
+            {
+                printf("ooooi\n");
+                bool p1 = false;
+                bool p2 = false;
+                int a = *arr_env[j];
+                a++;
+                
+                // if (!arr[a])
+                //     p1 = true;
+                while (arr[a])
+                {
+                    if (arr[a][0] != '\0')
+                        break;
+                    a++;
+                }
+                if (!arr[a] || (arr[a] && arr[a][0] == '\0'))
+                    p1 = true;
+                a = *arr_env[j];
+                // if (a == 0)
+                //     p1 = true;
+                a--;
+                while (*arr_env[j] != 0 && a >= 0)
+                {
+                    if (arr[a][0] != '\0')
+                        break;
+                    a--;
+                }
+                if (a != 0)
+                    p2 = true;
+                // printf("%d--%d\n", )
+                if (p2 == true && p1 == true)
+                    err = true;
+            }
         }
         if (err)
         {

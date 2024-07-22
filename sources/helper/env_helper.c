@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/21 13:05:01 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 14:36:10 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env, bool wild_ca
             i++;
             tmp_str = ft_substr(content, start + 1 , tmp_index->len - 1);
             char *s = env->get(env->data, tmp_str);
-            if (ft_strchr(s, '*'))
+            if (s && ft_strchr(s, '*'))
             {
                 char *final_string = ft_calloc(1,1);
                 if (ft_strchr(s, ' ') || ft_strchr(s, '\t'))
