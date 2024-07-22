@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/22 15:57:33 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:46:20 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,8 +404,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 else if (WIFSIGNALED(kk))
                         globalVar = WTERMSIG(kk) + 128;
             }
-            close_fds(((t_command *)command->right)->to_close);
             close_fds(((t_command *)command)->to_close);
+            close_fds(((t_command *)command->right)->to_close);
             if (c == 'r')
             {
                 close(command->fd[1]);
@@ -428,14 +428,22 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         else if (f > 0)
         {
             int hh = 0;
+            if (!c)
+            {
+                close(command->outfd);
+                close(command->infd);
+                close(((t_command *)command->right)->outfd);;
+                close(((t_command *)command->right)->infd);
+            }
             // close_fds(((t_command *)command->right)->to_close);
-            close(((t_command *)command->right)->outfd);
-            close(((t_command *)command->right)->infd);
-            close(command->outfd);
-            close(command->infd);
+            // close(((t_command *)command->right)->outfd);
+            // close(((t_command *)command->right)->infd);
+            // close(command->outfd);
+            // close(command->infd);
             if (c == 'r')
             {
-                printf("yes \n");
+                // printf("yes \n");
+                close(((t_command *)command->right)->outfd);;
                 close(command->outfd);
                 close(command->fd[1]);
                 close(((t_command *)command->right)->fd[1]);
@@ -444,7 +452,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (c == 'l')
             {
                 close(command->fd[0]);
+                close(command->infd);
                 close(((t_command *)command->right)->fd[0]);
+                close(((t_command *)command->right)->infd);
 
             }
             globalVar = WEXITSTATUS(hh);
