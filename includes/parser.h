@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/13 19:16:58 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/22 11:55:57 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,15 @@ enum e_type_node
     AND_NODE = 3,
     OR_NODE = 4,
     ROOT_NODE,
+    SUBSHELL_NODE,
 };
 
+enum e_node_rank
+{
+    P = 1,
+    A = 2,
+    O = 2,
+};
 
 
 typedef struct s_env_index
@@ -39,7 +46,7 @@ typedef struct s_out_files
 {
     char *filename;
     bool append;
-    bool in_qoute;
+    bool ambiguous;
     t_env_index *index_list;
     struct s_out_files *next;
 } t_out_files;
@@ -56,7 +63,7 @@ typedef struct s_in_files
 {
     char *filename;
     bool here_doc;
-    bool in_qoute;
+    bool ambiguous;
     char *limiter;
     t_env_index *index_list;
     struct s_in_files *next;
@@ -73,6 +80,8 @@ typedef struct s_command_args
 
 typedef struct s_commands
 {
+    int fd[2];
+    int *to_close;
     t_command_args *command_arg;
     char **args;
     int type_node;

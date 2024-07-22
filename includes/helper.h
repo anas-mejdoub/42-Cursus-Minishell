@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:40:27 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 13:05:35 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:16:31 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int is_builtin(t_command *cmd);
 char **env_to_2d_arr(t_env *env);
 int change_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
 int restor_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
+bool imbg(t_elem *tmp, t_env *env);
 // int     open_out_files(t_out_files *files, t_env *env);
 
 #endif

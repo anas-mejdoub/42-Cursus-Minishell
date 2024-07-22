@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/04 12:59:06 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/20 14:43:57 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_list    *syntax_error(t_elem *elem)
                 elem = elem->next;
             if (!elem)
                 continue;
-            if (elem && ((elem->type != END_SUBSHELL && elem->type != AND && elem->type != OR && elem->type != PIPE_LINE) || elem->type == START_SUBSHELL))
+            if (elem && ((elem->type != END_SUBSHELL && elem->type != AND && elem->type != OR && elem->type != PIPE_LINE && elem->type != REDIR_IN && elem->type != REDIR_OUT) || elem->type == START_SUBSHELL))
                 return (original);
         }
         else if (elem && elem->type == HERE_DOC)
