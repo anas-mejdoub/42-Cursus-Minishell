@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/21 16:51:20 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/22 10:18:02 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         if (command->infd != -1)
         {
             ((t_command *)command->right)->infd = command->infd;
+            ((t_command *)command->left)->infd = dup(command->infd);
         }
         ((t_command *)command->left)->fd[0] = command->fd[0];
         ((t_command *)command->left)->fd[1] = command->fd[1];
@@ -224,7 +225,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             ((t_command *)command->right)->outfd = command->outfd;
         }
         if (command->infd != -1)
+        {
             ((t_command *)command->right)->infd = command->infd;
+            ((t_command *)command->left)->infd =dup(command->infd);
+
+        }
         ((t_command *)command->left)->fd[0] = fd[0];
         ((t_command *)command->left)->fd[1] = fd[1];
         ((t_command *)command->right)->fd[0] = fd[0];
@@ -330,6 +335,14 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     else if (command->type_node == SUBSHELL_NODE)
     {
         ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
+        // int jf = 0;
+        // while (((t_command *)command->right)->to_close)
+        // {
+        //     if ( ((t_command *)command->right)->to_close[jf] == -1)
+        //         break;
+        //     printf ("pid %d\n", ((t_command *)command->right)->command_arg->content, ((t_command *)command->right)->to_close[jf]);
+        //     jf++;
+        // }
         ((t_command *)command->right)->fd[0] = command->fd[0];
         ((t_command *)command->right)->fd[1] = command->fd[1];
         
@@ -337,12 +350,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         command->to_close = add_int(command->to_close, command->fd[0]);
         if (command->outfd != -1)
         {
-            printf("the subshell out is %d\n", command->outfd);
+            // printf("the subshell out is %d\n", command->outfd);
             ((t_command *)command->right)->outfd = command->outfd;
         }
         if (command->infd != -1)
         {
             ((t_command *)command->right)->infd = command->infd;
+            // ((t_command *)command->left)->infd = command->infd;
         }
         if (command->in_files)
             {
@@ -489,7 +503,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (c == 'l')
             {
                 
-                printf("the out is %d command is %s\n",command->outfd, command->args[0]);
+                // printf("the out is %d command is %s\n",command->outfd, command->args[0]);
                 if (command->to_close != NULL)
                     close_fds(command->to_close);
                 close(command->fd[1]);
