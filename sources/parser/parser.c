@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/21 11:21:39 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/22 15:41:54 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -610,6 +610,7 @@ int get_rank(int n)
 		return A;
 	if (n == OR)
 		return O;
+	// printf ("oops\n");
 	return (0);
 }
 t_command	*parser(t_elem *elements, t_env *env)
@@ -620,6 +621,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 	t_command_h_ret *comm_hand_ret;
 	t_elem *subshell_set = NULL;
 	int lvl = 0;
+	bool f = true;
 	int rank = 0;
 
 	comm_hand_ret = NULL;
@@ -688,24 +690,26 @@ t_command	*parser(t_elem *elements, t_env *env)
 		{
 			if (get_rank(elements->type) >= rank)
 			{
-				// printf("1-content is %s\n", elements->content);
+				// printf("1-content is %s old is %d new is %d \n", elements->content, rank, get_rank(elements->type));
 				pipe_node = handle_pipe_node(pipe_node, elements->type);
 				if (!pipe_node)
 					return (NULL);
 				command = new_node();
 				pipe_node->left = command;
+				rank = get_rank(elements->type);
 			}
 			else
 			{
-				// printf("2-content is %s\n", elements->content);
 				command = handle_pipe_node(command, elements->type);
-				pipe_node->left = command;
+				if (f)
+				{
+					f = false;
+				}
+				pipe_node->left = handle_pipe_node(pipe_node->left, elements->type);
 				command->left = new_node();
-				// if (!command->left)
-				// 	printf("NULL\n");
 				command = command->left;
+				((t_command *)pipe_node->left)->left = command;
 			}
-			rank = get_rank(elements->type);
 		}
 		else if (elements && (elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time)
 		{

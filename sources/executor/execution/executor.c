@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/22 10:18:02 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/22 10:59:56 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -403,18 +403,49 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 else if (WIFSIGNALED(kk))
                         globalVar = WTERMSIG(kk) + 128;
             }
-            close(command->outfd);
+            close_fds(((t_command *)command->right)->to_close);
+            close_fds(((t_command *)command)->to_close);
+            if (c == 'r')
+            {
+                close(command->fd[1]);
+                close(((t_command *)command->right)->fd[1]);
+
+            }
+            if (c == 'l')
+            {
+                close(command->fd[0]);
+                close(((t_command *)command->right)->fd[0]);
+
+            }
+            // close_fds(((t_command *)command->right)->to_close);
+            close(((t_command *)command->right)->outfd);
+            close(((t_command *)command->right)->infd);
+            close(((t_command *)command)->outfd);
+            close(((t_command *)command)->infd);
             exit (globalVar);
         }
         else if (f > 0)
         {
             int hh = 0;
+            // close_fds(((t_command *)command->right)->to_close);
+            close(((t_command *)command->right)->outfd);
+            close(((t_command *)command->right)->infd);
             close(command->outfd);
             close(command->infd);
             if (c == 'r')
+            {
+                printf("yes \n");
+                close(command->outfd);
                 close(command->fd[1]);
+                close(((t_command *)command->right)->fd[1]);
+
+            }
             if (c == 'l')
+            {
                 close(command->fd[0]);
+                close(((t_command *)command->right)->fd[0]);
+
+            }
             globalVar = WEXITSTATUS(hh);
             ret->ret = f;
             ret->pids = NULL;
@@ -486,6 +517,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(126);
                 return NULL;
             }
+                // printf ("yes 2 2 command %s  c is %c\n", command->args[0], c);
             if (command->outfd != -1)
             {
                dup2(command->outfd, STDOUT_FILENO);
@@ -495,7 +527,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 dup2(command->infd, STDIN_FILENO);
             if (c == 'r')
             {
-                
                 close(command->fd[0]);
                 if (command->to_close != NULL)
                     close_fds(command->to_close);
@@ -534,9 +565,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 close(command->infd);
             }
             if (c == 'r')
+            {
+                close(command->outfd);
                 close(command->fd[1]);
+            }
             if (c == 'l')
             {
+                close(command->infd);
                 close(command->fd[0]);
             }
             ret->ret = i;
