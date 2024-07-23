@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/23 09:54:52 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/23 11:41:44 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,11 @@ char *get_path(char *command, t_env *env)
             exit(126);
             return NULL;
         }
-    if (!access(command, F_OK) && command[0] == '.' && command[1] && command[1] == '/')   {
+    if (!access(command, F_OK) && ( (command[0] == '.' && command[1]) || command[0] == '/'))
+    {
         return (command);
     }
+    // printf ("not found\n");
     return 0;
 }
 char **get_command_args(t_command_args *args, t_env *env)
@@ -298,6 +300,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         ((t_command *)command->right)->fd[1] = fd[1];
             if (k == -1)
             {
+                // printf("the pipe res is %d\n", k);
                 close(fd[1]);
                 close(fd[0]);
                 ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);
@@ -403,8 +406,8 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 else if (WIFSIGNALED(kk))
                         globalVar = WTERMSIG(kk) + 128;
             }
-            close_fds(((t_command *)command->right)->to_close);
             close_fds(((t_command *)command)->to_close);
+            close_fds(((t_command *)command->right)->to_close);
             if (c == 'r')
             {
                 close(command->fd[1]);
@@ -427,14 +430,22 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         else if (f > 0)
         {
             int hh = 0;
+            if (!c)
+            {
+                close(command->outfd);
+                close(command->infd);
+                close(((t_command *)command->right)->outfd);;
+                close(((t_command *)command->right)->infd);
+            }
             // close_fds(((t_command *)command->right)->to_close);
-            close(((t_command *)command->right)->outfd);
-            close(((t_command *)command->right)->infd);
-            close(command->outfd);
-            close(command->infd);
+            // close(((t_command *)command->right)->outfd);
+            // close(((t_command *)command->right)->infd);
+            // close(command->outfd);
+            // close(command->infd);
             if (c == 'r')
             {
-                printf("yes \n");
+                // printf("yes \n");
+                close(((t_command *)command->right)->outfd);;
                 close(command->outfd);
                 close(command->fd[1]);
                 close(((t_command *)command->right)->fd[1]);
@@ -443,7 +454,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (c == 'l')
             {
                 close(command->fd[0]);
+                close(command->infd);
                 close(((t_command *)command->right)->fd[0]);
+                close(((t_command *)command->right)->infd);
 
             }
             globalVar = WEXITSTATUS(hh);
@@ -455,10 +468,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     else if (command->type_node == NODE)
     {
         command->args = get_command_args(command->command_arg, env);
-        if (command->args == NULL)
-        {
-            return (NULL);
-        }
             if (command->in_files)
             {
                 command->infd = open_in_files(command->in_files, env);
@@ -476,7 +485,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     globalVar = 1;
                 }    
             }
-        if (c == 'b')
+        if (command->args == NULL)
+        {
+            return (NULL);
+        }
+        if (c == 'b' || is_builtin(command))
         {
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, env) == -1)
                 globalVar = 1;
@@ -502,7 +515,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
+            {
+                // printf ("here we go\n");
                 exit(1);
+            }
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
                 
@@ -521,10 +537,15 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->outfd != -1)
             {
                dup2(command->outfd, STDOUT_FILENO);
+               command->dup = true;
                 // printf("duplicated command %s\n", command->args[0]);
             }
             if (command->infd != -1)
+            {
+               command->dup = true;
                 dup2(command->infd, STDIN_FILENO);
+                
+            }
             if (c == 'r')
             {
                 close(command->fd[0]);

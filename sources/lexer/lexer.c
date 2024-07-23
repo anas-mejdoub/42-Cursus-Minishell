@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/20 16:55:54 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/23 10:33:14 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,7 @@ t_elem *tokenize(char *line, int *subshell)
 {
     int i = 0;
     t_elem *elem = NULL;
-    while (line[i] && line[i] == ' ')
+    while (line[i] && (line[i] == ' ' || line[i] == '\t'))
         i++;
     while (line[i])
     {
