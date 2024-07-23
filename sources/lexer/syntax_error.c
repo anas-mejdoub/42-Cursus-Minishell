@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/21 09:57:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/23 09:48:48 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,15 @@ t_list    *syntax_error(t_elem *elem)
         return (original);
     while (elem)
     {
+        if (elem->type == WORD)
+        {
+            t_elem *tmp5;
+            tmp5 = elem->next;
+            while (tmp5 && tmp5->type == WHITE_SPACE)
+                tmp5 = tmp5->next;
+            if (tmp5 && tmp5->type == START_SUBSHELL)
+                return (original);
+        }
         if (elem && elem->type == START_SUBSHELL)
         {
             elem = elem->next;
@@ -58,6 +67,8 @@ t_list    *syntax_error(t_elem *elem)
                 elem = elem->next;
             if (!elem)
                 continue;
+            if (elem->type == WORD)
+                return (original);
             if (elem && ((elem->type != END_SUBSHELL && elem->type != AND && elem->type != OR && elem->type != PIPE_LINE && elem->type != REDIR_IN && elem->type != REDIR_OUT) || elem->type == START_SUBSHELL))
                 return (original);
         }
