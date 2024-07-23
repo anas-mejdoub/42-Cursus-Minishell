@@ -1,7 +1,7 @@
 SRC =\
 		sources/executor/execution/executor.c \
 		sources/env/env.c sources/env/methods.c \
-		sources/lexer/lexer.c sources/lexer/lexer_utils.c \
+		sources/lexer/lexer.c sources/lexer/lexer_utils.c  sources/lexer/general_tocken_handler.c\
 		sources/lexer/syntax_error.c \
 		sources/parser/parser.c \
 		sources/here_doc/here_doc.c \

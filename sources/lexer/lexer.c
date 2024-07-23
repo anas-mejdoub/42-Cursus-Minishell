@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 13:06:31 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/23 13:15:45 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,56 +123,56 @@ int	double_qoute_handler(t_elem **elem, char *line, int *i)
         return (print_err(2, 2,"synthax error : missing a double quote\n"), 1);
 }
 
-int	general_tokens(char *line, t_elem **elem, int *i, int *subshell)
-{
-	char	*content;
+// int	general_tokens(char *line, t_elem **elem, int *i, int *subshell)
+// {
+// 	char	*content;
 
-	content = NULL;
-	if (line[(*i)] == WHITE_SPACE || line[(*i)] == '\t'
-		|| line[(*i)] == NEW_LINE || line[(*i)] == PIPE_LINE
-		|| line[(*i)] == REDIR_IN || line[(*i)] == REDIR_OUT
-		|| line[(*i)] == START_SUBSHELL || line[(*i)] == END_SUBSHELL
-		|| line[(*i)] == WILDCARD || line[(*i)] == '&')
-	{
-		if (line[(*i)] == START_SUBSHELL)
-			(*subshell)++;
-		if (line[(*i)] == END_SUBSHELL)
-			(*subshell)--;
-		if (line[(*i)] == PIPE_LINE && line[(*i) + 1] == PIPE_LINE)
-		{
-			allocate_node(elem, ft_strdup("||"), GENERAL, OR);
-			(*i) += 2;
-		}
-		else if (line[(*i)] == REDIR_OUT && line[(*i) + 1] == REDIR_OUT)
-		{
-			allocate_node(elem, ft_strdup(">>"), GENERAL, DREDIR_OUT);
-			(*i) += 2;
-		}
-		else if (line[(*i)] == '&' && line[(*i) + 1] == '&')
-		{
-			allocate_node(elem, ft_strdup("&&"), GENERAL, AND);
-			(*i) += 2;
-		}
-		else if (line[(*i)] == '<' && line[(*i) + 1] == '<')
-		{
-			allocate_node(elem, ft_strdup("<<"), GENERAL, HERE_DOC);
-			(*i) += 2;
-		}
-		else if (line[(*i)] == '\t')
-		{
-			allocate_node(elem, ft_strdup(" "), GENERAL, WHITE_SPACE);
-			(*i)++;
-		}
-		else if (line[(*i)] != '&')
-		{
-			content = ft_calloc(2, 1);
-			content[0] = line[(*i)];
-			allocate_node(elem, content, GENERAL, (int)line[(*i)]);
-			(*i)++;
-		}
-	}
-	return (0);
-}
+// 	content = NULL;
+// 	if (line[(*i)] == WHITE_SPACE || line[(*i)] == '\t'
+// 		|| line[(*i)] == NEW_LINE || line[(*i)] == PIPE_LINE
+// 		|| line[(*i)] == REDIR_IN || line[(*i)] == REDIR_OUT
+// 		|| line[(*i)] == START_SUBSHELL || line[(*i)] == END_SUBSHELL
+// 		|| line[(*i)] == WILDCARD || line[(*i)] == '&')
+// 	{
+// 		if (line[(*i)] == START_SUBSHELL)
+// 			(*subshell)++;
+// 		if (line[(*i)] == END_SUBSHELL)
+// 			(*subshell)--;
+// 		if (line[(*i)] == PIPE_LINE && line[(*i) + 1] == PIPE_LINE)
+// 		{
+// 			allocate_node(elem, ft_strdup("||"), GENERAL, OR);
+// 			(*i) += 2;
+// 		}
+// 		else if (line[(*i)] == REDIR_OUT && line[(*i) + 1] == REDIR_OUT)
+// 		{
+// 			allocate_node(elem, ft_strdup(">>"), GENERAL, DREDIR_OUT);
+// 			(*i) += 2;
+// 		}
+// 		else if (line[(*i)] == '&' && line[(*i) + 1] == '&')
+// 		{
+// 			allocate_node(elem, ft_strdup("&&"), GENERAL, AND);
+// 			(*i) += 2;
+// 		}
+// 		else if (line[(*i)] == '<' && line[(*i) + 1] == '<')
+// 		{
+// 			allocate_node(elem, ft_strdup("<<"), GENERAL, HERE_DOC);
+// 			(*i) += 2;
+// 		}
+// 		else if (line[(*i)] == '\t')
+// 		{
+// 			allocate_node(elem, ft_strdup(" "), GENERAL, WHITE_SPACE);
+// 			(*i)++;
+// 		}
+// 		else if (line[(*i)] != '&')
+// 		{
+// 			content = ft_calloc(2, 1);
+// 			content[0] = line[(*i)];
+// 			allocate_node(elem, content, GENERAL, (int)line[(*i)]);
+// 			(*i)++;
+// 		}
+// 	}
+// 	return (0);
+// }
 
 int	general_handler(t_elem **elem, char *line, int *i, int *subshell)
 {
