@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/22 15:41:54 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/23 11:04:29 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ t_command	*new_node(void)
 	new->in_redir = false;
 	new->out_redir = false;
 	new->dredir = false;
+	new->dup = false;
 	new->outfiles = NULL;
 	new->type_node = NODE;
 	new->args = NULL;
@@ -329,6 +330,7 @@ t_command_h_ret *command_handling(t_elem **element)
 	{
 		if (((*element)->type == QOUTE &&  ((t_elem *)(*element)->next) && ((t_elem *)(*element)->next)->type == QOUTE) || ((*element)->type == DOUBLE_QUOTE && ((t_elem *)(*element)->next)  && ((t_elem *)(*element)->next)->type == DOUBLE_QUOTE))
 		{
+			// printf ("haaaa\n");
 			if (!res->command)	
 			// 	res->command = ft_strjoin(res->command, ft_strdup(""));
 			// else
@@ -633,11 +635,12 @@ t_command	*parser(t_elem *elements, t_env *env)
 	bool ambiguous = false;
 	while (elements)
 	{
-		if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
-		{
-			add_to_command(command, new_arg(ft_strdup(""), true, false));
-			elements = elements->next;
-		}
+		// if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
+		// {
+		// 	printf("hehe\n");
+		// 	add_to_command(command, new_arg(ft_strdup(""), true, false));
+		// 	elements = elements->next;
+		// }
 		if (elements && elements->type == START_SUBSHELL)
 		{
 			elements = elements->next;

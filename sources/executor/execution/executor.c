@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/22 16:46:20 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/23 10:50:47 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,11 @@ char *get_path(char *command, t_env *env)
             exit(126);
             return NULL;
         }
-    if (!access(command, F_OK) && command[0] == '.' && command[1] && command[1] == '/')   {
+    if (!access(command, F_OK) && ( (command[0] == '.' && command[1]) || command[0] == '/'))
+    {
         return (command);
     }
+    // printf ("not found\n");
     return 0;
 }
 char **get_command_args(t_command_args *args, t_env *env)
@@ -466,10 +468,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     else if (command->type_node == NODE)
     {
         command->args = get_command_args(command->command_arg, env);
-        if (command->args == NULL)
-        {
-            return (NULL);
-        }
             if (command->in_files)
             {
                 command->infd = open_in_files(command->in_files, env);
@@ -487,7 +485,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                     globalVar = 1;
                 }    
             }
-        if (c == 'b')
+        if (command->args == NULL)
+        {
+            return (NULL);
+        }
+        if (c == 'b' || is_builtin(command))
         {
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, env) == -1)
                 globalVar = 1;
@@ -513,7 +515,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->command_arg)
                 command->path = get_path(command->args[0], env);
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
+            {
+                // printf ("here we go\n");
                 exit(1);
+            }
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
                 
@@ -532,10 +537,15 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             if (command->outfd != -1)
             {
                dup2(command->outfd, STDOUT_FILENO);
+               command->dup = true;
                 // printf("duplicated command %s\n", command->args[0]);
             }
             if (command->infd != -1)
+            {
+               command->dup = true;
                 dup2(command->infd, STDIN_FILENO);
+                
+            }
             if (c == 'r')
             {
                 close(command->fd[0]);
