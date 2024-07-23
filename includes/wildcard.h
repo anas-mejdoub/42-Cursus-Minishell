@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:53:03 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/20 15:22:44 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 11:44:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,6 @@
 
 # include "minishell.h"
 
-char *wildcard(char *pattern);
+char *wildcard(char *pattern, char reg);
 
 #endif

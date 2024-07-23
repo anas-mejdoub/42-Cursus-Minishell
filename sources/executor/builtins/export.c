@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/13 17:45:05 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 11:40:09 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 int export_cmd(t_command *cmd, t_env *env)
 {
+    // printf("hihihihi\n");
     int ret = 0;
     int i;
         int fd_in;

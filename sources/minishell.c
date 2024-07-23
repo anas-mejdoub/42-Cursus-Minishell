@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/22 15:44:35 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/23 09:51:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int main(int ac, char **av, char  **ev)
             continue;
         t_command *root = parser(elem, env);
         // print_tree(root, 0);
+        // continue;
+        
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
         // // echo(root->right);

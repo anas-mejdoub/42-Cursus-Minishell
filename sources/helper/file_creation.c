@@ -6,11 +6,26 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/19 17:14:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/21 11:33:55 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
+
+int count_spaces(char *ptr)
+{
+    int i;
+    int res = 0;
+    i = 0;
+    
+    while (ptr[i])
+    {
+        if (ptr[i] == ' ')
+            res++;
+        i++;
+    }
+    return (res);
+}
 
 char  *ambiguous(void *files, bool type ,t_env *env)
 {
@@ -23,14 +38,18 @@ char  *ambiguous(void *files, bool type ,t_env *env)
     if (type == true)
     { 
         file1 = (t_out_files *)files;
-        if (!file1->index_list)
-            file_name = file1->filename;
+        // printf("--%s---\n", file1->filename);
+        if (file1->index_list || file1->wildcard)
+            file_name = env_expander(file1->filename, file1->index_list, env, file1->wildcard);
         else
-            file_name = env_expander(file1->filename, file1->index_list, env);
-        if (file1->ambiguous)
+            file_name = file1->filename;
+        if (file1->ambiguous || (ft_strchr(file_name, ' ') && count_spaces(file_name) != count_spaces(file1->filename) && file1->wildcard))
         {
             ft_putstr_fd("minishell: ", 2);
-            ft_putstr_fd(file1->filename, 2);
+            // if ((ft_strchr(file_name, ' ') && file1->wildcard))
+            //     ft_putstr_fd(file_name, 2);
+            // else
+            //     ft_putstr_fd(file1->filename, 2);
             ft_putstr_fd(": ambiguous redirect\n", 2);
             globalVar = 1;
             return (NULL);
@@ -43,16 +62,15 @@ char  *ambiguous(void *files, bool type ,t_env *env)
 
         // printf("dsfdfgdsgsdfg333\n");
         file2 = (t_in_files *)files;
-        // printf("dsfdfgdsgsdfg444\n");
-        if (!file2->index_list)
-            file_name = file2->filename;
-        else
-            file_name = env_expander(file2->filename, file2->index_list, env);
-        // printf("555555555555\n");
-        if (file2->ambiguous)
+        // printf("--%s---\n", file2->filename);
+        // if (!file2->index_list)
+        //     file_name = file2->filename;
+        // else
+            file_name = env_expander(file2->filename, file2->index_list, env, file2->wildcard);
+        if (file2->ambiguous || (ft_strchr(file_name, ' ') && count_spaces(file_name) != count_spaces(file2->filename) && file2->wildcard))
         {
             ft_putstr_fd("minishell: ", 2);
-            ft_putstr_fd(file2->filename, 2);
+            // ft_putstr_fd(file2->filename, 2);
             ft_putstr_fd(": ambiguous redirect\n", 2);
             globalVar = 1;
             return (NULL);

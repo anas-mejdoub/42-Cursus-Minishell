@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/22 15:41:54 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/23 09:51:31 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
+char  *wild_card_handler(t_command_h_ret *res)
+{
+	char a[2];
+	a[0] = -17;
+	a[1] = '\0';
+	res->wildcard = true;
+	return (ft_strdup(a));
+}
 
 int allocate_node1(t_elem **elem, char *content, int state, int token)
 {
@@ -147,7 +157,7 @@ void	print_tree(t_command *root, int n)
 	print_tree(root->left, 2);
 }
 
-t_command_args *new_arg(char *content, bool including_null,bool env)
+t_command_args *new_arg(char *content, bool including_null, bool wild_card,bool env)
 {
 	t_command_args* new;
 
@@ -156,6 +166,7 @@ t_command_args *new_arg(char *content, bool including_null,bool env)
 		return (NULL);
 	new->content = content;
 	new->env = env;
+	new->wildcard = wild_card;
 	new->including_null = including_null;
 	new->next = NULL;
 	// new->env_arr = NULL;
@@ -319,6 +330,7 @@ t_command_h_ret *command_handling(t_elem **element)
 		return (NULL);
 	res->command = NULL;
 	res->arr = NULL;
+	res->wildcard = false;
 	res->env = false;
 	res->lens = NULL;
 	res->including_null = false;
@@ -338,6 +350,15 @@ t_command_h_ret *command_handling(t_elem **element)
 		{
 			res->including_null = true;
 		}
+		// if ((*element)->type == WILDCARD)
+		// {
+		// 	char a[2];
+		// 	a[0] = -17;
+		// 	a[1] = '\0';
+		// 	res->wildcard = true;
+		// 	res->command = ft_strjoin(res->command, ft_strdup(a));
+		// 	printf("tbon mk\n");
+		// }
 		if ((*element)->type == ENV)
 		{
 			res->arr = add_int(res->arr, env_index((*element)->content, res->command));
@@ -357,16 +378,36 @@ t_command_h_ret *command_handling(t_elem **element)
 			if (!res->command)
 				res->command = (*element)->content;
 			else
+			{
 				res->command = ft_strjoin(res->command, (*element)->content);
+			}
 		}
 		else if ((*element)->state == GENERAL && (*element)->type != QOUTE && (*element)->type != DOUBLE_QUOTE)
 		{
 			if (!res->command)
-				res->command = (*element)->content;
+			{
+				
+				if ((*element)->type == WILDCARD)
+				{
+
+					res->command = wild_card_handler(res);
+				}
+				else
+					res->command = (*element)->content;
+			}
 			else
 			{
 				if ((*element)->type != WHITE_SPACE)
-					res->command = ft_strjoin(res->command, (*element)->content);
+				{
+
+					if ((*element)->type == WILDCARD)
+					{
+
+						res->command = ft_strjoin(res->command, wild_card_handler(res));
+					}
+					else
+						res->command = ft_strjoin(res->command, (*element)->content);
+				}
 			}
 		}
 		tmp = *element;
@@ -387,7 +428,7 @@ t_in_files *get_last_in_file(t_in_files *files)
 	return (files);
 }
 
-t_in_files *new_in_file(char *filename, bool here_doc, bool env_qoute)
+t_in_files *new_in_file(char *filename, bool here_doc, bool env_qoute, bool wild_card)
 {
 	t_in_files *new;
 	new = malloc(sizeof(t_in_files));
@@ -397,6 +438,7 @@ t_in_files *new_in_file(char *filename, bool here_doc, bool env_qoute)
 	new->here_doc = here_doc;
 	new->ambiguous = env_qoute;
 	new->limiter = NULL;
+	new->wildcard = wild_card;
 	new->index_list = NULL;
 	new->next = NULL;
 	if (here_doc)
@@ -480,16 +522,16 @@ int add_to_infiles(t_command *command, t_in_files *file, t_env *env)
 	return (0);
 }
 
-int	handle_redir_in(t_command *command, char *filename, bool env_qoute, t_env *env)
+int	handle_redir_in(t_command *command, char *filename, bool env_qoute, t_env *env, bool wild_card)
 {
 	if (command->in_redir)
 	{
-		add_to_infiles(command, new_in_file(filename, false, env_qoute), env);
+		add_to_infiles(command, new_in_file(filename, false, env_qoute, wild_card), env);
 	}
 	else if (command->here_doc)
 	{
 		command->here_doc = false;
-		return (add_to_infiles(command, new_in_file(filename, true, env_qoute), env));
+		return (add_to_infiles(command, new_in_file(filename, true, env_qoute, wild_card), env));
 	}
 	return (0);
 }
@@ -503,7 +545,7 @@ t_out_files *get_last_file(t_out_files *files)
 	return (files);
 }
 
-t_out_files *new_file(char *filename, bool append, bool ambiguous)
+t_out_files *new_file(char *filename, bool append, bool ambiguous, bool wild_card)
 {
 	t_out_files *new;
 	new = malloc(sizeof(t_out_files));
@@ -512,6 +554,7 @@ t_out_files *new_file(char *filename, bool append, bool ambiguous)
 	new->filename = filename;
 	new->append = append;
 	new->ambiguous = ambiguous;
+	new->wildcard = wild_card;
 	new->next = NULL;
 	new->index_list = NULL;
 	return (new);
@@ -523,14 +566,14 @@ void add_to_outfiles(t_command *command, t_out_files *file)
 	else
 		get_last_file(command->outfiles)->next = file;
 }
-void	handle_redir_out(t_command *command, char *filename, bool ambiguous)
+void	handle_redir_out(t_command *command, char *filename, bool ambiguous,  bool wild_card)
 {
 	command->out_redir = false;
 	bool append = false;
 	if (command->dredir)
 		append = true;
 	command->dredir = false;
-	add_to_outfiles(command, new_file(filename, append, ambiguous));
+	add_to_outfiles(command, new_file(filename, append, ambiguous, wild_card));
 }
 void add_indexs_to_args(int *arr, int *lens, t_command_args *args)
 {
@@ -635,7 +678,8 @@ t_command	*parser(t_elem *elements, t_env *env)
 	{
 		if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
-			add_to_command(command, new_arg(ft_strdup(""), true, false));
+			add_to_command(command, new_arg(ft_strdup(""), true, false ,false));
+			// printf("here\n");
 			elements = elements->next;
 		}
 		if (elements && elements->type == START_SUBSHELL)
@@ -673,16 +717,16 @@ t_command	*parser(t_elem *elements, t_env *env)
 				}
 				command->right =  tmp;
 		}
-		else if ((elements->type == WORD || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
+		else if ((elements->type == WORD || elements->type == WILDCARD  || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
 		{
 			comm_hand_ret = command_handling(&elements);
 			if (comm_hand_ret->env)
 			{
-				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null, true));
+				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null,comm_hand_ret->wildcard , true));
 			}
 			else
 			{
-				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null,false));
+				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null, comm_hand_ret->wildcard,false));
 			}
 			add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens, get_last_arg(command->command_arg));
 		}
@@ -732,13 +776,13 @@ t_command	*parser(t_elem *elements, t_env *env)
 		{
 			command->dredir = true;
 		}
-		else if (elements && ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir)))
+		else if (elements && ((elements->type == WORD || elements->type == WILDCARD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir)))
 		{
 			t_elem *tmp = elements;
 			bool err = imbg(tmp, env);
 			ambiguous = err;
 			comm_hand_ret = command_handling(&elements);
-			handle_redir_out(command, comm_hand_ret->command, ambiguous);
+			handle_redir_out(command, comm_hand_ret->command, ambiguous,comm_hand_ret->wildcard);
 			add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_file(command->outfiles));
 
 		}
@@ -746,13 +790,13 @@ t_command	*parser(t_elem *elements, t_env *env)
 		{
 			command->here_doc = true;
 		}
-		else if (elements && ((elements->type == WORD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))  && (command->here_doc || command->in_redir)))
+		else if (elements && ((elements->type == WORD || elements->type == ENV || elements->type == WILDCARD || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))  && (command->here_doc || command->in_redir)))
 		{
 			t_elem *tmp = elements;
 			bool err = imbg(tmp, env);
 			ambiguous = err;
 			comm_hand_ret = command_handling(&elements);
-			if (handle_redir_in(command, comm_hand_ret->command, ambiguous, env) == -1)
+			if (handle_redir_in(command, comm_hand_ret->command, ambiguous, env, comm_hand_ret->wildcard) == -1)
 			{
 				globalVar = 1;
 				return (NULL);

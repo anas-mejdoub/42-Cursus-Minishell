@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/07 19:20:22 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/21 14:36:10 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char *add_string_back(char **s1, char **s2)
     return (*s1);
 }
 
-char  *env_expander(char *content, t_env_index *indexs, t_env *env)
+char  *env_expander(char *content, t_env_index *indexs, t_env *env, bool wild_card)
 {
     int i;
     int start;
@@ -35,6 +35,12 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env)
     i = 0;
     start = i;
     tmp_index = indexs;
+    // printf("hehe\n");
+    if (wild_card)
+    {   
+        char *new_content = wildcard(content, -17);
+        content = new_content;
+    }
     if (!indexs)
         return (content);
     str = ft_calloc(1, 1);
@@ -53,6 +59,44 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env)
             i++;
             tmp_str = ft_substr(content, start + 1 , tmp_index->len - 1);
             char *s = env->get(env->data, tmp_str);
+            if (s && ft_strchr(s, '*'))
+            {
+                char *final_string = ft_calloc(1,1);
+                if (ft_strchr(s, ' ') || ft_strchr(s, '\t'))
+                {
+                    char **arr = ft_split(s, ' ');
+                    int k = 0;
+                    while (arr[k])
+                    {
+                        if (ft_strchr(arr[k], '\t'))
+                        {
+                            char **arr2 = ft_split(arr[k], '\n');
+                            int y = 0;
+                            while (arr2[y])
+                            {
+                                if (ft_strchr(arr2[y], '*'))
+                                    final_string = ft_strjoin(final_string, wildcard(arr2[y], '*'));
+                                else
+                                    final_string = ft_strjoin(final_string, arr2[y]);
+                                y++;
+                                if (arr[k])
+                                    final_string = ft_strjoin(final_string, " ");
+                            }
+                        }
+                        else if (ft_strchr(arr[k], '*'))
+                            final_string = ft_strjoin(final_string, wildcard(arr[k], '*'));
+                        else
+                            final_string = ft_strjoin(final_string, wildcard(arr[k], '*'));
+                        k++;
+                        if (arr[k])
+                            final_string = ft_strjoin(final_string, " ");
+
+                    }
+                    s = final_string;
+                }
+                else
+                    s = wildcard(s, '*');
+            }
             add_string_back(&str, &s);
             start = i + tmp_index->len - 1;
             tmp_index = tmp_index->next;
