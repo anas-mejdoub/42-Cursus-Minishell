@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/23 11:40:10 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/23 16:50:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,6 @@ void add_to_index(t_command_args *list, t_env_index *new)
 	}
 	else
 	{
-		
 		last_index(list->index_list)->next = new;
 	}
 }
@@ -323,77 +322,12 @@ int *add_int(int *arr, int new)
 	res[j + 1] = -1;
 	return (res);
 }
-t_command_h_ret *command_handling(t_elem **element)
+void handle_general_case(t_elem **element , t_command_h_ret *res)
 {
-	t_command_h_ret *res;
-	res = malloc (sizeof(t_command_h_ret));
-	if (!res)
-		return (NULL);
-	res->command = NULL;
-	res->arr = NULL;
-	res->wildcard = false;
-	res->env = false;
-	res->lens = NULL;
-	res->including_null = false;
-	t_elem *tmp = NULL;
-	if ((*element)->type == ENV)
-				res->env = true;
-	while (*element)
-	{
-		if (((*element)->type == QOUTE &&  ((t_elem *)(*element)->next) && ((t_elem *)(*element)->next)->type == QOUTE) || ((*element)->type == DOUBLE_QUOTE && ((t_elem *)(*element)->next)  && ((t_elem *)(*element)->next)->type == DOUBLE_QUOTE))
-		{
-			// printf ("haaaa\n");
-			if (!res->command)	
-			// 	res->command = ft_strjoin(res->command, ft_strdup(""));
-			// else
-				res->command = ft_strdup("");
-		}
-		if (((*element)->type == DOUBLE_QUOTE || (*element)->type == QOUTE))
-		{
-			res->including_null = true;
-		}
-		// if ((*element)->type == WILDCARD)
-		// {
-		// 	char a[2];
-		// 	a[0] = -17;
-		// 	a[1] = '\0';
-		// 	res->wildcard = true;
-		// 	res->command = ft_strjoin(res->command, ft_strdup(a));
-		// 	printf("tbon mk\n");
-		// }
-		if ((*element)->type == ENV)
-		{
-			res->arr = add_int(res->arr, env_index((*element)->content, res->command));
-			res->lens = add_int(res->lens, (*element)->len);
-			res->env = true;
-		}
-		if (ft_strchr(" ><|()&", (*element)->type) && (*element)->state == GENERAL && (*element)->type != QOUTE)
-		{
-			if (ft_strchr("><|()&", (*element)->type))
-				*element = tmp;
-		// printf("hehe\n");
-			
-			return res;
-		}
-		if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE) && ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
-		{
-			if (!res->command)
-				res->command = (*element)->content;
-			else
+	if (!res->command)
 			{
-				res->command = ft_strjoin(res->command, (*element)->content);
-			}
-		}
-		else if ((*element)->state == GENERAL && (*element)->type != QOUTE && (*element)->type != DOUBLE_QUOTE)
-		{
-			if (!res->command)
-			{
-				
 				if ((*element)->type == WILDCARD)
-				{
-
 					res->command = wild_card_handler(res);
-				}
 				else
 					res->command = (*element)->content;
 			}
@@ -401,7 +335,6 @@ t_command_h_ret *command_handling(t_elem **element)
 			{
 				if ((*element)->type != WHITE_SPACE)
 				{
-
 					if ((*element)->type == WILDCARD)
 					{
 
@@ -411,14 +344,89 @@ t_command_h_ret *command_handling(t_elem **element)
 						res->command = ft_strjoin(res->command, (*element)->content);
 				}
 			}
+}
+void handle_env_case(t_elem **element, t_command_h_ret *res)
+{
+	// if ((*element)->type == ENV)
+	// {
+
+	res->arr = add_int(res->arr, env_index((*element)->content, res->command));
+			res->lens = add_int(res->lens, (*element)->len);
+			res->env = true;
+	// }
+}
+t_command_h_ret *intialize_ret_cmd()
+{
+	t_command_h_ret *res;
+
+	res = malloc (sizeof(t_command_h_ret));
+	if (!res)
+		return (NULL);
+	res->command = NULL;
+	res->arr = NULL;
+	res->wildcard = false;
+	res->env = false;
+	res->lens = NULL;
+	res->including_null = false;
+	return (res);
+}
+
+void handle_empty_quote(t_command_h_ret *res)
+{
+	if (!res->command)	
+		res->command = ft_strdup("");
+}
+void handle_quotes_case(t_elem **element, t_command_h_ret *res)
+{
+		if (!res->command)
+			res->command = (*element)->content;
+		else
+			res->command = ft_strjoin(res->command, (*element)->content);
+}
+
+void	command_handl_core(t_elem **element, t_command_h_ret *res)
+{
+	if (((*element)->type == QOUTE && (*element)->next
+		&& ((t_elem *)(*element)->next)->type == QOUTE)
+		|| ((*element)->type == DOUBLE_QUOTE && (*element)->next
+		&& ((t_elem *)(*element)->next)->type == DOUBLE_QUOTE))
+		handle_empty_quote(res);
+	if ((*element)->type == DOUBLE_QUOTE || (*element)->type == QOUTE)
+		res->including_null = true;
+	if ((*element)->type == ENV)
+		handle_env_case(element, res);
+	if (((*element)->state == IN_QUOTE || (*element)->state == IN_DQUOTE)
+		&& ((*element)->type != DOUBLE_QUOTE && (*element)->type != QOUTE))
+		handle_quotes_case(element, res);
+	else if ((*element)->state == GENERAL && (*element)->type != QOUTE
+		&& (*element)->type != DOUBLE_QUOTE)
+		handle_general_case(element, res);
+}
+
+t_command_h_ret	*command_handling(t_elem **element)
+{
+	t_command_h_ret	*res;
+	t_elem			*tmp;
+
+	res = intialize_ret_cmd();
+	tmp = NULL;
+	if ((*element)->type == ENV)
+		res->env = true;
+	while (*element)
+	{
+		command_handl_core(element, res);
+		if (ft_strchr(" ><|()&", (*element)->type)
+			&& (*element)->state == GENERAL && (*element)->type != QOUTE)
+		{
+			if (ft_strchr("><|()&", (*element)->type))
+				*element = tmp;
+			return (res);
 		}
 		tmp = *element;
 		*element = (*element)->next;
 	}
 	if (!res->command)
-	{ 
 		res->command = ft_strdup("");
-	}
 	return (res);
 }
 t_in_files *get_last_in_file(t_in_files *files)
@@ -445,7 +453,6 @@ t_in_files *new_in_file(char *filename, bool here_doc, bool env_qoute, bool wild
 	new->next = NULL;
 	if (here_doc)
 	{
-		
 		new->limiter = filename;
 	}
 	return (new);
@@ -464,7 +471,7 @@ int my_rand()
 char *random_str()
 {
 	char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	char *res = NULL;
+	char	 *res = NULL;
 	int key;
 	int i = 0;
 	res = malloc(sizeof (char) * 10);
@@ -490,7 +497,6 @@ int handle_here_doc(t_in_files *file, t_env *env)
 	unlink(file_name);
 	free(random);
 	file->filename = ft_strdup(file_name);
-	// printf("filename %s\n", file->filename);
 	int i = open(file_name, O_CREAT | O_WRONLY | O_RDONLY , 0777);
 	if (i == -1)
 	{
@@ -501,7 +507,7 @@ int handle_here_doc(t_in_files *file, t_env *env)
 	char *str1 = here_doc(file->limiter);
 	if (str1 == NULL)
 		return (-1);
-	char *str2 = expand_here_doc_content(str1, env); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	char *str2 = expand_here_doc_content(str1, env);
 	ft_putstr_fd(str2, i);
 	close(i);
 	free(file_name);
@@ -655,160 +661,232 @@ int get_rank(int n)
 		return A;
 	if (n == OR)
 		return O;
-	// printf ("oops\n");
 	return (0);
 }
+
+bool handle_subshell(t_command *command, t_elem **elements, t_env *env)
+{
+	t_command *tmp = NULL;
+	int lvl = 0;
+	t_elem *subshell_set = NULL;
+	while (*elements != NULL)
+	{
+		if ((*elements)->type == END_SUBSHELL && lvl == 0)
+		{
+			elements = (*elements)->next;
+			break;
+		}
+		if ((*elements)->type == START_SUBSHELL)
+			lvl++;
+		if ((*elements)->type == END_SUBSHELL)
+			lvl--;
+		allocate_node1(&subshell_set, (*elements)->content, (*elements)->state, (*elements)->type);
+		*elements = (*elements)->next;
+	}
+	command->type_node = SUBSHELL_NODE;
+	tmp = parser(subshell_set, env);
+	if (!tmp)
+		return false;
+	if (tmp->type_node == ROOT_NODE)
+	{
+		if (((t_command *)tmp->right)->type_node != ROOT_NODE)
+			tmp = tmp->right;
+	}
+	command->right =  tmp;
+	return (true);
+}
+
+int split_tree(t_elem *elements, t_command **command, t_command **pipe_node, int *r)
+{
+	if (get_rank(elements->type) >= *r)
+	{
+		*pipe_node = handle_pipe_node(*pipe_node, elements->type);
+		if (!*pipe_node)
+			return (0);
+		*command = new_node();
+		(*pipe_node)->left = *command;
+		*r = get_rank(elements->type);
+	}
+	else
+	{
+		*command = handle_pipe_node(*command, elements->type);
+		(*pipe_node)->left = handle_pipe_node((*pipe_node)->left, elements->type);
+		(*command)->left = new_node();
+		*command = (*command)->left;
+		((t_command *)(*pipe_node)->left)->left = *command;
+	}
+	return (0);
+}
+
+int first_split_tree(t_elem *elements, t_command **command, t_command **pipe_node, bool *f)
+{
+	int r ;
+
+	r = 0;
+	if (elements->type == PIPE_LINE)
+		r = P;
+	if (elements->type ==AND)
+		r = A;
+	if (elements->type == OR)
+		r = O;
+	*f = false;
+	*command = new_node();
+	(*pipe_node)->left = *command;
+	(*pipe_node)->type_node = set_type_node(elements->type);
+	return (r);
+}
+
+void redir_out_parse(t_elem **elements, t_command **command, t_env *env)
+{
+	t_command_h_ret *comm_hand_ret;
+	t_elem *tmp = *elements;
+	comm_hand_ret = command_handling(elements);
+	handle_redir_out(*command, comm_hand_ret->command, imbg(tmp, env),comm_hand_ret->wildcard);
+	add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_file((*command)->outfiles));
+}
+bool redir_in_parse(t_elem **elements, t_command **command, t_env *env)
+{
+	t_command_h_ret *comm_hand_ret;
+	t_elem *tmp = *elements;
+	comm_hand_ret = command_handling(elements);
+	if (handle_redir_in(*command, comm_hand_ret->command, imbg(tmp, env), env, comm_hand_ret->wildcard) == -1)
+	{
+		globalVar = 1;
+		return (false);
+	}
+	if ((*command)->in_redir)
+	{
+		(*command)->in_redir = false;
+		add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_in_file((*command)->in_files));
+	}
+	return (true);
+}
+
+void command_args_parse(t_elem **elements, t_command **command)
+{
+	t_command_h_ret *comm_hand_ret;
+	comm_hand_ret = command_handling(elements);
+	if (comm_hand_ret->env)
+		add_to_command(*command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null,comm_hand_ret->wildcard , true));
+	else
+		add_to_command(*command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null, comm_hand_ret->wildcard,false));
+	add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens, get_last_arg((*command)->command_arg));
+}
+bool	redir_out_condition(t_elem *elements, t_command *command)
+{
+	if (elements && ((elements->type == WORD || elements->type == WILDCARD
+		|| elements->type == ENV || (elements->type == QOUTE && elements->next
+		&& ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE
+		&& elements->next && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))
+		&& (command->out_redir || command->dredir)))
+	{
+		return (true);
+	}
+	return (false);
+}
+
+bool	redir_in_condition(t_elem *elements, t_command *command)
+{
+	if (elements && ((elements->type == WORD || elements->type == WILDCARD
+		|| elements->type == ENV || (elements->type == QOUTE && elements->next
+		&& ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE
+		&& elements->next && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))
+		&& (command->in_redir || command->here_doc)))
+	{
+		return (true);
+	}
+	return (false);
+}
+void intialize_parser(t_command **command, t_command **pipe_node, bool *f, int *r)
+{
+	*command = new_node();
+	*pipe_node = new_node();
+	(*pipe_node)->type_node = ROOT_NODE;
+	(*pipe_node)->right = *command;
+	*r = 0;
+	*f = true;
+
+}
+
+bool	args_parse_condit(t_elem *elements, t_command *command)
+{
+	if ((elements->type == WORD || elements->type == WILDCARD || elements->type == ENV
+		|| elements->type == QOUTE || elements->type == DOUBLE_QUOTE)
+		&& !command->in_redir && !command->out_redir && !command->dredir
+		&& !command->here_doc)
+	{
+		return (true);
+	}
+	return (false);
+}
+
+
+// void parser_core(t_elem **elements, t_command **cmd, t_command **p_node, int *r, bool *f, t_env *env)
+// {
+// 	if (elements && elements->type == START_SUBSHELL)
+// 	{
+// 		elements = elements->next;
+// 		if (!handle_subshell(cmd, &elements, env))
+// 			return (NULL);
+// 	}
+// 	else if (args_parse_condit(*elements, *cmd))
+// 		command_args_parse(elements, cmd);
+// 	else if (elements && ((*elements)->type == PIPE_LINE  || (*elements)->type == AND || (*elements)->type == OR ) && *f == false)
+// 		split_tree(elements, cmd, &pipe_node, r);
+// 	else if (elements && ((*elements)->type == PIPE_LINE  || (*elements)->type == AND || (*elements)->type == OR ) && *f)
+// 		*r = first_split_tree(elements, cmd, &pipe_node, *f);
+// 	else if (elements && (*elements)->type == REDIR_IN)
+// 		(*cmd)->in_redir = true;
+// 	else if (elements && (*elements)->type == REDIR_OUT)
+// 		(*cmd)->out_redir = true;
+// 	else if (elements && (*elements)->type == DREDIR_OUT)
+// 		(*cmd)->dredir = true;
+// 	else if (redir_out_condition(elements, *cmd))
+// 		redir_out_parse(elements, cmd, env);
+// 	else if (elements && (*elements)->type == HERE_DOC)
+// 		(*cmd)->here_doc = true;
+// 	else if (redir_in_condition(elements, *cmd))
+// 		redir_in_parse(elements, cmd, env);
+// }
+// void parser_redirs_help()
+// {
+
+// }
 t_command	*parser(t_elem *elements, t_env *env)
 {
 	t_command	*command;
 	t_command	*pipe_node;
-	bool		first_time;
-	t_command_h_ret *comm_hand_ret;
-	t_elem *subshell_set = NULL;
-	int lvl = 0;
-	bool f = true;
-	int rank = 0;
+	bool	first_time;
+	int rank;
 
-	comm_hand_ret = NULL;
-	first_time = true;
-	command = new_node();
-	pipe_node = new_node();
-	pipe_node->type_node = ROOT_NODE;
-	pipe_node->right = command;
-	bool ambiguous = false;
+	intialize_parser(&command, &pipe_node, &first_time, &rank);
 	while (elements)
 	{
-		// if (elements->next && ((elements->type == QOUTE && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && ((((t_elem *)elements->next)->next && ((t_elem *)((t_elem *)elements->next)->next)->type == WHITE_SPACE) || !((t_elem *)elements->next)->next) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
-		// {
-		// 	printf("hehe\n");
-		// 	add_to_command(command, new_arg(ft_strdup(""), true, false));
-		// 	elements = elements->next;
-		// }
 		if (elements && elements->type == START_SUBSHELL)
 		{
 			elements = elements->next;
-			while (elements)
-			{
-				if (elements->type == END_SUBSHELL && lvl == 0)
-				{
-					elements = elements->next;
-					break;
-				}
-				if (elements->type == START_SUBSHELL)
-				{
-					lvl++;
-				}
-				if (elements->type == END_SUBSHELL)
-				{
-					lvl--;
-				}
-				allocate_node1(&subshell_set, elements->content, elements->state, elements->type);
-				elements = elements->next;
-			}
-				command->type_node = SUBSHELL_NODE;
-				t_command *tmp = parser(subshell_set, env);
-				if (!tmp)
-				{
-					return NULL;
-				}
-				subshell_set = NULL;
-				if (tmp->type_node == ROOT_NODE)
-				{
-					if (((t_command *)tmp->right)->type_node != ROOT_NODE)
-						tmp = tmp->right;
-				}
-				command->right =  tmp;
+			if (!handle_subshell(command, &elements, env))
+				return (NULL);
 		}
 		else if ((elements->type == WORD || elements->type == WILDCARD  || elements->type == ENV || elements->type == QOUTE || elements->type == DOUBLE_QUOTE) && !command->in_redir && !command->out_redir && !command->dredir && !command->here_doc)
-		{
-			comm_hand_ret = command_handling(&elements);
-			if (comm_hand_ret->env)
-			{
-				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null,comm_hand_ret->wildcard , true));
-			}
-			else
-			{
-				add_to_command(command, new_arg(comm_hand_ret->command, comm_hand_ret->including_null, comm_hand_ret->wildcard,false));
-			}
-			add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens, get_last_arg(command->command_arg));
-		}
+			command_args_parse(&elements, &command);
 		else if (elements && (elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time == false)
-		{
-			if (get_rank(elements->type) >= rank)
-			{
-				// printf("1-content is %s old is %d new is %d \n", elements->content, rank, get_rank(elements->type));
-				pipe_node = handle_pipe_node(pipe_node, elements->type);
-				if (!pipe_node)
-					return (NULL);
-				command = new_node();
-				pipe_node->left = command;
-				rank = get_rank(elements->type);
-			}
-			else
-			{
-				command = handle_pipe_node(command, elements->type);
-				if (f)
-				{
-					f = false;
-				}
-				pipe_node->left = handle_pipe_node(pipe_node->left, elements->type);
-				command->left = new_node();
-				command = command->left;
-				((t_command *)pipe_node->left)->left = command;
-			}
-		}
+			split_tree(elements, &command, &pipe_node, &rank);
 		else if (elements && (elements->type == PIPE_LINE  || elements->type == AND || elements->type == OR ) && first_time)
-		{
-			if (elements->type == PIPE_LINE)
-				rank = P;
-			if (elements->type ==AND)
-				rank = A;
-			if (elements->type == OR)
-				rank = O;
-			first_time = false;
-			command = new_node();
-			pipe_node->left = command;
-			pipe_node->type_node = set_type_node(elements->type);
-		}
+			rank = first_split_tree(elements, &command, &pipe_node, &first_time);
 		else if (elements && elements->type == REDIR_IN)
 			command->in_redir = true;
 		else if (elements && elements->type == REDIR_OUT)
 			command->out_redir = true;
 		else if (elements &&elements->type == DREDIR_OUT)
-		{
 			command->dredir = true;
-		}
-		else if (elements && ((elements->type == WORD || elements->type == WILDCARD || elements->type == ENV || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE)) && (command->out_redir || command->dredir)))
-		{
-			t_elem *tmp = elements;
-			bool err = imbg(tmp, env);
-			ambiguous = err;
-			comm_hand_ret = command_handling(&elements);
-			handle_redir_out(command, comm_hand_ret->command, ambiguous,comm_hand_ret->wildcard);
-			add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_file(command->outfiles));
-
-		}
+		else if (redir_out_condition(elements, command))
+			redir_out_parse(&elements, &command, env);
 		else if (elements && elements->type == HERE_DOC)
-		{
 			command->here_doc = true;
-		}
-		else if (elements && ((elements->type == WORD || elements->type == ENV || elements->type == WILDCARD || (elements->type == QOUTE &&  ((t_elem *)elements->next) && ((t_elem *)elements->next)->type == QOUTE) || (elements->type == DOUBLE_QUOTE && ((t_elem *)elements->next)  && ((t_elem *)elements->next)->type == DOUBLE_QUOTE))  && (command->here_doc || command->in_redir)))
-		{
-			t_elem *tmp = elements;
-			bool err = imbg(tmp, env);
-			ambiguous = err;
-			comm_hand_ret = command_handling(&elements);
-			if (handle_redir_in(command, comm_hand_ret->command, ambiguous, env, comm_hand_ret->wildcard) == -1)
-			{
-				globalVar = 1;
-				return (NULL);
-			}
-			if (command->in_redir)
-			{
-				command->in_redir = false;
-				add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens, get_last_in_file(command->in_files));
-			}
-		}
+		else if (redir_in_condition(elements, command))
+			if (!redir_in_parse(&elements, &command, env))
+				return NULL;
 		if (elements)
 			elements = elements->next;
 		else
