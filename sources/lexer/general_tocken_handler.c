@@ -6,11 +6,21 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:13:10 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 14:49:42 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/23 16:16:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
+
+int	is_token(char c)
+{
+	if (c != WHITE_SPACE && c != '\t' && c != NEW_LINE && c != QOUTE
+		&& c != DOUBLE_QUOTE && c != ENV && c != PIPE_LINE && c != REDIR_IN
+		&& c != REDIR_OUT && c != START_SUBSHELL && c != END_SUBSHELL
+		&& c != WILDCARD)
+		return (1);
+	return (0);
+}
 
 static bool	check_tockens(char a, int *subshell)
 {
@@ -60,6 +70,34 @@ int	general_tokens(char *line, t_elem **elem, int *i, int *subshell)
 			create_node(elem, (int)line[(*i)], content, i);
 			free(content);
 		}
+	}
+	return (0);
+}
+
+int	general_handler(t_elem **elem, char *line, int *i, int *subshell)
+{
+	int	current_index;
+
+	current_index = (*i);
+	while (line[(*i)] && (line[(*i)] != QOUTE && line[(*i)] != DOUBLE_QUOTE))
+	{
+		while (((line[(*i)] && (is_token(line[(*i)]) && !(line[(*i)] == '&'
+							&& line[(*i) + 1] == '&'))) || (line[(*i)] == ENV
+					&& !ft_isalpha(line[(*i) + 1]) && line[(*i) + 1] != '_'
+					&& line[(*i) + 1] != '?')))
+			(*i)++;
+		if (current_index != (*i))
+		{
+			allocate_node(elem, ft_substr(line, current_index, \
+							(*i) - current_index), GENERAL, WORD);
+			current_index = (*i);
+		}
+		if (line[(*i)] == ENV && (ft_isalpha(line[(*i) + 1]) || \
+			line[(*i) + 1] == '_' || line[(*i) + 1] == '?'))
+			env_handeler(elem, line, i, GENERAL);
+		else if (general_tokens(line, elem, i, subshell))
+			return (1);
+		current_index = (*i);
 	}
 	return (0);
 }

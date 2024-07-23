@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:06:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 14:53:22 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/23 15:30:10 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 
 void free_elem(t_elem *elem);
 int allocate_node(t_elem **elem, char *content, int state, int token);
+int	env_handeler(t_elem **elem, char *line, int *i, int state);
 t_list    *syntax_error(t_elem *elem);
-int	general_tokens(char *line, t_elem **elem, int *i, int *subshell);
 int	qoute_handler(t_elem **elem, char *line, int *i);
+int	general_handler(t_elem **elem, char *line, int *i, int *subshell);
 #endif

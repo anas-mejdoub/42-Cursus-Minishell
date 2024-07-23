@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:40:27 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 12:38:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/23 15:44:54 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int change_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
 int restor_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
 bool imbg(t_elem *tmp, t_env *env);
 void	print_err(int count, ...);
+bool env_pattern(char a);
 // int     open_out_files(t_out_files *files, t_env *env);
 
 #endif
