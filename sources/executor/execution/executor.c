@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/24 09:14:16 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 12:09:20 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,13 +139,200 @@ char **get_command_args(t_command_args *args, t_env *env)
     }
     return (res);
 }
+
 void handle_intr_sig(int sig)
 {
     (void)sig;
 }
+
+t_exec_ret * and_node(t_command *command, char **ev, t_exec_ret *ret, t_env *env)
+{
+    // bool found_in = false;
+    t_exec_ret *tmp = NULL;
+    int  status = 0;
+    if (command->outfd != -1)
+    {
+        ((t_command *)command->right)->outfd = command->outfd;
+        ((t_command *)command->left)->outfd = dup(command->outfd);
+    }
+    if (command->infd != -1)
+    {
+        ((t_command *)command->right)->infd = command->infd;
+        ((t_command *)command->left)->infd = dup(command->infd);
+    }
+    ((t_command *)command->left)->fd[0] = command->fd[0];
+    ((t_command *)command->left)->fd[1] = command->fd[1];
+    ((t_command *)command->right)->fd[0] = command->fd[0];
+    ((t_command *)command->right)->fd[1] = command->fd[1];
+    tmp = executor(command->right, env, '\0', ev);
+    if (tmp && tmp->pids)
+    {
+        int ir = 0;
+        while (tmp && tmp->pids)
+        {
+        if (tmp->pids[ir] == -1)
+            break;
+        waitpid(tmp->pids[ir], &status, 0);
+        if (WIFEXITED(status))
+            globalVar = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+        {
+            globalVar = WTERMSIG(status) + 128;
+        }
+        ir++;
+        }
+        ret->pids = tmp->pids;
+    }
+    else if (tmp && tmp->ret != -1)
+    {
+        waitpid(tmp->ret, &status, 0);
+        if (WIFEXITED(status))
+        globalVar = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+        globalVar = WTERMSIG(status) + 128;
+        ret->pids = add_int(ret->pids, tmp->ret);
+    }
+    if (globalVar == 0)
+    {
+        tmp = executor(command->left, env, '\0', ev);
+        if (!tmp)
+        return NULL;
+        if (tmp && tmp->pids)
+        ret->pids = tmp->pids;
+        else if (tmp && tmp->ret != -1)
+        ret->pids = add_int(ret->pids, tmp->ret);
+    }
+    else
+        return NULL;
+    return (ret);
+}
+
+t_exec_ret *or_node(t_command *command, char **ev, t_exec_ret *ret, t_env *env)
+{
+    t_exec_ret *tmp = NULL;
+    int  status = 0;
+    if (command->outfd != -1)
+    {
+        ((t_command *)command->left)->outfd = command->outfd;
+        ((t_command *)command->right)->outfd = command->outfd;
+    }
+    if (command->infd != -1)
+    {
+        ((t_command *)command->right)->infd = command->infd;
+        ((t_command *)command->left)->infd =dup(command->infd);
+
+    }
+    ((t_command *)command->left)->fd[0] = command->fd[0];
+    ((t_command *)command->left)->fd[1] = command->fd[1];
+    ((t_command *)command->right)->fd[0] = command->fd[0];
+    ((t_command *)command->right)->fd[1] = command->fd[1];
+    tmp = executor(command->right, env, '\0', ev);
+    if (tmp && tmp->pids)
+    {
+        int ir = 0;
+        while (tmp && tmp->pids)
+        {
+        if (tmp->pids[ir] == -1)
+            break;
+        waitpid(tmp->pids[ir], &status, 0);
+        if (WIFEXITED(status))
+            globalVar = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+        {
+
+            globalVar = WTERMSIG(status) + 128;
+        }
+        ir++;
+        }
+        ret->pids = tmp->pids;
+    }
+    else if (tmp && tmp->ret != -1)
+    {
+        waitpid(tmp->ret, &status, 0);
+        if (WIFEXITED(status))
+        globalVar = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+        {
+        globalVar = WTERMSIG(status) + 128;
+        }
+        ret->pids = add_int(ret->pids, tmp->ret);
+    }
+    if (globalVar != 0)
+    {
+        tmp = executor(command->left, env, '\0', ev);
+        if (!tmp)
+        return NULL;
+        if (tmp && tmp->pids)
+        ret->pids = tmp->pids;
+        else if (tmp && tmp->ret != -1)
+        ret->pids = add_int(ret->pids, tmp->ret);
+    }
+    else
+        return NULL;
+    return (ret);
+}
+
+bool pipeline_node(t_command **command, char **ev, t_exec_ret *ret, t_env *env)
+{
+    int fd[2];
+    t_exec_ret *tmp = NULL;
+    fd[0] = -1;
+    fd[1] = -1;
+    if ((*command)->type_node == PIPE_LINE_NODE)
+    {
+        ((t_command *)(*command)->left)->to_close = add_int((*command)->to_close, (*command)->fd[0]);
+        ((t_command *)(*command)->right)->to_close = add_int((*command)->to_close, (*command)->fd[0]);
+        if ((*command)->outfd != -1)
+        {
+        ((t_command *)(*command)->left)->outfd = (*command)->outfd;
+        }
+        if ((*command)->infd != -1)
+        ((t_command *)(*command)->right)->infd = (*command)->infd;
+        int k = pipe(fd);
+        ((t_command *)(*command)->left)->fd[0] = fd[0];
+        ((t_command *)(*command)->left)->fd[1] = fd[1];
+        ((t_command *)(*command)->right)->fd[0] = fd[0];
+        ((t_command *)(*command)->right)->fd[1] = fd[1];
+        if (k == -1)
+        {
+        close(fd[1]);
+        close(fd[0]);
+        ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);
+        globalVar = 1;
+        return false;
+        }
+        ((t_command *)(*command)->right)->outfd = fd[1];
+        ((t_command *)(*command)->left)->infd = fd[0];
+    }
+    if ((*command) && (*command)->right && is_builtin((*command)->right) && !(*command)->left)
+        tmp = executor((*command)->right, env, 'b', ev);
+    else if ((*command) && (*command)->right)
+        tmp = executor((*command)->right, env, 'r', ev);
+    close (fd[1]);
+    if (!tmp)
+    {
+        close(fd[1]);
+        close(fd[0]);
+        return false;
+    }
+    if (tmp && tmp->pids)
+        ret->pids = tmp->pids;
+    else if (tmp && tmp->ret != -1)
+        ret->pids = add_int(ret->pids, tmp->ret);
+    tmp = executor((*command)->left, env, 'l', ev);
+    close(fd[0]);
+    if (!tmp)
+    {
+        close(fd[1]);
+        close(fd[0]);
+        return false;
+    }
+    ret->pids = add_int(ret->pids, tmp->ret);
+    return (true);
+}
+
 t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
 {
-            int status;
     int fd[2];
     fd[0] = -1;
     fd[1] = -1;
@@ -162,178 +349,16 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     }
     if (command->type_node == AND_NODE)
     {
-        if (command->outfd != -1)
-        {
-            ((t_command *)command->right)->outfd = command->outfd;
-            ((t_command *)command->left)->outfd = dup(command->outfd);
-        }
-        if (command->infd != -1)
-        {
-            ((t_command *)command->right)->infd = command->infd;
-            ((t_command *)command->left)->infd = dup(command->infd);
-        }
-        ((t_command *)command->left)->fd[0] = command->fd[0];
-        ((t_command *)command->left)->fd[1] = command->fd[1];
-        ((t_command *)command->right)->fd[0] = command->fd[0];
-        ((t_command *)command->right)->fd[1] = command->fd[1];
-        tmp = executor(command->right, env, '\0', ev);
-        if (tmp && tmp->pids)
-        {
-            int ir = 0;
-            while (tmp && tmp->pids)
-            {
-                if (tmp->pids[ir] == -1)
-                    break;
-                waitpid(tmp->pids[ir], &status, 0);
-                if (WIFEXITED(status))
-                    globalVar = WEXITSTATUS(status);
-                else if (WIFSIGNALED(status))
-                {
-                    globalVar = WTERMSIG(status) + 128;
-                }
-                ir++;
-            }
-            ret->pids = tmp->pids;
-        }
-        else if (tmp && tmp->ret != -1)
-        {
-            waitpid(tmp->ret, &status, 0);
-            if (WIFEXITED(status))
-                globalVar = WEXITSTATUS(status);
-            else if (WIFSIGNALED(status))
-                globalVar = WTERMSIG(status) + 128;
-            ret->pids = add_int(ret->pids, tmp->ret);
-        }
-        if (globalVar == 0)
-        {
-            tmp = executor(command->left, env, '\0', ev);
-            if (!tmp)
-                return NULL;
-            if (tmp && tmp->pids)
-                ret->pids = tmp->pids;
-            else if (tmp && tmp->ret != -1)
-                ret->pids = add_int(ret->pids, tmp->ret);
-        }
-        else
-            return NULL;
-        return (ret);
+        return (and_node(command, ev, ret, env));
     }
     if (command->type_node == OR_NODE)
     {
-        if (command->outfd != -1)
-        {
-            // printf ("")
-            ((t_command *)command->left)->outfd = command->outfd;
-            ((t_command *)command->right)->outfd = command->outfd;
-        }
-        if (command->infd != -1)
-        {
-            ((t_command *)command->right)->infd = command->infd;
-            ((t_command *)command->left)->infd =dup(command->infd);
-
-        }
-        ((t_command *)command->left)->fd[0] = fd[0];
-        ((t_command *)command->left)->fd[1] = fd[1];
-        ((t_command *)command->right)->fd[0] = fd[0];
-        ((t_command *)command->right)->fd[1] = fd[1];
-        tmp = executor(command->right, env, '\0', ev);
-        if (tmp && tmp->pids)
-        {
-            int ir = 0;
-            while (tmp && tmp->pids)
-            {
-                if (tmp->pids[ir] == -1)
-                    break;
-                waitpid(tmp->pids[ir], &status, 0);
-                if (WIFEXITED(status))
-                    globalVar = WEXITSTATUS(status);
-                else if (WIFSIGNALED(status))
-                {
-
-                    globalVar = WTERMSIG(status) + 128;
-                }
-                ir++;
-            }
-            ret->pids = tmp->pids;
-        }
-        else if (tmp && tmp->ret != -1)
-        {
-            waitpid(tmp->ret, &status, 0);
-            if (WIFEXITED(status))
-                globalVar = WEXITSTATUS(status);
-            else if (WIFSIGNALED(status))
-            {
-                globalVar = WTERMSIG(status) + 128;
-            }
-            ret->pids = add_int(ret->pids, tmp->ret);
-        }
-        if (globalVar != 0)
-        {
-            tmp = executor(command->left, env, '\0', ev);
-            if (!tmp)
-                return NULL;
-            if (tmp && tmp->pids)
-                ret->pids = tmp->pids;
-            else if (tmp && tmp->ret != -1)
-                ret->pids = add_int(ret->pids, tmp->ret);
-        }
-        else
-            return NULL;
-        return (ret);
+        return (or_node(command, ev, ret, env));
     }
     if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
     {
-        if (command->type_node == PIPE_LINE_NODE)
-        {
-            ((t_command *)command->left)->to_close = add_int(command->to_close, command->fd[0]);
-            ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
-            if (command->outfd != -1)
-            {
-                ((t_command *)command->left)->outfd = command->outfd;
-            }
-            if (command->infd != -1)
-                ((t_command *)command->right)->infd = command->infd;
-            int k = pipe(fd);
-            ((t_command *)command->left)->fd[0] = fd[0];
-        ((t_command *)command->left)->fd[1] = fd[1];
-        ((t_command *)command->right)->fd[0] = fd[0];
-        ((t_command *)command->right)->fd[1] = fd[1];
-            if (k == -1)
-            {
-                // printf("the pipe res is %d\n", k);
-                close(fd[1]);
-                close(fd[0]);
-                ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);
-                globalVar = 1;
-                return NULL;
-            }
-            ((t_command *)command->right)->outfd = fd[1];
-            ((t_command *)command->left)->infd = fd[0];
-        }
-        if (command && command->right && is_builtin(command->right) && !command->left)
-            tmp = executor(command->right, env, 'b', ev);
-        else if (command && command->right)
-            tmp = executor(command->right, env, 'r', ev);
-        close (fd[1]);
-        if (!tmp)
-        {
-            close(fd[1]);
-            close(fd[0]);
-            return NULL;
-        }
-        if (tmp && tmp->pids)
-            ret->pids = tmp->pids;
-        else if (tmp && tmp->ret != -1)
-            ret->pids = add_int(ret->pids, tmp->ret);
-        tmp = executor(command->left, env, 'l', ev);
-        close(fd[0]);
-        if (!tmp)
-        {
-            close(fd[1]);
-            close(fd[0]);
-            return NULL;
-        }
-        ret->pids = add_int(ret->pids, tmp->ret);
+        if (!pipeline_node(&command, ev, ret, env))
+            return (NULL);
     }
     else if (command->type_node == SUBSHELL_NODE)
     {
@@ -480,7 +505,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             return (NULL);
         }
-        if (c == 'b' || is_builtin(command))
+        if (c == 'b')
         {
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, env) == -1)
                 globalVar = 1;
@@ -523,12 +548,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(126);
                 return NULL;
             }
-                // printf ("yes 2 2 command %s  c is %c\n", command->args[0], c);
             if (command->outfd != -1)
             {
                 dup2(command->outfd, STDOUT_FILENO);
                 command->dup = true;
-                // printf("duplicated command %s\n", command->args[0]);
             }
             if (command->infd != -1)
             {
@@ -544,8 +567,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             if (c == 'l')
             {
-                
-                // printf("the out is %d command is %s\n",command->outfd, command->args[0]);
                 if (command->to_close != NULL)
                     close_fds(command->to_close);
                 close(command->fd[1]);
