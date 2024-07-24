@@ -6,28 +6,34 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 07:45:19 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 07:53:50 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
 
-// void	new_prompt(int sig)
-// {
-// 	(void)sig;
-// 	globalVar = 1;
-// 	printf(BHMAG "\n" RESET);
-// 	rl_on_new_line();
-// 	rl_replace_line("", 0);
-// 	rl_redisplay();
-// }
 
-t_elem	*subshell_syntax(t_elem *elem)
+static t_elem *check_errors(t_elem *elem, int subshell, t_list *list)
 {
-    print_err(2, 2, "synthax error : missing a parenthese symbole\n");
-    free_elem(elem);
-	return (NULL);
+	if (subshell != 0)
+	{
+		print_err(2, 2, "synthax error : missing a parenthese symbole\n");
+    	free_elem(elem);
+		return (NULL);
+	}
+        // return (subshell_syntax(elem));
+	list = syntax_error(elem);
+	if (list)
+        return(check_syntax_error(list, elem));
+	return (elem);
 }
+
+// t_elem	*subshell_syntax(t_elem *elem)
+// {
+//     print_err(2, 2, "synthax error : missing a parenthese symbole\n");
+//     free_elem(elem);
+// 	return (NULL);
+// }
 
 t_elem	*lexer(void)
 {
@@ -38,6 +44,7 @@ t_elem	*lexer(void)
 
 	subshell = 0;
 	elem = NULL;
+	list = NULL;
 	signal(SIGINT, new_prompt);
 	signal(SIGQUIT, SIG_IGN);
 	rl_on_new_line();
@@ -51,10 +58,11 @@ t_elem	*lexer(void)
 			return (NULL);
 		free(line);
 	}
-	if (subshell != 0)
-        return (subshell_syntax(elem));
-	list = syntax_error(elem);
-	if (list)
-        return(check_syntax_error(list, elem));
-	return (elem);
+	// if (subshell != 0)
+    //     return (subshell_syntax(elem));
+	// list = syntax_error(elem);
+	// if (list)
+    //     return(check_syntax_error(list, elem));
+	// return (elem);
+	return (check_errors(elem, subshell, list));
 }
