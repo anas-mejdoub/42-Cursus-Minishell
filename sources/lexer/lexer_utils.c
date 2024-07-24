@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 11:08:36 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 07:36:11 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 07:38:49 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,10 @@ int	env_handeler(t_elem **elem, char *line, int *i, int state)
 	}
 	return (0);
 }
+
 t_elem	*tokenize(char *line, int *subshell, t_elem **elem)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
@@ -105,12 +106,13 @@ t_elem	*tokenize(char *line, int *subshell, t_elem **elem)
 	}
 	return (*elem);
 }
-t_elem	*check_syntax_error(t_list	*list, t_elem *elem)
-{
-    char *str;
 
-    str = NULL;
-    print_err(2, 2, "minishell: syntax error\n");
+t_elem	*check_syntax_error(t_list *list, t_elem *elem)
+{
+	char	*str;
+
+	str = NULL;
+	print_err(2, 2, "minishell: syntax error\n");
 	list = list->next;
 	while (list)
 	{
@@ -118,6 +120,6 @@ t_elem	*check_syntax_error(t_list	*list, t_elem *elem)
 		free(str);
 		list = list->next;
 	}
-    free_elem(elem);
+	free_elem(elem);
 	return (NULL);
 }

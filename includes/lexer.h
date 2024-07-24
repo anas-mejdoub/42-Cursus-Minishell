@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/12 17:15:29 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 07:43:40 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 #define LEXER_H
 #include "minishell.h"
-// #include "../slocal_lexer.h"
 enum e_token
 {
 	WORD = -1,
@@ -52,6 +51,4 @@ typedef struct s_elem
 }	t_elem;
 
 t_elem *lexer(void);
-void handle_sigint(int sig);
-// int allocate_node(t_elem **elem, char *content, int state, int token);
 #endif

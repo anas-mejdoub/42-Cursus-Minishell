@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   local_signal.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/24 07:31:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 07:45:38 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/24 07:41:24 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/24 07:45:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "local_signal.h"
 
-void	new_prompt(int sig)
-{
-	(void)sig;
-	globalVar = 1;
-	printf(BHMAG "\n" RESET);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
+#ifndef LOCAL_SIGNAL_H
+# define LOCAL_SIGNAL_H
+
+#include "minishell.h"
+#include "signals.h"
+
+void	new_prompt(int sig);
+
+#endif

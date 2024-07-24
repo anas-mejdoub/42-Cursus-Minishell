@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/20 15:30:12 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 07:44:58 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 # include "builtins.h"
 # include "helper.h"
 #include "wildcard.h"
+#include "signals.h"
 
 enum e_something {
     S1GPIPE = 11,
