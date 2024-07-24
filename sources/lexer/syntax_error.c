@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 09:48:48 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 09:20:50 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,53 @@ static bool is_tocken(t_elem *elem)
     return (false);
 }
 
+t_list *here_doc_syntax(t_elem *elem, t_list **list, t_list **original)
+{
+    t_elem *tmp;
+
+    tmp = elem;
+    if (tmp)
+        tmp = tmp->next;
+    while (tmp && tmp->type == WHITE_SPACE)
+        tmp = tmp->next;
+    if (tmp && !is_tocken(tmp))
+    {
+        if (tmp && (tmp->type == QOUTE || tmp->type == DOUBLE_QUOTE))
+        {
+            tmp = tmp->next;
+            while (tmp && (tmp->type != QOUTE || tmp->type != DOUBLE_QUOTE))
+            {
+                ft_lstadd_back(list, ft_lstnew(ft_strdup(tmp->content)));
+                tmp = tmp->next;
+            }
+            char *str;
+            str = calloc(2, 1);
+            char *tmp_str;
+            while (*list)
+            {
+                tmp_str = ft_strjoin(str, (*list)->content);
+                free(str);
+                str = tmp_str;
+                *list = (*list)->next;
+            }
+            ft_lstadd_back(original, ft_lstnew(str));
+            elem = elem->next;
+        }
+        else if (tmp && (tmp->type == WORD || tmp->type != ENV))
+        {
+            ft_lstadd_back(original, ft_lstnew(tmp->content));
+            elem = elem->next;
+        }
+    }
+    else
+        return (*original);
+    return (NULL);
+}
+
 t_list    *syntax_error(t_elem *elem)
 {
     int i;
-    t_elem *tmp;
+    // t_elem *tmp;
     t_list *list;
     t_list *original;
 
@@ -74,42 +117,44 @@ t_list    *syntax_error(t_elem *elem)
         }
         else if (elem && elem->type == HERE_DOC)
         {
-            tmp = elem;
-            if (tmp)
-                tmp = tmp->next;
-            while (tmp && tmp->type == WHITE_SPACE)
-                tmp = tmp->next;
-            if (tmp && !is_tocken(tmp))
-            {
-                if (tmp && (tmp->type == QOUTE || tmp->type == DOUBLE_QUOTE))
-                {
-                    tmp = tmp->next;
-                    while (tmp && (tmp->type != QOUTE || tmp->type != DOUBLE_QUOTE))
-                    {
-                        ft_lstadd_back(&list, ft_lstnew(ft_strdup(tmp->content)));
-                        tmp = tmp->next;
-                    }
-                    char *str;
-                    str = calloc(2, 1);
-                    char *tmp_str;
-                    while (list)
-                    {
-                        tmp_str = ft_strjoin(str, list->content);
-                        free(str);
-                        str = tmp_str;
-                        list = list->next;
-                    }
-                    ft_lstadd_back(&original, ft_lstnew(str));
-                    elem = elem->next;
-                }
-                else if (tmp && (tmp->type == WORD || tmp->type != ENV))
-                {
-                    ft_lstadd_back(&original, ft_lstnew(tmp->content));
-                    elem = elem->next;
-                }
-            }
-            else
+            if (here_doc_syntax(elem, &list, &original) != NULL)
                 return (original);
+            // tmp = elem;
+            // if (tmp)
+            //     tmp = tmp->next;
+            // while (tmp && tmp->type == WHITE_SPACE)
+            //     tmp = tmp->next;
+            // if (tmp && !is_tocken(tmp))
+            // {
+            //     if (tmp && (tmp->type == QOUTE || tmp->type == DOUBLE_QUOTE))
+            //     {
+            //         tmp = tmp->next;
+            //         while (tmp && (tmp->type != QOUTE || tmp->type != DOUBLE_QUOTE))
+            //         {
+            //             ft_lstadd_back(&list, ft_lstnew(ft_strdup(tmp->content)));
+            //             tmp = tmp->next;
+            //         }
+            //         char *str;
+            //         str = calloc(2, 1);
+            //         char *tmp_str;
+            //         while (list)
+            //         {
+            //             tmp_str = ft_strjoin(str, list->content);
+            //             free(str);
+            //             str = tmp_str;
+            //             list = list->next;
+            //         }
+            //         ft_lstadd_back(&original, ft_lstnew(str));
+            //         elem = elem->next;
+            //     }
+            //     else if (tmp && (tmp->type == WORD || tmp->type != ENV))
+            //     {
+            //         ft_lstadd_back(&original, ft_lstnew(tmp->content));
+            //         elem = elem->next;
+            //     }
+            // }
+            // else
+            //     return (original);
         }
         if (elem && (elem->type == AND || elem->type == OR || elem->type == PIPE_LINE))
         {

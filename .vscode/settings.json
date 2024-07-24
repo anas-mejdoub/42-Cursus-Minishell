@@ -70,7 +70,8 @@
     "here_doc.h": "c",
     "local_helper.h": "c",
     "helper.h": "c",
-    "stdbool.h": "c"
+    "stdbool.h": "c",
+    "termios.h": "c"
   },
   "editor.fontFamily": "fira code"
 }
