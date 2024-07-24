@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/24 12:54:02 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:01:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -612,8 +612,10 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     if (command->type_node == OR_NODE)
         return (or_node(command, ev, ret, env));
     if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
+    {
         if (!pipeline_node(&command, ev, ret, env))
             return (NULL);
+    }
     else if (command->type_node == SUBSHELL_NODE)
         return (subshell_node(command, ret, &d_env, c));
     else if (command->type_node == NODE)
