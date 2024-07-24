@@ -1,13 +1,13 @@
 SRC =\
 		sources/executor/execution/executor.c \
 		sources/env/env.c sources/env/methods.c \
-		sources/lexer/lexer.c sources/lexer/lexer_utils.c  sources/lexer/general_tocken_handler.c sources/lexer/qoute_tocken_handler.c sources/lexer/dqoute_tocken_handler.c\
+		sources/lexer/lexer.c sources/lexer/lexer_utils.c  sources/lexer/general_tocken_handler.c sources/lexer/qoute_tocken_handler.c sources/lexer/dqoute_tocken_handler.c sources/lexer/syntax_error_utils.c\
 		sources/lexer/syntax_error.c \
 		sources/parser/parser.c \
 		sources/here_doc/here_doc.c \
 		sources/signals/signal.c \
 		sources/wildcard/wildcard.c \
-		sources/helper/env_helper.c sources/helper/print_err.c sources/helper/file_creation.c sources/helper/free_tree.c sources/helper/is_builtin.c sources/helper/env_to_2d_arr.c sources/helper/redirections_helper.c sources/helper/env_pattern.c\
+		sources/helper/env_helper.c sources/helper/print_err.c sources/helper/file_creation.c sources/helper/free_tree.c sources/helper/is_builtin.c sources/helper/env_to_2d_arr.c sources/helper/redirections_helper.c sources/helper/env_pattern.c sources/helper/tockens_checker.c\
 		sources/executor/builtins/echo.c sources/executor/builtins/pwd.c sources/executor/builtins/env_command.c sources/executor/builtins/exit.c sources/executor/builtins/export.c sources/executor/builtins/cd.c sources/executor/builtins/unset.c\
 		sources/minishell.c 
 		

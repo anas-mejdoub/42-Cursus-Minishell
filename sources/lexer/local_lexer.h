@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:06:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 08:40:26 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 10:46:04 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,6 @@ int		qoute_handler(t_elem **elem, char *line, int *i);
 int		general_handler(t_elem **elem, char *line, int *i, int *subshell);
 t_elem	*tokenize(char *line, int *subshell, t_elem **elem);
 t_elem	*check_syntax_error(t_list *list, t_elem *elem);
+int		other_syntax(t_elem **elem, t_list **list, t_list **original);
 
 #endif
