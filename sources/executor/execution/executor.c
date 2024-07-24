@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/24 12:09:20 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 12:54:02 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,6 @@ void handle_intr_sig(int sig)
 
 t_exec_ret * and_node(t_command *command, char **ev, t_exec_ret *ret, t_env *env)
 {
-    // bool found_in = false;
     t_exec_ret *tmp = NULL;
     int  status = 0;
     if (command->outfd != -1)
@@ -330,45 +329,16 @@ bool pipeline_node(t_command **command, char **ev, t_exec_ret *ret, t_env *env)
     ret->pids = add_int(ret->pids, tmp->ret);
     return (true);
 }
-
-t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
+t_exec_ret *    subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_env, char c)
 {
-    int fd[2];
-    fd[0] = -1;
-    fd[1] = -1;
-    t_exec_ret *ret;
-    t_exec_ret *tmp = NULL;
     bool found_in = false;
-    ret = malloc(sizeof(t_exec_ret));
-    ret->pids = NULL;
-    if (!command)
-    {
-        ret->ret = -1;
-        ret->pids = NULL;
-        return (ret);
-    }
-    if (command->type_node == AND_NODE)
-    {
-        return (and_node(command, ev, ret, env));
-    }
-    if (command->type_node == OR_NODE)
-    {
-        return (or_node(command, ev, ret, env));
-    }
-    if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
-    {
-        if (!pipeline_node(&command, ev, ret, env))
-            return (NULL);
-    }
-    else if (command->type_node == SUBSHELL_NODE)
-    {
-        ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
+    ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
         ((t_command *)command->right)->fd[0] = command->fd[0];
         ((t_command *)command->right)->fd[1] = command->fd[1];
         
         if (command->in_files)
         {
-                command->infd = open_in_files(command->in_files, env);
+                command->infd = open_in_files(command->in_files, d_env->env);
                 if (command->infd < 0)
                 {
                     found_in = true;
@@ -378,7 +348,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         if (command->outfiles && !found_in)
         {
-                command->outfd = open_out_files(command->outfiles, env);
+                command->outfd = open_out_files(command->outfiles, d_env->env);
                 if (command->outfd < 0)
                 {
                     globalVar = 1;
@@ -397,7 +367,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         int f = fork();
         if (f == 0)
         {
-            ret = executor(command->right, env, 'r', ev);
+            ret = executor(command->right, d_env->env, 'r', d_env->ev);
             int kk = 0;
             if (ret && ret->pids)
             {
@@ -478,15 +448,23 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             globalVar = WEXITSTATUS(hh);
             ret->ret = f;
             ret->pids = NULL;
-            return (ret);
         }
-    }
-    else if (command->type_node == NODE)
-    {
-        command->args = get_command_args(command->command_arg, env);
+        if (f < 0)
+        {
+            ft_putstr_fd("minishell fork : Resource temporarily unavailable\n", 2);
+            globalVar = 1;
+            return NULL;
+        }
+    return (ret);
+}
+
+t_exec_ret *cmd_node(t_command *command, t_exec_ret *ret, t_env_d *d_env, char c)
+{
+    bool found_in = false;
+        command->args = get_command_args(command->command_arg, d_env->env);
             if (command->in_files)
             {
-                command->infd = open_in_files(command->in_files, env);
+                command->infd = open_in_files(command->in_files, d_env->env);
                 if (command->infd < 0)
                 {
                     found_in = true;
@@ -495,7 +473,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             if (command->outfiles && !found_in)
             {
-                command->outfd = open_out_files(command->outfiles, env);
+                command->outfd = open_out_files(command->outfiles, d_env->env);
                 if (command->outfd < 0)
                 {
                     globalVar = 1;
@@ -507,7 +485,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         }
         if (c == 'b')
         {
-            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, env) == -1)
+            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, d_env->env) == -1)
                 globalVar = 1;
             else
                 globalVar = 0;
@@ -529,11 +507,9 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
         {
             signal(SIGQUIT, SIG_DFL);
             if (command->command_arg)
-                command->path = get_path(command->args[0], env);
+                command->path = get_path(command->args[0], d_env->env);
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
-            {
                 exit(1);
-            }
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
             {
                 
@@ -577,11 +553,11 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 exit(0);
             if (is_builtin(command))
             {
-                if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true)  || do_builtin(command, env) == -1)
+                if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true)  || do_builtin(command, d_env->env) == -1)
                     exit(1);
                 exit(0);
             }
-            if (execve(command->path, command->args, env_to_2d_arr(env)) == -1)
+            if (execve(command->path, command->args, env_to_2d_arr(d_env->env)) == -1)
             {
                 ft_putstr_fd("minishell: ", 2);
                 ft_putstr_fd(command->args[0], 2);
@@ -608,8 +584,39 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
             }
             ret->ret = i;
             ret->pids = NULL;
-            return (ret);
         }
+    return (ret);
+}
+
+
+t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
+{
+    int fd[2];
+    fd[0] = -1;
+    fd[1] = -1;
+    t_env_d d_env;
+    d_env.env = env;
+    d_env.ev = ev;
+    t_exec_ret *ret;
+
+    ret = malloc(sizeof(t_exec_ret));
+    ret->pids = NULL;
+    if (!command)
+    {
+        ret->ret = -1;
+        ret->pids = NULL;
+        return (ret);
     }
+    if (command->type_node == AND_NODE)
+        return (and_node(command, ev, ret, env));
+    if (command->type_node == OR_NODE)
+        return (or_node(command, ev, ret, env));
+    if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
+        if (!pipeline_node(&command, ev, ret, env))
+            return (NULL);
+    else if (command->type_node == SUBSHELL_NODE)
+        return (subshell_node(command, ret, &d_env, c));
+    else if (command->type_node == NODE)
+        return (cmd_node(command, ret, &d_env, c));
     return (ret);
 }
