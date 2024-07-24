@@ -6,68 +6,40 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 16:42:45 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 07:36:43 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
 
 
-// int	env_handeler(t_elem **elem, char *line, int *i, int state)
+// t_elem	*tokenize(char *line, int *subshell, t_elem **elem)
 // {
-// 	int	current_index;
+// 	int		i;
 
-// 	(*i)++;
-// 	current_index = (*i);
-// 	if (line[(*i)] == '?')
+// 	i = 0;
+// 	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
+// 		i++;
+// 	while (line[i])
 // 	{
-// 		(*i)++;
-// 		if (allocate_node(elem, ft_substr(line, current_index - 1, (*i)
-// 					- current_index + 1), state, ENV))
-// 			return (1);
-// 	}
-// 	else if (ft_isalpha(line[(*i)]) || line[(*i)] == '_')
-// 	{
-// 		while (line[(*i)] && (ft_isalnum(line[(*i)]) || line[(*i)] == '_'))
-// 			(*i)++;
-// 		if ((*i) != current_index)
+// 		if (line[i] && line[i] == QOUTE)
 // 		{
-// 			if (allocate_node(elem, ft_substr(line, current_index - 1, (*i)
-// 						- current_index + 1), state, ENV))
-// 				return (1);
+// 			if (qoute_handler(elem, line, &i))
+// 				return (free(*elem), NULL);
+// 		}
+// 		else if (line[i] && line[i] == DOUBLE_QUOTE)
+// 		{
+// 			if (double_qoute_handler(elem, line, &i))
+// 				return (free(*elem), NULL);
+// 		}
+// 		else if (line[i])
+// 		{
+// 			if (general_handler(elem, line, &i, subshell))
+// 				return (free(*elem), NULL);
 // 		}
 // 	}
-// 	return (0);
+// 	return (*elem);
 // }
-
-
-t_elem	*tokenize(char *line, int *subshell, t_elem **elem)
-{
-	int		i;
-
-	i = 0;
-	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
-		i++;
-	while (line[i])
-	{
-		if (line[i] && line[i] == QOUTE)
-		{
-			if (qoute_handler(elem, line, &i))
-				return (free(*elem), NULL);
-		}
-		else if (line[i] && line[i] == DOUBLE_QUOTE)
-		{
-			if (double_qoute_handler(elem, line, &i))
-				return (free(*elem), NULL);
-		}
-		else if (line[i])
-		{
-			if (general_handler(elem, line, &i, subshell))
-				return (free(*elem), NULL);
-		}
-	}
-	return (*elem);
-}
 
 void	handle_sigint(int sig)
 {
@@ -84,22 +56,22 @@ void	handle_sigquit(int sig)
 	(void)sig;
 }
 
-t_elem	*check_syntax_error(t_list	*list, t_elem *elem)
-{
-    char *str;
+// t_elem	*check_syntax_error(t_list	*list, t_elem *elem)
+// {
+//     char *str;
 
-    str = NULL;
-    print_err(2, 2, "minishell: syntax error\n");
-	list = list->next;
-	while (list)
-	{
-		str = here_doc(list->content);
-		free(str);
-		list = list->next;
-	}
-    free_elem(elem);
-	return (NULL);
-}
+//     str = NULL;
+//     print_err(2, 2, "minishell: syntax error\n");
+// 	list = list->next;
+// 	while (list)
+// 	{
+// 		str = here_doc(list->content);
+// 		free(str);
+// 		list = list->next;
+// 	}
+//     free_elem(elem);
+// 	return (NULL);
+// }
 t_elem	*subshell_syntax(t_elem *elem)
 {
     print_err(2, 2, "synthax error : missing a parenthese symbole\n");
