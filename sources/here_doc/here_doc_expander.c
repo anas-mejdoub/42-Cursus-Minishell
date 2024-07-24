@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:11:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 15:54:51 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:23:45 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static t_list	*extract(char *str, int *i, int *start, t_env *env)
 	}
 	return (NULL);
 }
+
 static t_list	*create_list(char *str, t_env *env, int i, int start)
 {
 	t_list	*list;
