@@ -6,51 +6,68 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 09:58:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 17:11:58 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 17:21:38 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_builtin.h"
 
-
-int echo_cmd(t_command *cmd)
+static int	check_argument(t_command *cmd, int *new_line)
 {
-    int fd_in;
-    int fd_out;
-    int new_line;
-    int i;
+	int		i;
+	char	*str;
 
-    new_line = 1;
-    i = 1;
+	i = 1;
+	while (cmd->args && cmd->args[i] && cmd->args[i][0]
+		&& cmd->args[i][0] == '-')
+	{
+		if (cmd->args && cmd->args[i] && cmd->args[i][0] == '-'
+			&& cmd->args[i][1])
+		{
+			str = ft_strtrim(cmd->args[i] + 1, "n");
+			if (str[0] == '\0')
+			{
+				*new_line = 0;
+				i++;
+			}
+			else
+				break ;
+		}
+	}
+	return (i);
+}
 
-    if (cmd->args && !(!ft_strncmp(cmd->args[0], "echo", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("echo")))
-        return (-1);
-    if (change_rediraction(cmd, &fd_in, &fd_out) == -1)
-        return (-1);
-    while (cmd->args && cmd->args[i] && cmd->args[i][0] && cmd->args[i][0] == '-')
-    {
-        if (cmd->args && cmd->args[i] && cmd->args[i][0] == '-' && cmd->args[i][1])
-        {
-            char *str = ft_strtrim(cmd->args[i] +  1, "n");
-            if (str[0] == '\0')
-            {
-                new_line = 0;
-                i++;
-            }
-            else
-                break;
-        }
-    }
-    while (cmd->args && cmd->args[i])
-    {
-        printf("%s", cmd->args[i]);
-        i++;
-        if (cmd->args[i])
-            printf(" ");
-    }
-    if (new_line)
-        printf("\n");
-    if (restor_rediraction(cmd, &fd_in, &fd_out) == -1)
-        return (-1);
-    return (0);
+static void	print_content(t_command *cmd)
+{
+	int	new_line;
+	int	i;
+
+	new_line = 1;
+	i = check_argument(cmd, &new_line);
+	while (cmd->args && cmd->args[i])
+	{
+		printf("%s", cmd->args[i]);
+		i++;
+		if (cmd->args[i])
+			printf(" ");
+	}
+	if (new_line)
+		printf("\n");
+}
+
+int	echo_cmd(t_command *cmd)
+{
+	int	fd_in;
+	int	fd_out;
+
+	if (cmd->args && !(!ft_strncmp(cmd->args[0], "echo",
+				ft_strlen(cmd->args[0]))
+			&& ft_strlen(cmd->args[0]) == ft_strlen("echo")))
+		return (-1);
+	if (change_rediraction(cmd, &fd_in, &fd_out) == -1)
+		return (-1);
+	print_content(cmd);
+	if (restor_rediraction(cmd, &fd_in, &fd_out) == -1)
+		return (-1);
+	return (0);
 }
