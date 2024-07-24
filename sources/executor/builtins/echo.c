@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 09:58:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/11 19:57:17 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 17:11:58 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ int echo_cmd(t_command *cmd)
             else
                 break;
         }
-        // i++;
     }
     while (cmd->args && cmd->args[i])
     {
