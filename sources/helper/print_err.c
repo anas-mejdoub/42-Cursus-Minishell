@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_err.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 12:27:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 13:02:22 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:12:28 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	print_err(int count, ...)
 	ft_putstr_fd(RED, 2);
 	while (i < count)
 	{
+		printf ("%d\n", i);
 		str = va_arg(args, char *);
 		ft_putstr_fd(str, 2);
 		i++;

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/24 09:55:09 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:43:46 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,82 +88,83 @@ t_command	*new_node(void)
 	return (new);
 }
 
-// void	print_2d(t_command *command)
-// {
-// 	printf("command \t infile \t outfile\n");
-// 	while (command->command_arg)
-// 	{
-// 		printf("{%s env :{", command->command_arg->content);
-// 		while (command->command_arg->index_list)
-// 		{
-// 			printf(" %d %d,", command->command_arg->index_list->index,
-// 				command->command_arg->index_list->len);
-// 			command->command_arg->index_list = command->command_arg->index_list->next;
-// 		}
-// 		printf("}}\n");
-// 		command->command_arg = command->command_arg->next;
-// 	}
-// 	printf(" \t");
-// 	while (command->in_files)
-// 	{
-// 		printf("(%s) env : {", command->in_files->filename);
-// 		while (command->in_files->index_list)
-// 		{
-// 			printf("%d %d, ", command->in_files->index_list->index,
-// 				command->in_files->index_list->len);
-// 			command->in_files->index_list = command->in_files->index_list->next;
-// 		}
-// 		printf("}");
-// 		command->in_files = command->in_files->next;
-// 	}
-// 	printf("\t");
-// 	while (command->outfiles)
-// 	{
-// 		printf("[%s append : %d |{", command->outfiles->filename,
-// 			(int)command->outfiles->append);
-// 		while (command->outfiles->index_list)
-// 		{
-// 			printf(" %d %d,", command->outfiles->index_list->index,
-// 				command->outfiles->index_list->len);
-// 			command->outfiles->index_list = command->outfiles->index_list->next;
-// 		}
-// 		printf(" }]");
-// 		command->outfiles = command->outfiles->next;
-// 	}
-// 	printf("\n");
-// }
+void	print_2d(t_command *command)
+{
+	printf("command \t infile \t outfile\n");
+	while (command->command_arg)
+	{
+		printf("{%s env :{", command->command_arg->content);
+		while (command->command_arg->index_list)
+		{
+			printf(" %d %d,", command->command_arg->index_list->index,
+				command->command_arg->index_list->len);
+			command->command_arg->index_list = command->command_arg->index_list->next;
+		}
+		printf("}}\n");
+		command->command_arg = command->command_arg->next;
+	}
+	printf(" \t");
+	while (command->in_files)
+	{
+		printf("(%s) env : {", command->in_files->filename);
+		while (command->in_files->index_list)
+		{
+			printf("%d %d, ", command->in_files->index_list->index,
+				command->in_files->index_list->len);
+			command->in_files->index_list = command->in_files->index_list->next;
+		}
+		printf("}");
+		command->in_files = command->in_files->next;
+	}
+	printf("\t");
+	while (command->outfiles)
+	{
+		printf("[%s append : %d |{", command->outfiles->filename,
+			(int)command->outfiles->append);
+		while (command->outfiles->index_list)
+		{
+			printf(" %d %d,", command->outfiles->index_list->index,
+				command->outfiles->index_list->len);
+			command->outfiles->index_list = command->outfiles->index_list->next;
+		}
+		printf(" }]");
+		command->outfiles = command->outfiles->next;
+	}
+	printf("\n");
+}
 
-// void	print_tree(t_command *root, int n)
-// {
-// 	if (!root)
-// 		return ;
-// 	// if (root->type_node != NODE)
-// 	// if (root->type_node == NODE)
-// 	// 	printf("simple node \n");
-// 	printf("START\n");
-// 	// if (root->type_node == SUBSHELL_NODE)
-// 	// 	printf("subshell opened\n");
-// 	if (root->type_node == PIPE_LINE_NODE)
-// 		printf("PIPE LINE node\n");
-// 	if (root->type_node == AND_NODE)
-// 		printf("AND node\n");
-// 	if (root->type_node == OR_NODE)
-// 		printf("OR node\n");
-// 	if (root->type_node == SUBSHELL_NODE)
-// 		printf("SUBSHELL_NODE\n");
-// 	// printf("type of node %d\n", root->type_node);
-// 	if (n == 1)
-// 		printf("----right----\n");
-// 	if (n == 2)
-// 		printf("----left----\n");
-// 	// else
-// 	// 	printf("n is %d this time \n", n);
-// 	// if (root->type_node == NODE || root->type_node == SUBSHELL_NODE)
-// 	print_2d(root);
-// 	printf("END\n");
-// 	print_tree(root->right, 1);
-// 	print_tree(root->left, 2);
-// }
+void	print_tree(t_command *root, int n)
+{
+	if (!root)
+		return ;
+	// if (root->type_node != NODE)
+	// if (root->type_node == NODE)
+	// 	printf("simple node \n");
+	printf("START\n");
+	// if (root->type_node == SUBSHELL_NODE)
+	// 	printf("subshell opened\n");
+	if (root->type_node == PIPE_LINE_NODE)
+		printf ("PIPE LINE node\n");
+	if (root->type_node == AND_NODE)
+		printf ("AND node\n");
+	if (root->type_node == OR_NODE)
+		printf ("OR node\n");
+	if (root->type_node == SUBSHELL_NODE)
+		printf ("SUBSHELL_NODE\n");
+
+	// printf("type of node %d\n", root->type_node);
+	if (n == 1)
+		printf("----right----\n");
+	if (n == 2)
+		printf("----left----\n");
+	// else
+	// 	printf("n is %d this time \n", n);
+	// if (root->type_node == NODE || root->type_node == SUBSHELL_NODE)
+	print_2d(root);
+	printf("END\n");
+	print_tree(root->right, 1);
+	print_tree(root->left, 2);
+}
 
 t_command_args	*new_arg(char *content, bool including_null, bool wild_card,
 		bool env)
@@ -422,14 +423,13 @@ t_command_h_ret	*command_handling(t_elem **element)
 		res->env = true;
 	while (*element)
 	{
-		command_handl_core(element, res);
 		if (ft_strchr(" ><|()&", (*element)->type)
 			&& (*element)->state == GENERAL && (*element)->type != QOUTE)
 		{
-			if (ft_strchr("><|()&", (*element)->type))
-				*element = tmp;
+			*element = tmp;
 			return (res);
 		}
+		command_handl_core(element, res);
 		tmp = *element;
 		*element = (*element)->next;
 	}

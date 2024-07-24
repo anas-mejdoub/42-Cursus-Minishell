@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/24 14:39:09 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 17:22:03 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,46 @@
 
 #include <signal.h>
 #include <stdio.h>
+#include <stdarg.h>
 
+void v_close_fd(int n, ...)
+{
+    va_list l;
+    int i = 0;
+    int fd = -1;
+    va_start(l, n);
+    while (i < n)
+    {
+        fd = va_arg(l, int);
+        if (fd == -1)
+            break;
+        close(fd);
+        i++;
+    }
+    va_end(l);
+}
+
+void	print_err_exit(int count, ...)
+{
+	int		i;
+	char	*str;
+	va_list	args;
+
+	i = 0;
+	va_start(args, count);
+	globalVar = va_arg(args, int);
+	i++;
+	ft_putstr_fd(RED, 2);
+	while (i < count)
+	{
+		str = va_arg(args, char *);
+		ft_putstr_fd(str, 2);
+		i++;
+	}
+	ft_putstr_fd(RESET, 2);
+	va_end(args);
+    exit(globalVar);
+}
 
 char	*ft_freed_join(char *s1, char *s2)
 {
@@ -329,7 +368,7 @@ bool pipeline_node(t_command **command, char **ev, t_exec_ret *ret, t_env *env)
     ret->pids = add_int(ret->pids, tmp->ret);
     return (true);
 }
-t_exec_ret *    subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_env, char c)
+t_exec_ret *subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_env, char c)
 {
     bool found_in = false;
     ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
@@ -420,7 +459,7 @@ t_exec_ret *    subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_en
             {
                 close(command->outfd);
                 close(command->infd);
-                close(((t_command *)command->right)->outfd);;
+                close(((t_command *)command->right)->outfd);
                 close(((t_command *)command->right)->infd);
             }
             // close_fds(((t_command *)command->right)->to_close);
@@ -431,7 +470,8 @@ t_exec_ret *    subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_en
             if (c == 'r')
             {
                 // printf("yes \n");
-                close(((t_command *)command->right)->outfd);;
+                // v_close_fd(((t_command *)command->right)->outfd)
+                close(((t_command *)command->right)->outfd);
                 close(command->outfd);
                 close(command->fd[1]);
                 close(((t_command *)command->right)->fd[1]);
@@ -439,10 +479,11 @@ t_exec_ret *    subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_en
             }
             if (c == 'l')
             {
-                close(command->fd[0]);
-                close(command->infd);
-                close(((t_command *)command->right)->fd[0]);
-                close(((t_command *)command->right)->infd);
+                v_close_fd(4, command->fd[0], command->infd, ((t_command *)command->right)->fd[0], ((t_command *)command->right)->infd);
+                // close(command->fd[0]);
+                // close(command->infd);
+                // close(((t_command *)command->right)->fd[0]);
+                // close(((t_command *)command->right)->infd);
 
             }
             globalVar = WEXITSTATUS(hh);
@@ -457,44 +498,115 @@ t_exec_ret *    subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_en
         }
     return (ret);
 }
+void duping(t_command *command)
+{
+    if (command->outfd != -1)
+    {
+        dup2(command->outfd, STDOUT_FILENO);
+        command->dup = true;
+    }
+    if (command->infd != -1)
+    {
+        command->dup = true;
+        dup2(command->infd, STDIN_FILENO);
+    }
+}
+void right_left(t_command *command, char c)
+{
+    if (c == 'r')
+    {
+        close(command->fd[0]);
+        if (command->to_close != NULL)
+            close_fds(command->to_close);
+    }
+    if (c == 'l')
+    {
+        if (command->to_close != NULL)
+            close_fds(command->to_close);
+        close(command->fd[1]);
+    }
+}
+
+bool get_files_args(t_command *command, t_env_d *d_env, bool *found_in)
+{
+    command->args = get_command_args(command->command_arg, d_env->env);
+    if (command->in_files)
+    {
+        command->infd = open_in_files(command->in_files, d_env->env);
+        if (command->infd < 0)
+        {
+            *found_in = true;
+            globalVar = 1;
+        }
+    }
+    if (command->outfiles && !*found_in)
+    {
+        command->outfd = open_out_files(command->outfiles, d_env->env);
+        if (command->outfd < 0)
+            globalVar = 1;
+    }
+    if (command->args == NULL)
+        return (false);
+    return (true);
+}
+
+t_exec_ret *single_built(t_command *cmd, t_exec_ret * ret, bool f, t_env_d *d_env)
+{
+    if ((cmd->outfiles && cmd->outfd == -1) || (cmd->infd && f == true) || do_builtin(cmd, d_env->env) == -1)
+        globalVar = 1;
+    else
+        globalVar = 0;
+    ret->ret = -1;
+    return ret;
+}
+
+
+void parent_proc(t_command *command, t_exec_ret *ret, char c, int i)
+{
+    if (!c)
+        v_close_fd(2, command->outfd, command->infd);
+    if (c == 'r')
+        v_close_fd(2, command->outfd, command->fd[1]);
+    if (c == 'l')
+        v_close_fd(2, command->infd, command->fd[0]);
+    ret->ret = i;
+    ret->pids = NULL;
+}
+
+void child_proc(t_command *command, char c, bool f, t_env_d *d_env)
+{
+    if (command->command_arg)
+                command->path = get_path(command->args[0], d_env->env);
+            if ((command->outfiles && command->outfd == -1) || (command->infd && f == true))
+                exit(1);
+            if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
+                print_err_exit(4, 127, "minishell: ", command->args[0], ": command not found\n");
+            if (!command->path && !is_builtin(command) && command->command_arg && !access(command->args[0], F_OK) && access(command->args[0], X_OK))
+                print_err_exit(2, 126, "minishell :  Permission denied\n");
+            duping(command);
+            right_left(command, c);
+            v_close_fd(2, command->outfd, command->infd);
+            if (!command->path && !command->args)
+                exit(0);
+            if (is_builtin(command))
+            {
+                if ((command->outfiles && command->outfd == -1) || (command->infd && f == true)  || do_builtin(command, d_env->env) == -1)
+                    exit(1);
+                exit(0);
+            }
+            if (execve(command->path, command->args, env_to_2d_arr(d_env->env)) == -1)
+                print_err_exit(4, 127, "minishell: ", command->args[0], ": command not found\n");
+}
 
 t_exec_ret *cmd_node(t_command *command, t_exec_ret *ret, t_env_d *d_env, char c)
 {
     bool found_in = false;
-        command->args = get_command_args(command->command_arg, d_env->env);
-            if (command->in_files)
-            {
-                command->infd = open_in_files(command->in_files, d_env->env);
-                if (command->infd < 0)
-                {
-                    found_in = true;
-                    globalVar = 1;
-                }
-            }
-            if (command->outfiles && !found_in)
-            {
-                command->outfd = open_out_files(command->outfiles, d_env->env);
-                if (command->outfd < 0)
-                {
-                    globalVar = 1;
-                }    
-            }
-        if (command->args == NULL)
-        {
-            return (NULL);
-        }
+    if (!get_files_args(command, d_env, &found_in))
+        return (NULL);
         if (c == 'b')
-        {
-            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true) || do_builtin(command, d_env->env) == -1)
-                globalVar = 1;
-            else
-                globalVar = 0;
-            ret->ret = -1;
-            return ret;
-        }
+            return (single_built(command, ret, found_in, d_env));
         signal (SIGINT, SIG_IGN);
         globalVar = 0;
-        
         pid_t i = fork();
         if (i < 0)
         {
@@ -506,85 +618,10 @@ t_exec_ret *cmd_node(t_command *command, t_exec_ret *ret, t_env_d *d_env, char c
         if (i == 0)
         {
             signal(SIGQUIT, SIG_DFL);
-            if (command->command_arg)
-                command->path = get_path(command->args[0], d_env->env);
-            if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
-                exit(1);
-            if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
-            {
-                
-                ft_putstr_fd("minishell: ", 2);
-                ft_putstr_fd(command->args[0], 2);
-                ft_putstr_fd(": command not found\n", 2);
-                exit (127);
-            }
-            if (!command->path && !is_builtin(command) && command->command_arg && !access(command->args[0], F_OK) && access(command->args[0], X_OK))
-            {
-                ft_putstr_fd("minishell :  Permission denied\n", 2);
-                exit(126);
-                return NULL;
-            }
-            if (command->outfd != -1)
-            {
-                dup2(command->outfd, STDOUT_FILENO);
-                command->dup = true;
-            }
-            if (command->infd != -1)
-            {
-                command->dup = true;
-                dup2(command->infd, STDIN_FILENO);
-                
-            }
-            if (c == 'r')
-            {
-                close(command->fd[0]);
-                if (command->to_close != NULL)
-                    close_fds(command->to_close);
-            }
-            if (c == 'l')
-            {
-                if (command->to_close != NULL)
-                    close_fds(command->to_close);
-                close(command->fd[1]);
-            }
-            close(command->outfd);
-            close(command->infd);
-            if (!command->path && !command->args)
-                exit(0);
-            if (is_builtin(command))
-            {
-                if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true)  || do_builtin(command, d_env->env) == -1)
-                    exit(1);
-                exit(0);
-            }
-            if (execve(command->path, command->args, env_to_2d_arr(d_env->env)) == -1)
-            {
-                ft_putstr_fd("minishell: ", 2);
-                ft_putstr_fd(command->args[0], 2);
-                ft_putstr_fd(": command not found\n", 2);
-                exit(127);
-            }
+            child_proc(command, c, found_in, d_env);
         }
         else if (i > 0)
-        {
-            if (!c)
-            {
-                close(command->outfd);
-                close(command->infd);
-            }
-            if (c == 'r')
-            {
-                close(command->outfd);
-                close(command->fd[1]);
-            }
-            if (c == 'l')
-            {
-                close(command->infd);
-                close(command->fd[0]);
-            }
-            ret->ret = i;
-            ret->pids = NULL;
-        }
+            parent_proc(command, ret, c, i);
     return (ret);
 }
 
