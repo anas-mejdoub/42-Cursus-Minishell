@@ -4,7 +4,7 @@ SRC =\
 		sources/lexer/lexer.c sources/lexer/lexer_utils.c  sources/lexer/general_tocken_handler.c sources/lexer/qoute_tocken_handler.c sources/lexer/dqoute_tocken_handler.c sources/lexer/syntax_error_utils.c\
 		sources/lexer/syntax_error.c \
 		sources/parser/parser.c \
-		sources/here_doc/here_doc.c \
+		sources/here_doc/here_doc.c  sources/here_doc/here_doc_expander.c \
 		sources/signals/signal.c \
 		sources/wildcard/wildcard.c \
 		sources/helper/env_helper.c sources/helper/print_err.c sources/helper/file_creation.c sources/helper/free_tree.c sources/helper/is_builtin.c sources/helper/env_to_2d_arr.c sources/helper/redirections_helper.c sources/helper/env_pattern.c sources/helper/tockens_checker.c\
