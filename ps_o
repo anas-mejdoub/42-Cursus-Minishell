@@ -1,0 +1,6 @@
+  PID TTY           TIME CMD
+ 5383 ttys000    0:00.99 -zsh
+ 8590 ttys002    0:01.52 /bin/zsh -il
+20141 ttys002    0:00.01 ./minishell
+20161 ttys002    0:00.00 ./minishell
+20162 ttys002    0:00.00 wc

@@ -18,3 +18,4 @@ cat √            echo √           execution (error names)        exit-status
 
 
 only redirection without commands
+(ls | wc ) > $a

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/23 11:41:12 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 12:28:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,12 @@ typedef struct s_commands
     void *right;
     void *left;
 } t_command;
+
+// typedef struct s_env_d
+// {
+//     char **ev;
+//     t_env *env;
+// } t_env_d;
 
 t_command	*parser(t_elem *elements, t_env *env);
 void print_tree(t_command *root, int n);
