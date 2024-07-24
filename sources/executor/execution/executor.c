@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/23 11:41:44 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/24 09:14:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,7 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     }
     if (command->type_node == PIPE_LINE_NODE || command->type_node == ROOT_NODE)
     {
-        if (command->type_node == PIPE_LINE_NODE )
+        if (command->type_node == PIPE_LINE_NODE)
         {
             ((t_command *)command->left)->to_close = add_int(command->to_close, command->fd[0]);
             ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
@@ -338,46 +338,37 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
     else if (command->type_node == SUBSHELL_NODE)
     {
         ((t_command *)command->right)->to_close = add_int(command->to_close, command->fd[0]);
-        // int jf = 0;
-        // while (((t_command *)command->right)->to_close)
-        // {
-        //     if ( ((t_command *)command->right)->to_close[jf] == -1)
-        //         break;
-        //     printf ("pid %d\n", ((t_command *)command->right)->command_arg->content, ((t_command *)command->right)->to_close[jf]);
-        //     jf++;
-        // }
         ((t_command *)command->right)->fd[0] = command->fd[0];
         ((t_command *)command->right)->fd[1] = command->fd[1];
         
-        
+        if (command->in_files)
+        {
+                command->infd = open_in_files(command->in_files, env);
+                if (command->infd < 0)
+                {
+                    found_in = true;
+                    globalVar = 1;
+                return (NULL);
+                }
+        }
+        if (command->outfiles && !found_in)
+        {
+                command->outfd = open_out_files(command->outfiles, env);
+                if (command->outfd < 0)
+                {
+                    globalVar = 1;
+                return NULL;
+                }
+        }
         command->to_close = add_int(command->to_close, command->fd[0]);
         if (command->outfd != -1)
         {
-            // printf("the subshell out is %d\n", command->outfd);
             ((t_command *)command->right)->outfd = command->outfd;
         }
         if (command->infd != -1)
         {
             ((t_command *)command->right)->infd = command->infd;
-            // ((t_command *)command->left)->infd = command->infd;
         }
-        if (command->in_files)
-            {
-                ((t_command *)command->right)->infd = open_in_files(command->in_files, env);
-                if (((t_command *)command->right)->infd < 0)
-                {
-                    found_in = true;
-                    globalVar = 1;
-                }
-            }
-            if (command->outfiles && !found_in)
-            {
-                ((t_command *)command->right)->outfd = open_out_files(command->outfiles, env);
-                if (((t_command *)command->right)->outfd < 0)
-                {
-                    globalVar = 1;
-                }    
-            }
         int f = fork();
         if (f == 0)
         {
@@ -516,7 +507,6 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 command->path = get_path(command->args[0], env);
             if ((command->outfiles && command->outfd == -1) || (command->infd && found_in == true))
             {
-                // printf ("here we go\n");
                 exit(1);
             }
             if (command->command_arg && !command->path && !is_builtin(command) && access(command->args[0], F_OK))
@@ -536,13 +526,13 @@ t_exec_ret *executor(t_command *command, t_env *env, char c, char **ev)
                 // printf ("yes 2 2 command %s  c is %c\n", command->args[0], c);
             if (command->outfd != -1)
             {
-               dup2(command->outfd, STDOUT_FILENO);
-               command->dup = true;
+                dup2(command->outfd, STDOUT_FILENO);
+                command->dup = true;
                 // printf("duplicated command %s\n", command->args[0]);
             }
             if (command->infd != -1)
             {
-               command->dup = true;
+                command->dup = true;
                 dup2(command->infd, STDIN_FILENO);
                 
             }
