@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 10:44:37 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 11:29:29 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 11:56:43 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static t_list	*here_doc_syntax(t_elem **elem, t_list **list,
 		tmp = tmp->next;
 	while (tmp && tmp->type == WHITE_SPACE)
 		tmp = tmp->next;
-	if (tmp && !(is_redirection(tmp->type) || is_spliter(tmp->type)))
+	if (tmp && !(is_red_spliter(tmp->type)))
 	{
 		if (tmp && (tmp->type == QOUTE || tmp->type == DOUBLE_QUOTE))
 		{
@@ -74,15 +74,9 @@ int	other_syntax(t_elem **elem, t_list **list, t_list **original)
 		(*elem) = (*elem)->next;
 		while ((*elem) && (*elem)->type == WHITE_SPACE)
 			(*elem) = (*elem)->next;
-        if (!(*elem) || (!is_redirection((*elem)->type) && !is_spliter((*elem)->type) 
-            && (*elem)->type != DOUBLE_QUOTE && (*elem)->type != QOUTE 
-            && (*elem)->type != START_SUBSHELL && (*elem)->type != WORD 
-            && (*elem)->type != ENV))
-		// if (!(*elem) ||  ((*elem)->type != REDIR_IN && (*elem)->type != REDIR_OUT
-		// 		&& (*elem)->type != DREDIR_OUT && (*elem)->type != HERE_DOC
-		// 		&& (*elem)->type != WORD && (*elem)->type != ENV
-		// 		&& (*elem)->type != START_SUBSHELL && (*elem)->type != QOUTE
-		// 		&& (*elem)->type != DOUBLE_QUOTE))
+		if (!(*elem) || (!is_redirection((*elem)->type) && (*elem)->type != ENV
+				&& (*elem)->type != WORD && !is_qoutes((*elem)->type)
+				&& (*elem)->type != START_SUBSHELL))
 			return (0);
 	}
 	else if ((*elem) && is_redirection((*elem)->type))
@@ -90,9 +84,8 @@ int	other_syntax(t_elem **elem, t_list **list, t_list **original)
 		(*elem) = (*elem)->next;
 		while ((*elem) && (*elem)->type == WHITE_SPACE)
 			(*elem) = (*elem)->next;
-		if (!(*elem) || ((*elem)->type != WORD 
-                && (*elem)->type != ENV && (*elem)->type != QOUTE 
-                && (*elem)->type != DOUBLE_QUOTE && (*elem)->type != WILDCARD))
+		if (!(*elem) || ((*elem)->type != WORD && !is_qoutes((*elem)->type)
+				&& (*elem)->type != WILDCARD && (*elem)->type != ENV))
 			return (0);
 	}
 	return (1);

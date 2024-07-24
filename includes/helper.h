@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:40:27 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 11:05:15 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 11:52:45 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	print_err(int count, ...);
 bool env_pattern(char a);
 bool is_redirection(char c);
 bool is_spliter(char c);
+bool is_red_spliter(char c);
+bool is_qoutes(char c);
 // int     open_out_files(t_out_files *files, t_env *env);
 
 #endif

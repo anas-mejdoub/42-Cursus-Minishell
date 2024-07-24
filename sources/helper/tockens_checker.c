@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 10:52:42 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 11:03:20 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 11:52:33 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,12 @@ bool is_redirection(char c)
 bool is_spliter(char c)
 {
     return (c == AND || c == OR || c == PIPE_LINE);
+}
+bool is_red_spliter(char c)
+{
+    return (is_spliter(c) || is_redirection(c));
+}
+bool is_qoutes(char c)
+{
+    return (c == QOUTE || c == DOUBLE_QUOTE);
 }

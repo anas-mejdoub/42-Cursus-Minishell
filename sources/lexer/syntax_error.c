@@ -6,42 +6,36 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 11:06:34 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:07:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
 
-void	add_limiter(t_elem **tmp, t_list **original, t_list **list)
+static int	word_syntax(t_elem **elem)
 {
-	char	*str;
-	char	*tmp_str;
+	t_elem	*tmp;
 
-	while ((*tmp) && ((*tmp)->type != QOUTE || (*tmp)->type != DOUBLE_QUOTE))
+	if ((*elem) && (*elem)->type == WORD)
 	{
-		ft_lstadd_back(list, ft_lstnew(ft_strdup((*tmp)->content)));
-		(*tmp) = (*tmp)->next;
+		tmp = (*elem)->next;
+		while (tmp && tmp->type == WHITE_SPACE)
+			tmp = tmp->next;
+		if (tmp && tmp->type == START_SUBSHELL)
+			return (0);
 	}
-	str = calloc(2, 1);
-	while (list)
-	{
-		tmp_str = ft_strjoin(str, (*list)->content);
-		free(str);
-		str = tmp_str;
-		*list = (*list)->next;
-	}
-	ft_lstadd_back(original, ft_lstnew(str));
+	return (1);
 }
 
-int	subshell_syntax(t_elem **elem)
+static int	subshell_syntax(t_elem **elem)
 {
 	if (*elem && (*elem)->type == START_SUBSHELL)
 	{
 		*elem = (*elem)->next;
 		while (elem && (*elem)->type == WHITE_SPACE)
 			*elem = (*elem)->next;
-		if (!*elem || (*elem)->type == END_SUBSHELL || (*elem)->type == AND
-			|| (*elem)->type == OR || (*elem)->type == PIPE_LINE)
+		if (!*elem || (*elem)->type == END_SUBSHELL
+			|| is_spliter((*elem)->type))
 			return (0);
 		return (1);
 	}
@@ -54,12 +48,36 @@ int	subshell_syntax(t_elem **elem)
 			return (1);
 		if ((*elem)->type == WORD)
 			return (0);
-		if (*elem && (((*elem)->type != END_SUBSHELL && (*elem)->type != AND
-					&& (*elem)->type != OR && (*elem)->type != PIPE_LINE
-					&& (*elem)->type != REDIR_IN && (*elem)->type != REDIR_OUT)
-				|| (*elem)->type == START_SUBSHELL))
+		if (*elem && (((*elem)->type != END_SUBSHELL \
+			&& !is_spliter((*elem)->type) && (*elem)->type != REDIR_IN \
+			&& (*elem)->type != REDIR_OUT) || (*elem)->type == START_SUBSHELL))
 			return (0);
 	}
+	return (2);
+}
+
+static int	syntax_checker(t_elem **elem, t_list **original, t_list **list)
+{
+	int	a;
+
+	if (word_syntax(elem) == 0)
+		return (0);
+	if ((*elem) && ((*elem)->type == START_SUBSHELL
+			|| (*elem)->type == END_SUBSHELL))
+	{
+		a = subshell_syntax(elem);
+		if (a == 0)
+			return (0);
+		else if (a == 1)
+			return (1);
+	}
+	if ((*elem) && (is_redirection((*elem)->type) || is_spliter((*elem)->type)))
+	{
+		if (other_syntax(elem, list, original) == 0)
+			return (0);
+	}
+	else if ((*elem))
+		(*elem) = (*elem)->next;
 	return (2);
 }
 
@@ -68,7 +86,6 @@ t_list	*syntax_error(t_elem *elem)
 	int		i;
 	t_list	*list;
 	t_list	*original;
-			t_elem *tmp5;
 	int		a;
 
 	list = NULL;
@@ -83,30 +100,11 @@ t_list	*syntax_error(t_elem *elem)
 		return (original);
 	while (elem)
 	{
-		if (elem->type == WORD)
-		{
-			tmp5 = elem->next;
-			while (tmp5 && tmp5->type == WHITE_SPACE)
-				tmp5 = tmp5->next;
-			if (tmp5 && tmp5->type == START_SUBSHELL)
-				return (original);
-		}
-		if (elem && (elem->type == START_SUBSHELL
-				|| elem->type == END_SUBSHELL))
-		{
-			a = subshell_syntax(&elem);
-			if (a == 0)
-				return (original);
-			else if (a == 1)
-				continue ;
-		}
-		if (elem && (is_redirection(elem->type) || is_spliter(elem->type)))
-		{
-			if (other_syntax(&elem, &list, &original) == 0)
-				return (original);
-		}
-		else if (elem)
-			elem = elem->next;
+		a = syntax_checker(&elem, &original, &list);
+		if (a == 0)
+			return (original);
+		else if (a == 1)
+			continue ;
 	}
 	free(list);
 	return (NULL);
