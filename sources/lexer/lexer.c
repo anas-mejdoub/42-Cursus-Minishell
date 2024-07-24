@@ -6,82 +6,40 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 16:19:30 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/23 16:42:45 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
 
 
-int	env_handeler(t_elem **elem, char *line, int *i, int state)
-{
-	int	current_index;
-
-	(*i)++;
-	current_index = (*i);
-	if (line[(*i)] == '?')
-	{
-		(*i)++;
-		if (allocate_node(elem, ft_substr(line, current_index - 1, (*i)
-					- current_index + 1), state, ENV))
-			return (1);
-	}
-	else if (ft_isalpha(line[(*i)]) || line[(*i)] == '_')
-	{
-		while (line[(*i)] && (ft_isalnum(line[(*i)]) || line[(*i)] == '_'))
-			(*i)++;
-		if ((*i) != current_index)
-		{
-			if (allocate_node(elem, ft_substr(line, current_index - 1, (*i)
-						- current_index + 1), state, ENV))
-				return (1);
-		}
-	}
-	return (0);
-}
-
-
-// int	double_qoute_handler(t_elem **elem, char *line, int *i)
+// int	env_handeler(t_elem **elem, char *line, int *i, int state)
 // {
 // 	int	current_index;
 
-// 	if (line[(*i)] == DOUBLE_QUOTE)
+// 	(*i)++;
+// 	current_index = (*i);
+// 	if (line[(*i)] == '?')
 // 	{
-// 		if (allocate_node(elem, ft_strdup("\""), GENERAL, DOUBLE_QUOTE))
-// 			return (1);
 // 		(*i)++;
-// 		current_index = (*i);
+// 		if (allocate_node(elem, ft_substr(line, current_index - 1, (*i)
+// 					- current_index + 1), state, ENV))
+// 			return (1);
 // 	}
-// 	while (line[(*i)] && line[(*i)] != DOUBLE_QUOTE)
+// 	else if (ft_isalpha(line[(*i)]) || line[(*i)] == '_')
 // 	{
-// 		while (line[(*i)] && line[(*i)] != DOUBLE_QUOTE && !(line[(*i)] == ENV
-// 				&& (ft_isalpha(line[(*i) + 1]) || line[(*i) + 1] == '_'
-// 					|| line[(*i) + 1] == '?')))
+// 		while (line[(*i)] && (ft_isalnum(line[(*i)]) || line[(*i)] == '_'))
 // 			(*i)++;
 // 		if ((*i) != current_index)
 // 		{
-// 			if (allocate_node(elem, ft_substr(line, current_index, (*i)
-// 						- current_index), IN_DQUOTE, WORD))
+// 			if (allocate_node(elem, ft_substr(line, current_index - 1, (*i)
+// 						- current_index + 1), state, ENV))
 // 				return (1);
 // 		}
-// 		if (line[(*i)] == ENV && (ft_isalpha(line[(*i) + 1]) || line[(*i)
-// 				+ 1] == '_' || line[(*i) + 1] == '?'))
-// 		{
-// 			if (env_handeler(elem, line, i, IN_DQUOTE))
-// 				return (1);
-// 		}
-// 		current_index = (*i);
 // 	}
-// 	if (line[(*i)] == DOUBLE_QUOTE)
-// 	{
-// 		if (allocate_node(elem, ft_strdup("\""), GENERAL, DOUBLE_QUOTE))
-// 			return (1);
-// 		(*i)++;
-// 		return (0);
-// 	}
-// 	else
-//         return (print_err(2, 2,"synthax error : missing a double quote\n"), 1);
+// 	return (0);
 // }
+
 
 t_elem	*tokenize(char *line, int *subshell, t_elem **elem)
 {
