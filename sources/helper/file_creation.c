@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/21 11:33:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 09:25:51 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ char  *ambiguous(void *files, bool type ,t_env *env)
     if (type == true)
     { 
         file1 = (t_out_files *)files;
-        // printf("--%s---\n", file1->filename);
         if (file1->index_list || file1->wildcard)
             file_name = env_expander(file1->filename, file1->index_list, env, file1->wildcard);
         else
@@ -46,10 +45,6 @@ char  *ambiguous(void *files, bool type ,t_env *env)
         if (file1->ambiguous || (ft_strchr(file_name, ' ') && count_spaces(file_name) != count_spaces(file1->filename) && file1->wildcard))
         {
             ft_putstr_fd("minishell: ", 2);
-            // if ((ft_strchr(file_name, ' ') && file1->wildcard))
-            //     ft_putstr_fd(file_name, 2);
-            // else
-            //     ft_putstr_fd(file1->filename, 2);
             ft_putstr_fd(": ambiguous redirect\n", 2);
             globalVar = 1;
             return (NULL);
@@ -60,17 +55,11 @@ char  *ambiguous(void *files, bool type ,t_env *env)
     else
     {
 
-        // printf("dsfdfgdsgsdfg333\n");
         file2 = (t_in_files *)files;
-        // printf("--%s---\n", file2->filename);
-        // if (!file2->index_list)
-        //     file_name = file2->filename;
-        // else
-            file_name = env_expander(file2->filename, file2->index_list, env, file2->wildcard);
+        file_name = env_expander(file2->filename, file2->index_list, env, file2->wildcard);
         if (file2->ambiguous || (ft_strchr(file_name, ' ') && count_spaces(file_name) != count_spaces(file2->filename) && file2->wildcard))
         {
             ft_putstr_fd("minishell: ", 2);
-            // ft_putstr_fd(file2->filename, 2);
             ft_putstr_fd(": ambiguous redirect\n", 2);
             globalVar = 1;
             return (NULL);
@@ -106,18 +95,9 @@ int open_out_files(t_out_files *files, t_env *env)
     last_fd = 0;
     while (files)
     {
-        // if (files->ambiguous)
-        // {
-        //     ft_putstr_fd("minishell: ", 2);
-        //     ft_putstr_fd(files->filename, 2);
-        //     ft_putstr_fd(": ambiguous redirect\n", 2);
-        //     return (-1);
-        // }
         file_name = ambiguous(files, true, env);
         if (file_name == NULL)
             return (-1);
-        
-        // printf("%s\n", file_name);
         if (access(file_name, F_OK) == 0)
         {
             if (access(file_name, W_OK) == 0)
@@ -130,7 +110,6 @@ int open_out_files(t_out_files *files, t_env *env)
                     ft_putstr_fd(" ", 2);
                     ft_putendl_fd(strerror(errno), 2);
                     return -1;
-                    // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
                 }
             }
             else
@@ -141,7 +120,6 @@ int open_out_files(t_out_files *files, t_env *env)
                     ft_putendl_fd(strerror(errno), 2);
                     return -1;
             }
-                // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         else
         {
@@ -154,7 +132,6 @@ int open_out_files(t_out_files *files, t_env *env)
                     ft_putendl_fd(strerror(errno), 2);
                     return -1;
             }
-                // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         if (files->next)
             close(last_fd);
@@ -171,14 +148,6 @@ int open_in_files(t_in_files *files, t_env *env)
     last_fd = 0;
     while (files)
     {
-        // if (files->ambiguous)
-        // {
-        //     ft_putstr_fd("minishell: ", 2);
-        //     ft_putstr_fd(files->filename, 2);
-        //     ft_putstr_fd(": ambiguous redirect\n", 2);
-        //     return (-1);
-        // }
-        // printf("dsfdsfdsfdsfds\n");
         file_name = ambiguous(files, false, env);
         if (file_name == NULL)
             return (-1);
@@ -202,7 +171,6 @@ int open_in_files(t_in_files *files, t_env *env)
                 ft_putstr_fd(" ", 2);
                 ft_putendl_fd(strerror(errno), 2);
                 return -1;
-                // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
             }
         }
         else
@@ -212,7 +180,6 @@ int open_in_files(t_in_files *files, t_env *env)
                 ft_putstr_fd(" ", 2);
                 ft_putendl_fd(strerror(errno), 2);
                 return -1;
-            // return (printf("minishell : %s : %s\n", file_name, strerror(errno)), -1);
         }
         if (files->next)
             close(last_fd);

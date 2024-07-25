@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/21 14:36:10 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 09:24:42 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ char  *env_expander(char *content, t_env_index *indexs, t_env *env, bool wild_ca
     i = 0;
     start = i;
     tmp_index = indexs;
-    // printf("hehe\n");
     if (wild_card)
     {   
         char *new_content = wildcard(content, -17);

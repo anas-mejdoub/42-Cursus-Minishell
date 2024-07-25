@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 09:25:07 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/08 09:42:17 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 09:25:09 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ char **env_to_2d_arr(t_env *env)
     int size;
     int i;
 
-    // printf("hehe\n");
     size = size_of_env(env->data);
     if (size == 0)
         return (NULL);

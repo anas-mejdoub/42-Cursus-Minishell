@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 18:27:05 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/22 15:49:44 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/25 09:26:14 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int is_builtin(t_command *cmd)
 }
 int do_builtin(t_command *cmd, t_env *env)
 {
-    // printf ("BUILTIN\n");
     if ((!ft_strncmp(cmd->args[0], "export", ft_strlen(cmd->args[0])) && ft_strlen(cmd->args[0]) == ft_strlen("export")))
     {
         if (export_cmd(cmd, env) == -1)
@@ -78,5 +77,4 @@ int do_builtin(t_command *cmd, t_env *env)
         return (1);
     }
     return (0);
-
 }
