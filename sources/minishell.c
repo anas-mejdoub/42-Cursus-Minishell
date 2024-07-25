@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/24 15:44:17 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/25 12:03:52 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int main(int ac, char **av, char  **ev)
         // globalVar = 28 << 8;
         // printf("exit : %d\n", globalVar);
         // printf("hehe : %d\n", WEXIT(hehe));
-        // free_tree(root);
+        free_tree(root);
         // while (1);
         // while (1)
         // {
