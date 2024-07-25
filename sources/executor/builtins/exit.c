@@ -6,11 +6,20 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 19:48:58 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 07:42:14 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_builtin.h"
+
+static int	overflow_result(int nbr)
+{
+	if (nbr > 255)
+		return (nbr % 256);
+	else if (nbr < 0)
+		return ((nbr % 256) + 256);
+	return (nbr);
+}
 
 static int	extract_number(t_command *cmd, int *fd_in, int *fd_out)
 {
@@ -26,26 +35,19 @@ static int	extract_number(t_command *cmd, int *fd_in, int *fd_out)
 		j++;
 	if (cmd->args[1][j] == '-' || cmd->args[1][j] == '+')
 	{
-		if (cmd->args[1][j] == '-')
+		if (cmd->args[1][j++] == '-')
 			sign = -1;
-		j++;
 	}
 	while (cmd->args[1][j] && ft_isdigit(cmd->args[1][j]))
 	{
-		res = (res * 10) + (cmd->args[1][j] - '0');
+		res = (res * 10) + (cmd->args[1][j++] - '0');
 		if ((res > LLONG_MAX && sign == 1) || (res > LLONG_MAX && sign == -1))
 			return (restor_rediraction(cmd, fd_in, fd_out), print_err(4, 255,
 					"minishell: exit: ", cmd->args[1],
 					": numeric argument required\n"), free_tree(cmd), exit(255),
-					-1);
-		j++;
+				-1);
 	}
-	res = res * sign;
-	if (res > 255)
-		return (res % 256);
-	else if (res < 0)
-		return ((res % 256) + 256);
-	return (res);
+	return (overflow_result(res * sign));
 }
 
 static int	calculate_status(t_command *cmd, int *fd_in, int *fd_out)
