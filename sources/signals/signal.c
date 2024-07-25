@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                         :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 15:20:53 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/30 10:29:55 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/24 07:31:40 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/24 15:58:17 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "local_builtin.h"
+#include "local_signal.h"
 
-int main()
+void	new_prompt(int sig)
 {
-    return (0);
+	(void)sig;
+	globalVar = 1;
+	printf(BHMAG "\n" RESET);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+void	kill_here_doc(int sig)
+{
+	(void)sig;
+	printf("\n");
+	exit(1);
 }

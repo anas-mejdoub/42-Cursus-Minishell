@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_builtin.h                                    :+:      :+:    :+:   */
+/*   env_pattern.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 15:23:49 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 09:13:22 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/23 15:42:20 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/23 15:44:30 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_BUILTIN_H
-# define LOCAL_BUILTIN_H
+#include "local_helper.h"
 
-# include "builtins.h"
-# include "minishell.h"
 
-#endif
+bool env_pattern(char a)
+{
+    return (!ft_isalpha(a) || a == '_' || a == '?');
+}

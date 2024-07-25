@@ -6,132 +6,106 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 09:48:48 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:07:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
 
-static bool is_tocken(t_elem *elem)
+static int	word_syntax(t_elem **elem)
 {
-    if (elem == NULL)
-        return (true);
-    if (elem->type == PIPE_LINE || elem->type == REDIR_IN || elem->type == REDIR_OUT 
-        || elem->type == AND || elem->type == OR || elem->type == HERE_DOC
-        || elem->type == DREDIR_OUT)
-        return (true);
-    return (false);
+	t_elem	*tmp;
+
+	if ((*elem) && (*elem)->type == WORD)
+	{
+		tmp = (*elem)->next;
+		while (tmp && tmp->type == WHITE_SPACE)
+			tmp = tmp->next;
+		if (tmp && tmp->type == START_SUBSHELL)
+			return (0);
+	}
+	return (1);
 }
 
-t_list    *syntax_error(t_elem *elem)
+static int	subshell_syntax(t_elem **elem)
 {
-    int i;
-    t_elem *tmp;
-    t_list *list;
-    t_list *original;
+	if (*elem && (*elem)->type == START_SUBSHELL)
+	{
+		*elem = (*elem)->next;
+		while (elem && (*elem)->type == WHITE_SPACE)
+			*elem = (*elem)->next;
+		if (!*elem || (*elem)->type == END_SUBSHELL
+			|| is_spliter((*elem)->type))
+			return (0);
+		return (1);
+	}
+	else if ((*elem) && (*elem)->type == END_SUBSHELL)
+	{
+		*elem = (*elem)->next;
+		while (*elem && (*elem)->type == WHITE_SPACE)
+			*elem = (*elem)->next;
+		if (!*elem)
+			return (1);
+		if ((*elem)->type == WORD)
+			return (0);
+		if (*elem && (((*elem)->type != END_SUBSHELL \
+			&& !is_spliter((*elem)->type) && (*elem)->type != REDIR_IN \
+			&& (*elem)->type != REDIR_OUT) || (*elem)->type == START_SUBSHELL))
+			return (0);
+	}
+	return (2);
+}
 
-    list = NULL;
-    original = NULL;
-    if (elem == NULL)
-        return (NULL);
-    ft_lstadd_back(&original, ft_lstnew(ft_strdup("start")));
-    i = 1;
-    while (elem && elem->type == WHITE_SPACE)
-        elem = elem->next;
-    if (elem->type == AND || elem->type == OR || elem->type == PIPE_LINE)
-        return (original);
-    while (elem)
-    {
-        if (elem->type == WORD)
-        {
-            t_elem *tmp5;
-            tmp5 = elem->next;
-            while (tmp5 && tmp5->type == WHITE_SPACE)
-                tmp5 = tmp5->next;
-            if (tmp5 && tmp5->type == START_SUBSHELL)
-                return (original);
-        }
-        if (elem && elem->type == START_SUBSHELL)
-        {
-            elem = elem->next;
-            while (elem && elem->type == WHITE_SPACE)
-                elem = elem->next;
-            if (!elem || elem->type == END_SUBSHELL || elem->type == AND || elem->type == OR || elem->type == PIPE_LINE)
-                return (original);
-            continue;
-        }
-        else if (elem && elem->type == END_SUBSHELL)
-        {
-            elem = elem->next;
-            while (elem && elem->type == WHITE_SPACE)
-                elem = elem->next;
-            if (!elem)
-                continue;
-            if (elem->type == WORD)
-                return (original);
-            if (elem && ((elem->type != END_SUBSHELL && elem->type != AND && elem->type != OR && elem->type != PIPE_LINE && elem->type != REDIR_IN && elem->type != REDIR_OUT) || elem->type == START_SUBSHELL))
-                return (original);
-        }
-        else if (elem && elem->type == HERE_DOC)
-        {
-            tmp = elem;
-            if (tmp)
-                tmp = tmp->next;
-            while (tmp && tmp->type == WHITE_SPACE)
-                tmp = tmp->next;
-            if (tmp && !is_tocken(tmp))
-            {
-                if (tmp && (tmp->type == QOUTE || tmp->type == DOUBLE_QUOTE))
-                {
-                    tmp = tmp->next;
-                    while (tmp && (tmp->type != QOUTE || tmp->type != DOUBLE_QUOTE))
-                    {
-                        ft_lstadd_back(&list, ft_lstnew(ft_strdup(tmp->content)));
-                        tmp = tmp->next;
-                    }
-                    char *str;
-                    str = calloc(2, 1);
-                    char *tmp_str;
-                    while (list)
-                    {
-                        tmp_str = ft_strjoin(str, list->content);
-                        free(str);
-                        str = tmp_str;
-                        list = list->next;
-                    }
-                    ft_lstadd_back(&original, ft_lstnew(str));
-                    elem = elem->next;
-                }
-                else if (tmp && (tmp->type == WORD || tmp->type != ENV))
-                {
-                    ft_lstadd_back(&original, ft_lstnew(tmp->content));
-                    elem = elem->next;
-                }
-            }
-            else
-                return (original);
-        }
-        if (elem && (elem->type == AND || elem->type == OR || elem->type == PIPE_LINE))
-        {
-            elem = elem->next;
-            while (elem && elem->type == WHITE_SPACE)
-                elem = elem->next;
-            if (!elem || (elem->type != REDIR_IN && elem->type != REDIR_OUT 
-                && elem->type != DREDIR_OUT && elem->type != HERE_DOC && elem->type != WORD && elem->type != ENV && elem->type != START_SUBSHELL && elem->type != QOUTE && elem->type != DOUBLE_QUOTE))
-                    return (original);
-        }
-        else if (elem && (elem->type == REDIR_IN || elem->type == REDIR_OUT 
-                || elem->type == DREDIR_OUT))
-        {
-            elem = elem->next;
-            while (elem && elem->type == WHITE_SPACE)
-                elem = elem->next;
-            if (!elem || (elem->type != WORD && elem->type != ENV && elem->type != QOUTE && elem->type != DOUBLE_QUOTE && elem->type != WILDCARD))
-                return (original);
-        }
-        else if (elem)
-            elem = elem->next;
-    }
-    free(list);
-    return (NULL);
+static int	syntax_checker(t_elem **elem, t_list **original, t_list **list)
+{
+	int	a;
+
+	if (word_syntax(elem) == 0)
+		return (0);
+	if ((*elem) && ((*elem)->type == START_SUBSHELL
+			|| (*elem)->type == END_SUBSHELL))
+	{
+		a = subshell_syntax(elem);
+		if (a == 0)
+			return (0);
+		else if (a == 1)
+			return (1);
+	}
+	if ((*elem) && (is_redirection((*elem)->type) || is_spliter((*elem)->type)))
+	{
+		if (other_syntax(elem, list, original) == 0)
+			return (0);
+	}
+	else if ((*elem))
+		(*elem) = (*elem)->next;
+	return (2);
+}
+
+t_list	*syntax_error(t_elem *elem)
+{
+	int		i;
+	t_list	*list;
+	t_list	*original;
+	int		a;
+
+	list = NULL;
+	original = NULL;
+	if (elem == NULL)
+		return (NULL);
+	ft_lstadd_back(&original, ft_lstnew(ft_strdup("start")));
+	i = 1;
+	while (elem && elem->type == WHITE_SPACE)
+		elem = elem->next;
+	if (elem->type == AND || elem->type == OR || elem->type == PIPE_LINE)
+		return (original);
+	while (elem)
+	{
+		a = syntax_checker(&elem, &original, &list);
+		if (a == 0)
+			return (original);
+		else if (a == 1)
+			continue ;
+	}
+	free(list);
+	return (NULL);
 }

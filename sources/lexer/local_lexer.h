@@ -6,17 +6,25 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:06:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/28 13:04:28 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 10:46:04 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOCAL_LEXER_H
 # define LOCAL_LEXER_H
 
-#include "minishell.h"
-#include "lexer.h"
+# include "minishell.h"
+# include "lexer.h"
 
-void free_elem(t_elem *elem);
-int allocate_node(t_elem **elem, char *content, int state, int token);
-t_list    *syntax_error(t_elem *elem);
+void	free_elem(t_elem *elem);
+int		allocate_node(t_elem **elem, char *content, int state, int token);
+int		env_handeler(t_elem **elem, char *line, int *i, int state);
+t_list	*syntax_error(t_elem *elem);
+int		double_qoute_handler(t_elem **elem, char *line, int *i);
+int		qoute_handler(t_elem **elem, char *line, int *i);
+int		general_handler(t_elem **elem, char *line, int *i, int *subshell);
+t_elem	*tokenize(char *line, int *subshell, t_elem **elem);
+t_elem	*check_syntax_error(t_list *list, t_elem *elem);
+int		other_syntax(t_elem **elem, t_list **list, t_list **original);
+
 #endif

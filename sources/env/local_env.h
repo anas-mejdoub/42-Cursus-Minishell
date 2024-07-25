@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:33 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/06/08 11:56:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 09:22:34 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,6 @@
 # include "env.h"
 # include "minishell.h"
 
-void init_env_methods(t_env **env);
+void	init_env_methods(t_env **env);
 
 #endif

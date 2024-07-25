@@ -1,19 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_builtin.h                                    :+:      :+:    :+:   */
+/*   tockens_checker.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 15:23:49 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 09:13:22 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/24 10:52:42 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/24 11:52:33 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_BUILTIN_H
-# define LOCAL_BUILTIN_H
+#include "local_helper.h"
 
-# include "builtins.h"
-# include "minishell.h"
+bool is_redirection(char c)
+{
+    return (c == DREDIR_OUT || c == HERE_DOC || c == REDIR_OUT || c == REDIR_IN);
+}
 
-#endif
+bool is_spliter(char c)
+{
+    return (c == AND || c == OR || c == PIPE_LINE);
+}
+bool is_red_spliter(char c)
+{
+    return (is_spliter(c) || is_redirection(c));
+}
+bool is_qoutes(char c)
+{
+    return (c == QOUTE || c == DOUBLE_QUOTE);
+}

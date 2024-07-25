@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_builtin.h                                    :+:      :+:    :+:   */
+/*   local_signal.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 15:23:49 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 09:13:22 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/24 07:41:24 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/24 15:57:47 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_BUILTIN_H
-# define LOCAL_BUILTIN_H
+#ifndef LOCAL_SIGNAL_H
+# define LOCAL_SIGNAL_H
 
-# include "builtins.h"
 # include "minishell.h"
+# include "signals.h"
 
 #endif

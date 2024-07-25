@@ -67,7 +67,11 @@
     "local_builtin.h": "c",
     "local_lexer.h": "c",
     "executor.h": "c",
-    "here_doc.h": "c"
+    "here_doc.h": "c",
+    "local_helper.h": "c",
+    "helper.h": "c",
+    "stdbool.h": "c",
+    "termios.h": "c"
   },
   "editor.fontFamily": "fira code"
 }

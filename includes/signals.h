@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_builtin.h                                    :+:      :+:    :+:   */
+/*   signals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/29 15:23:49 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 09:13:22 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/24 07:43:04 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/24 15:58:05 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_BUILTIN_H
-# define LOCAL_BUILTIN_H
+#ifndef SIGNAL_H
+# define SIGNAL_H
 
-# include "builtins.h"
 # include "minishell.h"
+
+void	new_prompt(int sig);
+void	kill_here_doc(int sig);
 
 #endif
