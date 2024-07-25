@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 11:57:39 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 15:01:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*add_string_back(char **s1, char **s2)
 static void	add_vars(char *tmp_str, t_env *env, char **str, char **s)
 {
 	*s = env->get(env->data, tmp_str);
-	if (s && ft_strchr(*s, '*'))
+	if (*s && ft_strchr(*s, '*'))
 		*s = wildcard_expander(*s);
 	add_string_back(str, s);
 }
