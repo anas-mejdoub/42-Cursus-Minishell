@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/25 11:33:05 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/25 12:39:55 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,8 +175,12 @@ char	**get_command_args(t_command_args *args, t_env *env)
 {
 	char	**res;
 	char	*tmp_str;
+	bool	exp;
 
 	res = NULL;
+	exp = false;
+	if (!ft_strncmp(args->content, "export", ft_strlen(args->content)) && ft_strlen(args->content) == 6)
+		exp = true; 
 	while (args)
 	{
 		tmp_str = env_expander(args->content, args->index_list, env,
@@ -191,7 +195,10 @@ char	**get_command_args(t_command_args *args, t_env *env)
 			args = args->next;
 			continue ;
 		}
-		res = commands_args_helper(tmp_str, args, res);
+		if (exp)
+			res =  add_to_args(res, tmp_str);
+		else
+			res = commands_args_helper(tmp_str, args, res);
 		args = args->next;
 	}
 	return (res);
