@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/09 09:36:15 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 09:23:24 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,17 @@ static int	allocate_node(int i, char **ev, t_env_data **node, t_env_data **tmp)
 static int	fetch_env_data(char **ev, t_env_data **node, t_env_data **tmp)
 {
 	int	i;
+	int	j;
 
 	i = 0;
 	if (ev == NULL)
 	{
 		*node = NULL;
-		// *tmp = NULL;
 		return (0);
 	}
 	while (ev && ev[i])
 	{
-		int j = 0;
+		j = 0;
 		while (ev[i][j] && ev[i][j] != '=')
 			j++;
 		if (allocate_node(i, ev, node, tmp))
@@ -70,8 +70,6 @@ t_env	*init_env(char **ev)
 	node = NULL;
 	tmp = NULL;
 	len = 0;
-	// if (!ev || !ev[0])
-	// 	return (NULL);
 	while (ev && ev[len++])
 		;
 	env = malloc(sizeof(t_env) * (len + 1));
@@ -80,6 +78,6 @@ t_env	*init_env(char **ev)
 	if (fetch_env_data(ev, &node, &tmp))
 		return (NULL);
 	env->data = node;
-    init_env_methods(&env);
+	init_env_methods(&env);
 	return (env);
 }
