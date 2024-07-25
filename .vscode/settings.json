@@ -71,7 +71,8 @@
     "local_helper.h": "c",
     "helper.h": "c",
     "stdbool.h": "c",
-    "termios.h": "c"
+    "termios.h": "c",
+    "ambiguous.h": "c"
   },
   "editor.fontFamily": "fira code"
 }

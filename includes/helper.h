@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:40:27 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 11:52:45 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 16:12:20 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int is_builtin(t_command *cmd);
 char **env_to_2d_arr(t_env *env);
 int change_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
 int restor_rediraction(t_command *cmd ,int *fd_in, int *fd_out);
-bool imbg(t_elem *tmp, t_env *env);
 void	print_err(int count, ...);
 bool env_pattern(char a);
 bool is_redirection(char c);
