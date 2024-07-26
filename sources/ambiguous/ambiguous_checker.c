@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:11:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 08:48:11 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 09:05:55 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,60 @@ static bool first_condition(t_amb_data *data, int j)
 	return false;
 }
 
+static bool first_sub_sec_condition(t_amb_data *data, char *ptr, int *k)
+{
+	(*k)--;
+	if (ptr[0] == '\0')
+	{
+		while ((*k) >= 0 && data->arr[(*k)][0] == '\0')
+			(*k)--;
+		if ((*k) != 0)
+			return (true);
+	}
+	while ((*k) >= 0)
+	{
+		if (data->arr[(*k)][0] != '\0')
+			return (true);
+		(*k)--;
+	}
+	return (false);
+}
+
+static bool sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
+{
+	int o;
+
+	(*k)++;
+	if (ptr[0] == '\0')
+	{
+		while (data->arr[(*k)] && data->arr[(*k)][0] == '\0')
+			(*k)++;
+		if (data->arr[(*k)] == NULL)
+			return (true);
+	}
+	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
+	{
+		o = j;
+		++o;
+		while (o < data->size && *data->arr_env[o] == (*k) && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
+		{
+			o++;
+			(*k)++;
+		}
+		while (data->arr[(*k)] && data->arr[(*k)][0] == '\0')
+			(*k)++;
+		if (data->arr[(*k)])
+			return (true);
+	}
+	while (data->arr[(*k)])
+	{
+		if (data->arr[(*k)][0] != '\0' && ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
+			return (true);
+		(*k)++;
+	}
+	return (false);
+}
+
 static bool sec_condition(t_amb_data *data, int j, char *ptr)
 {
 	int k = *data->arr_env[j];
@@ -118,55 +172,63 @@ static bool sec_condition(t_amb_data *data, int j, char *ptr)
 		return (true);
 	else if (*data->arr_env[j] != 0 && (data->arr[*data->arr_env[j]][0] == ' ' && ptr[0] != '\0'))
 	{
-		k--;
-		if (ptr[0] == '\0')
-		{
-			while (k >= 0 && data->arr[k][0] == '\0')
-				k--;
-			if (k != 0)
-				return (true);
-		}
-		while (k >= 0)
-		{
-			if (data->arr[k][0] != '\0')
-				return (true);
-			k--;
-		}
+		if (first_sub_sec_condition(data, ptr, &k))
+			return (true);
 	}
+	// {
+	// 	k--;
+	// 	if (ptr[0] == '\0')
+	// 	{
+	// 		while (k >= 0 && data->arr[k][0] == '\0')
+	// 			k--;
+	// 		if (k != 0)
+	// 			return (true);
+	// 	}
+	// 	while (k >= 0)
+	// 	{
+	// 		if (data->arr[k][0] != '\0')
+	// 			return (true);
+	// 		k--;
+	// 	}
+	// }
 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
 	{
-		k++;
-		if (ptr[0] == '\0')
-		{
-			while (data->arr[k] && data->arr[k][0] == '\0')
-				k++;
-			if (data->arr[k] == NULL)
-				return (true);
-		}
-		else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
-		{
-			int o = j;
-			++o;
-			while (o < data->size && *data->arr_env[o] == k && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
-			{
-				o++;
-				k++;
-			}
-			while (data->arr[k] && data->arr[k][0] == '\0')
-				k++;
-			if (data->arr[k])
-				return (true);
-		}
-		while (data->arr[k])
-		{
-			if (data->arr[k][0] != '\0' && ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
-			{
-				return (true);
-				break;
-			}
-			k++;
-		}
+		if (sec_sub_sec_condition(data, ptr, &k, j))
+			return (true);
 	}
+	// {
+	// 	k++;
+	// 	if (ptr[0] == '\0')
+	// 	{
+	// 		while (data->arr[k] && data->arr[k][0] == '\0')
+	// 			k++;
+	// 		if (data->arr[k] == NULL)
+	// 			return (true);
+	// 	}
+	// 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
+	// 	{
+	// 		int o = j;
+	// 		++o;
+	// 		while (o < data->size && *data->arr_env[o] == k && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
+	// 		{
+	// 			o++;
+	// 			k++;
+	// 		}
+	// 		while (data->arr[k] && data->arr[k][0] == '\0')
+	// 			k++;
+	// 		if (data->arr[k])
+	// 			return (true);
+	// 	}
+	// 	while (data->arr[k])
+	// 	{
+	// 		if (data->arr[k][0] != '\0' && ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
+	// 		{
+	// 			return (true);
+	// 			break;
+	// 		}
+	// 		k++;
+	// 	}
+	// }
 	if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] == '\0')
 	{
 		bool p1 = false;
@@ -202,130 +264,23 @@ static bool ambiguous_hard_coding(t_amb_data *data)
 {
 	bool err;
 	int j;
+	char *ptr;
 
 	err = false;
 	j = 0;
 	while (j < data->size)
 	{
-		char *ptr = ft_strtrim(data->arr[*data->arr_env[j]], " ");
+		ptr = ft_strtrim(data->arr[*data->arr_env[j]], " ");
 		if ((data->arr[1] == NULL || *data->arr_env[j] == 0) && (!ptr || (ptr[0] == '\0' && data->arr[*data->arr_env[j]][0] == '\0')))
 			err = first_condition(data, j);
-		// {
-		// 	if (data->arr[1] == NULL)
-		// 		err = true;
-		// 	else
-		// 	{
-		// 		int u = 0;
-		// 		int g = *data->arr_env[j];
-		// 		while (u == g && u < data->size && data->arr[u])
-		// 		{
-		// 			u++;
-		// 			if (u < data->size)
-		// 				g = *data->arr_env[u];
-		// 		}
-		// 		if (data->arr[u] == NULL)
-		// 			err = true;
-		// 	}
-		// }
 		else if (data->arr[*data->arr_env[j]][0] != '\0' && ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
 			err = true;
 		else if (ft_strlen(data->arr[*data->arr_env[j]]) != 0 && data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && j + 1 < data->size && data->arr[*data->arr_env[j + 1]][0] != ' ')
 			err = true;
 		else if ((data->arr[*data->arr_env[j]][0] == ' ' || (ft_strlen(data->arr[*data->arr_env[j]]) != 0 && data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ')))
 			err = sec_condition(data, j, ptr);
-			// {
-			// 	int k = *data->arr_env[j];
-			// 	if (ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " ") ,' '))
-			// 	{
-			// 		err = true;
-			// 		break;
-			// 	}
-			// 	else if (*data->arr_env[j] != 0 && (data->arr[*data->arr_env[j]][0] == ' ' && ptr[0] != '\0'))
-			// 	{
-			// 		k--;
-			// 		if (ptr[0] == '\0')
-			// 		{
-			// 			while (k >= 0 && data->arr[k][0] == '\0')
-			// 				k--;
-			// 			if (k != 0)
-			// 			{
-			// 				err = true;
-			// 			}
-			// 		}
-			// 		while (k >= 0)
-			// 		{
-			// 			if (data->arr[k][0] != '\0')
-			// 			{
-			// 				err = true;
-			// 				break;
-			// 			}
-			// 			k--;
-			// 		}
-			// 	}
-			// 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
-			// 	{
-			// 		k++;
-			// 		if (ptr[0] == '\0')
-			// 		{
-			// 			while (data->arr[k] && data->arr[k][0] == '\0')
-			// 				k++;
-			// 			if (data->arr[k] == NULL)
-			// 				err = true;
-			// 		}
-			// 		else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
-			// 		{
-			// 			int o = j;
-			// 			++o;
-			// 			while (o < data->size && *data->arr_env[o] == k && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
-			// 			{
-			// 				o++;
-			// 				k++;
-			// 			}
-			// 			while (data->arr[k] && data->arr[k][0] == '\0')
-			// 				k++;
-			// 			if (data->arr[k])
-			// 				err = true;
-			// 		}
-			// 		while (data->arr[k])
-			// 		{
-			// 			if (data->arr[k][0] != '\0' && ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " ") ,' '))
-			// 			{
-			// 				err = true;
-			// 				break;
-			// 			}
-			// 			k++;
-			// 		}
-			// 	}
-			// 	if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] == '\0')
-			// 	{
-			// 		bool p1 = false;
-			// 		bool p2 = false;
-			// 		int a = *data->arr_env[j];
-			// 		a++;
-			// 		while (data->arr[a])
-			// 		{
-			// 			if (data->arr[a][0] != '\0')
-			// 				break;
-			// 			a++;
-			// 		}
-			// 		if (!data->arr[a] || (data->arr[a] && data->arr[a][0] == '\0'))
-			// 			p1 = true;
-			// 		a = *data->arr_env[j];
-			// 		a--;
-			// 		while (*data->arr_env[j] != 0 && a >= 0)
-			// 		{
-			// 			if (data->arr[a][0] != '\0')
-			// 				break;
-			// 			a--;
-			// 		}
-			// 		if (a != 0)
-			// 			p2 = true;
-			// 		if (p2 == true && p1 == true)
-			// 			err = true;
-			// 	}
-			// }
-			if (err)
-				break;
+		if (err)
+			break;
 		j++;
 	}
 	return (err);
