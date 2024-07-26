@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/25 12:30:42 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/26 20:49:40 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -463,7 +463,13 @@ t_exec_ret	*subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_env,
 		((t_command *)command->right)->infd = command->infd;
 	f = fork();
 	if (f == 0)
+	{
+		if (c == 'r')
+			close_fds(command->to_close);
+			// close(command->fd[0]);
 		subshell_childp(command, ret, d_env, c);
+
+	}
 	else if (f > 0)
 		subshell_parentp(command, ret, f, c);
 	if (f < 0)
