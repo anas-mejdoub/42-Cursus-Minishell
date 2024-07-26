@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:11:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 09:05:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 09:49:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int int_append_to_array(int ***arr, int num, int size)
 	return (size + 1);
 }
 
-static void qoute_ambiguous_checker(t_amb_data *data, t_elem **tmp, t_env *env)
+static void qoute_ambiguous_checker(t_amb_data *data, t_elem **tmp)
 {
 	if ((*tmp) && ((*tmp)->type == QOUTE || (*tmp)->type == DOUBLE_QUOTE))
 	{
@@ -49,16 +49,13 @@ static void qoute_ambiguous_checker(t_amb_data *data, t_elem **tmp, t_env *env)
 		data->index++;
 		(*tmp) = (*tmp)->next;
 	}
-	else if ((*tmp) && (*tmp)->type == ENV && (*tmp)->state == GENERAL)
-	{
-		char *nv = env->get(env->data, ((*tmp)->content + 1));
-		if (nv == NULL)
-			nv = ft_calloc(1, 1);
-		data->arr = add_to_args(data->arr, nv);
-		data->size = int_append_to_array(&data->arr_env, data->index, data->size);
-		data->index++;
-		(*tmp) = (*tmp)->next;
-	}
+    else if ((*tmp) && ((*tmp)->state == IN_DQUOTE || (*tmp)->state == IN_QUOTE))
+    {
+        data->arr = add_to_args(data->arr, (*tmp)->content);
+        data->index++;
+        (*tmp) = (*tmp)->next;
+        (*tmp) = (*tmp)->next;
+    }
 }
 
 static void fill_array_element(t_amb_data *data, t_elem *tmp, t_env *env)
@@ -72,7 +69,7 @@ static void fill_array_element(t_amb_data *data, t_elem *tmp, t_env *env)
 			tmp = tmp->next;
 		}
 		else if (tmp && ((tmp->state == IN_DQUOTE || tmp->state == IN_QUOTE) || (tmp->type == QOUTE || tmp->type == DOUBLE_QUOTE)))
-			qoute_ambiguous_checker(data, &tmp, env);
+			qoute_ambiguous_checker(data, &tmp);
 		else if (tmp && tmp->type == ENV && tmp->state == GENERAL)
 		{
 			char *nv = env->get(env->data, (tmp->content + 1));
@@ -165,6 +162,35 @@ static bool sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
 	return (false);
 }
 
+static bool therd_sub_sec_condition(t_amb_data *data, int j)
+{
+	bool p1 = false;
+	bool p2 = false;
+	int a;
+
+	a = *data->arr_env[j] + 1;
+	while (data->arr[a])
+	{
+		if (data->arr[a][0] != '\0')
+			break;
+		a++;
+	}
+	if (!data->arr[a] || (data->arr[a] && data->arr[a][0] == '\0'))
+		p1 = true;
+	a = *data->arr_env[j] - 1;
+	while (*data->arr_env[j] != 0 && a >= 0)
+	{
+		if (data->arr[a][0] != '\0')
+			break;
+		a--;
+	}
+	if (a != 0)
+		p2 = true;
+	if (p2 == true && p1 == true)
+		return (true);
+	return (false);
+}
+
 static bool sec_condition(t_amb_data *data, int j, char *ptr)
 {
 	int k = *data->arr_env[j];
@@ -175,85 +201,14 @@ static bool sec_condition(t_amb_data *data, int j, char *ptr)
 		if (first_sub_sec_condition(data, ptr, &k))
 			return (true);
 	}
-	// {
-	// 	k--;
-	// 	if (ptr[0] == '\0')
-	// 	{
-	// 		while (k >= 0 && data->arr[k][0] == '\0')
-	// 			k--;
-	// 		if (k != 0)
-	// 			return (true);
-	// 	}
-	// 	while (k >= 0)
-	// 	{
-	// 		if (data->arr[k][0] != '\0')
-	// 			return (true);
-	// 		k--;
-	// 	}
-	// }
 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
 	{
 		if (sec_sub_sec_condition(data, ptr, &k, j))
 			return (true);
 	}
-	// {
-	// 	k++;
-	// 	if (ptr[0] == '\0')
-	// 	{
-	// 		while (data->arr[k] && data->arr[k][0] == '\0')
-	// 			k++;
-	// 		if (data->arr[k] == NULL)
-	// 			return (true);
-	// 	}
-	// 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
-	// 	{
-	// 		int o = j;
-	// 		++o;
-	// 		while (o < data->size && *data->arr_env[o] == k && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
-	// 		{
-	// 			o++;
-	// 			k++;
-	// 		}
-	// 		while (data->arr[k] && data->arr[k][0] == '\0')
-	// 			k++;
-	// 		if (data->arr[k])
-	// 			return (true);
-	// 	}
-	// 	while (data->arr[k])
-	// 	{
-	// 		if (data->arr[k][0] != '\0' && ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
-	// 		{
-	// 			return (true);
-	// 			break;
-	// 		}
-	// 		k++;
-	// 	}
-	// }
 	if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] == '\0')
 	{
-		bool p1 = false;
-		bool p2 = false;
-		int a = *data->arr_env[j];
-		a++;
-		while (data->arr[a])
-		{
-			if (data->arr[a][0] != '\0')
-				break;
-			a++;
-		}
-		if (!data->arr[a] || (data->arr[a] && data->arr[a][0] == '\0'))
-			p1 = true;
-		a = *data->arr_env[j];
-		a--;
-		while (*data->arr_env[j] != 0 && a >= 0)
-		{
-			if (data->arr[a][0] != '\0')
-				break;
-			a--;
-		}
-		if (a != 0)
-			p2 = true;
-		if (p2 == true && p1 == true)
+		if (therd_sub_sec_condition(data, j))
 			return (true);
 	}
 	return (false);
