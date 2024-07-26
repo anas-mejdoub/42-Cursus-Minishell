@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/25 12:39:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:18:48 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,30 +57,30 @@ void	print_err_exit(int count, ...)
 	exit(globalVar);
 }
 
-char	*ft_freed_join(char *s1, char *s2)
-{
-	char	*res;
-	int		i;
+// char	*ft_freed_join(char *s1, char *s2)
+// {
+// 	char	*res;
+// 	int		i;
 
-	i = 0;
-	res = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (!res)
-		return (free(s1), NULL);
-	while (s1 && s1[i])
-	{
-		res[i] = s1[i];
-		i++;
-	}
-	while (s2 && *s2)
-	{
-		res[i] = *s2;
-		s2++;
-		i++;
-	}
-	res[i] = '\0';
-	free(s1);
-	return (res);
-}
+// 	i = 0;
+// 	res = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+// 	if (!res)
+// 		return (free(s1), NULL);
+// 	while (s1 && s1[i])
+// 	{
+// 		res[i] = s1[i];
+// 		i++;
+// 	}
+// 	while (s2 && *s2)
+// 	{
+// 		res[i] = *s2;
+// 		s2++;
+// 		i++;
+// 	}
+// 	res[i] = '\0';
+// 	free(s1);
+// 	return (res);
+// }
 
 void	close_fds(int *arr)
 {

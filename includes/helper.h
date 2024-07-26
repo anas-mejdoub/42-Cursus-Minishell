@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:40:27 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 10:00:02 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:18:25 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ bool	is_spliter(char c);
 bool	is_red_spliter(char c);
 bool	is_qoutes(char c);
 bool	in_qoutes(char c);
+char	*ft_freed_join(char *s1, char *s2);
 // int     open_out_files(t_out_files *files, t_env *env);
 
 #endif
