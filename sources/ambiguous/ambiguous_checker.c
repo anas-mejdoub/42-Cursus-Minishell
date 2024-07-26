@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:11:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 09:49:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 09:54:49 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,10 +127,26 @@ static bool first_sub_sec_condition(t_amb_data *data, char *ptr, int *k)
 	return (false);
 }
 
-static bool sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
+static bool sub_sec_sub_sec_condition(int j, int *k, t_amb_data *data)
 {
 	int o;
 
+	o = j;
+	++o;
+	while (o < data->size && *data->arr_env[o] == (*k) && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
+	{
+		o++;
+		(*k)++;
+	}
+	while (data->arr[(*k)] && data->arr[(*k)][0] == '\0')
+		(*k)++;
+	if (data->arr[(*k)])
+		return (true);
+	return (false);
+}
+
+static bool sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
+{
 	(*k)++;
 	if (ptr[0] == '\0')
 	{
@@ -141,18 +157,22 @@ static bool sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
 	}
 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]]) - 1] == ' ' && ptr[0] != '\0')
 	{
-		o = j;
-		++o;
-		while (o < data->size && *data->arr_env[o] == (*k) && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
-		{
-			o++;
-			(*k)++;
-		}
-		while (data->arr[(*k)] && data->arr[(*k)][0] == '\0')
-			(*k)++;
-		if (data->arr[(*k)])
+		if (sub_sec_sub_sec_condition(j, k, data))
 			return (true);
 	}
+	// {
+	// 	o = j;
+	// 	++o;
+	// 	while (o < data->size && *data->arr_env[o] == (*k) && data->arr[*data->arr_env[o]] && !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
+	// 	{
+	// 		o++;
+	// 		(*k)++;
+	// 	}
+	// 	while (data->arr[(*k)] && data->arr[(*k)][0] == '\0')
+	// 		(*k)++;
+	// 	if (data->arr[(*k)])
+	// 		return (true);
+	// }
 	while (data->arr[(*k)])
 	{
 		if (data->arr[(*k)][0] != '\0' && ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
@@ -193,7 +213,9 @@ static bool therd_sub_sec_condition(t_amb_data *data, int j)
 
 static bool sec_condition(t_amb_data *data, int j, char *ptr)
 {
-	int k = *data->arr_env[j];
+	int k;
+
+	k = *data->arr_env[j];
 	if (ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
 		return (true);
 	else if (*data->arr_env[j] != 0 && (data->arr[*data->arr_env[j]][0] == ' ' && ptr[0] != '\0'))
