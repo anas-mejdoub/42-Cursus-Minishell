@@ -1,35 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   local_ambiguous.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/23 12:27:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 10:31:05 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/25 15:05:44 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/26 10:06:17 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "local_helper.h"
-#include <stdarg.h>
+#ifndef LOCAL_AMBIGUOUS_H
+# define LOCAL_AMBIGUOUS_H
 
-void	print_err(int count, ...)
+# include "ambiguous.h"
+# include "minishell.h"
+
+typedef struct s_amb_data
 {
-	int		i;
-	char	*str;
-	va_list	args;
+	int		**arr_env;
+	char	**arr;
+	int		size;
+	int		index;
+}			t_amb_data;
 
-	i = 0;
-	va_start(args, count);
-	globalVar = va_arg(args, int);
-	i++;
-	ft_putstr_fd(RED, 2);
-	while (i < count)
-	{
-		str = va_arg(args, char *);
-		ft_putstr_fd(str, 2);
-		i++;
-	}
-	ft_putstr_fd(RESET, 2);
-	va_end(args);
-}
+bool	sec_condition(t_amb_data *data, int j, char *ptr);
+
+#endif

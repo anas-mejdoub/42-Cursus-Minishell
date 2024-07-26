@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/26 20:49:40 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/26 20:52:51 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,30 +57,30 @@ void	print_err_exit(int count, ...)
 	exit(globalVar);
 }
 
-char	*ft_freed_join(char *s1, char *s2)
-{
-	char	*res;
-	int		i;
+// char	*ft_freed_join(char *s1, char *s2)
+// {
+// 	char	*res;
+// 	int		i;
 
-	i = 0;
-	res = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (!res)
-		return (free(s1), NULL);
-	while (s1 && s1[i])
-	{
-		res[i] = s1[i];
-		i++;
-	}
-	while (s2 && *s2)
-	{
-		res[i] = *s2;
-		s2++;
-		i++;
-	}
-	res[i] = '\0';
-	free(s1);
-	return (res);
-}
+// 	i = 0;
+// 	res = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+// 	if (!res)
+// 		return (free(s1), NULL);
+// 	while (s1 && s1[i])
+// 	{
+// 		res[i] = s1[i];
+// 		i++;
+// 	}
+// 	while (s2 && *s2)
+// 	{
+// 		res[i] = *s2;
+// 		s2++;
+// 		i++;
+// 	}
+// 	res[i] = '\0';
+// 	free(s1);
+// 	return (res);
+// }
 
 void	close_fds(int *arr)
 {
@@ -175,8 +175,12 @@ char	**get_command_args(t_command_args *args, t_env *env)
 {
 	char	**res;
 	char	*tmp_str;
+	bool	exp;
 
 	res = NULL;
+	exp = false;
+	if (!ft_strncmp(args->content, "export", ft_strlen(args->content)) && ft_strlen(args->content) == 6)
+		exp = true; 
 	while (args)
 	{
 		tmp_str = env_expander(args->content, args->index_list, env,
@@ -191,7 +195,10 @@ char	**get_command_args(t_command_args *args, t_env *env)
 			args = args->next;
 			continue ;
 		}
-		res = commands_args_helper(tmp_str, args, res);
+		if (exp)
+			res =  add_to_args(res, tmp_str);
+		else
+			res = commands_args_helper(tmp_str, args, res);
 		args = args->next;
 	}
 	return (res);

@@ -1,35 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_free_join.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/23 12:27:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 10:31:05 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/26 10:17:51 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/26 10:20:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
-#include <stdarg.h>
 
-void	print_err(int count, ...)
+char	*ft_freed_join(char *s1, char *s2)
 {
+	char	*res;
 	int		i;
-	char	*str;
-	va_list	args;
 
 	i = 0;
-	va_start(args, count);
-	globalVar = va_arg(args, int);
-	i++;
-	ft_putstr_fd(RED, 2);
-	while (i < count)
+	res = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!res)
+		return (free(s1), NULL);
+	while (s1 && s1[i])
 	{
-		str = va_arg(args, char *);
-		ft_putstr_fd(str, 2);
+		res[i] = s1[i];
 		i++;
 	}
-	ft_putstr_fd(RESET, 2);
-	va_end(args);
+	while (s2 && *s2)
+	{
+		res[i] = *s2;
+		s2++;
+		i++;
+	}
+	res[i] = '\0';
+	free(s1);
+	return (res);
 }
