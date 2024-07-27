@@ -1,29 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_ambiguous.h                                  :+:      :+:    :+:   */
+/*   local_free.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/25 15:05:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 14:30:17 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/26 11:14:52 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/26 11:15:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_AMBIGUOUS_H
-# define LOCAL_AMBIGUOUS_H
+#ifndef LOCAL_FREE_H
+# define LOCAL_FREE_H
 
-# include "ambiguous.h"
 # include "minishell.h"
+# include "free.h"
 
-// typedef struct s_amb_data
-// {
-// 	int		**arr_env;
-// 	char	**arr;
-// 	int		size;
-// 	int		index;
-// }			t_amb_data;
-
-bool	sec_condition(t_amb_data *data, int j, char *ptr);
 
 #endif

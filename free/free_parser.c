@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_ambiguous.h                                  :+:      :+:    :+:   */
+/*   free_parser.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/25 15:05:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 14:30:17 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/26 12:53:10 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/27 10:26:05 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_AMBIGUOUS_H
-# define LOCAL_AMBIGUOUS_H
+#include "local_free.h"
 
-# include "ambiguous.h"
-# include "minishell.h"
-
-// typedef struct s_amb_data
-// {
-// 	int		**arr_env;
-// 	char	**arr;
-// 	int		size;
-// 	int		index;
-// }			t_amb_data;
-
-bool	sec_condition(t_amb_data *data, int j, char *ptr);
-
-#endif
+void free_ret_parser(t_command_h_ret **ret)
+{
+    free((*ret)->command);
+    free((*ret)->arr);
+    free((*ret)->lens);
+    free (*ret);
+    *ret = NULL;
+}

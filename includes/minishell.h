@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 15:31:15 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/27 17:01:49 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 #include "wildcard.h"
 #include "signals.h"
 # include "lexer.h"
+#include "free.h"
 # include "ambiguous.h"
 
 enum e_something {

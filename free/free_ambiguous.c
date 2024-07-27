@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_ambiguous.h                                  :+:      :+:    :+:   */
+/*   free_ambiguous.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/25 15:05:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 14:30:17 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/26 13:56:32 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/26 14:17:00 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_AMBIGUOUS_H
-# define LOCAL_AMBIGUOUS_H
+#include "local_free.h"
 
-# include "ambiguous.h"
-# include "minishell.h"
-
-// typedef struct s_amb_data
+// void free_ambg(t_amb_data **ambg)
 // {
-// 	int		**arr_env;
-// 	char	**arr;
-// 	int		size;
-// 	int		index;
-// }			t_amb_data;
 
-bool	sec_condition(t_amb_data *data, int j, char *ptr);
-
-#endif
+//     int i = 0;
+//     while ((*ambg)->arr[i])
+//     {
+//         free((*ambg)->arr[i]);
+//         i++;
+//     }
+//     free((*ambg)->arr);
+//     i = 0;
+//     while (i < (*ambg)->size)
+//     {
+//         free((*ambg)->arr_env[i]);
+//         i++;
+//     }
+//     free((*ambg)->arr_env);
+//     free((*ambg));
+//     *ambg = NULL;
+// }

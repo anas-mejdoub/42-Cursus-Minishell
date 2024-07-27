@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:05:47 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 10:07:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/27 14:37:18 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ static bool	sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
 	while (data->arr[(*k)])
 	{
 		if (data->arr[(*k)][0] != '\0'
-			&& ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
+			&& ft_strchr(ptr, ' '))
 			return (true);
 		(*k)++;
 	}

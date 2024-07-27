@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 10:44:37 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 11:56:43 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/27 12:14:04 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,25 @@
 
 static void	add_limiter(t_elem **tmp, t_list **original, t_list **list)
 {
-	char	*str;
-	char	*tmp_str;
+	// char	*str;
+	// char	*tmp_str;
+	(void)list;
 
-	while ((*tmp) && ((*tmp)->type != QOUTE || (*tmp)->type != DOUBLE_QUOTE))
-	{
-		ft_lstadd_back(list, ft_lstnew(ft_strdup((*tmp)->content)));
+	// tmp_str = NULL;
+	// while ((*tmp) && ((*tmp)->type != QOUTE || (*tmp)->type != DOUBLE_QUOTE))
+	// {
+		ft_lstadd_back(original, ft_lstnew(ft_strdup((*tmp)->content)));
 		(*tmp) = (*tmp)->next;
-	}
-	str = calloc(2, 1);
-	while (list)
-	{
-		tmp_str = ft_strjoin(str, (*list)->content);
-		free(str);
-		str = tmp_str;
-		*list = (*list)->next;
-	}
-	ft_lstadd_back(original, ft_lstnew(str));
+	// }
+	// str = calloc(2, 1);
+	// while (*list)
+	// {
+	// 	str = ft_strjoin(str, (*list)->content);
+	// 	free(str);
+	// 	str = tmp_str;
+	// 	*list = (*list)->next;
+	// }
+	// ft_lstadd_back(original, ft_lstnew(str));
 }
 
 static t_list	*here_doc_syntax(t_elem **elem, t_list **list,
@@ -53,7 +55,7 @@ static t_list	*here_doc_syntax(t_elem **elem, t_list **list,
 		}
 		else if (tmp && (tmp->type == WORD || tmp->type != ENV))
 		{
-			ft_lstadd_back(original, ft_lstnew(tmp->content));
+			ft_lstadd_back(original, ft_lstnew(ft_strdup(tmp->content)));
 			*elem = (*elem)->next;
 		}
 	}
