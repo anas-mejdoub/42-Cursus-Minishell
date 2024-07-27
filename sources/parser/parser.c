@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/26 07:55:15 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/27 17:57:34 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	allocate_node1(t_elem **elem, char *content, int state, int token)
 		return (1);
 	new_node->state = state;
 	new_node->type = token;
-	new_node->content = content;
+	new_node->content = ft_strdup(content);
 	new_node->len = ft_strlen(content);
 	new_node->next = NULL;
 	if (!(*elem))
@@ -61,8 +61,8 @@ void	intialize_new_node(t_command *new)
 	new->and_ = false;
 	new->or_ = false;
 	new->builtin = false;
-	new->infile = NULL;
-	new->outfile = NULL;
+	// new->infile = NULL;
+	// new->outfile = NULL;
 	new->in_redir = false;
 	new->out_redir = false;
 	new->dredir = false;
@@ -174,7 +174,7 @@ t_command_args	*new_arg(char *content, bool including_null, bool wild_card,
 	new = malloc(sizeof(t_command_args));
 	if (!new)
 		return (NULL);
-	new->content = content;
+	new->content = ft_strdup(content);
 	new->env = env;
 	new->wildcard = wild_card;
 	new->including_null = including_null;
@@ -332,6 +332,7 @@ int	*add_int(int *arr, int new)
 		res[j] = arr[j];
 		j++;
 	}
+	free(arr);
 	res[j] = new;
 	res[j + 1] = -1;
 	return (res);
@@ -343,7 +344,7 @@ void	handle_general_case(t_elem **element, t_command_h_ret *res)
 		if ((*element)->type == WILDCARD)
 			res->command = wild_card_handler(res);
 		else
-			res->command = (*element)->content;
+			res->command = ft_strdup((*element)->content);
 	}
 	else
 	{
@@ -351,12 +352,13 @@ void	handle_general_case(t_elem **element, t_command_h_ret *res)
 		{
 			if ((*element)->type == WILDCARD)
 			{
-				res->command = ft_strjoin(res->command, wild_card_handler(res));
+				res->command = ft_freed_join(res->command, wild_card_handler(res));
 			}
 			else
-				res->command = ft_strjoin(res->command, (*element)->content);
+				res->command = ft_freed_join(res->command, (*element)->content);
 		}
 	}
+	// printf("%s\n", res->command);
 }
 void	handle_env_case(t_elem **element, t_command_h_ret *res)
 {
@@ -388,9 +390,9 @@ void	handle_empty_quote(t_command_h_ret *res)
 void	handle_quotes_case(t_elem **element, t_command_h_ret *res)
 {
 	if (!res->command)
-		res->command = (*element)->content;
+		res->command = ft_strdup((*element)->content);
 	else
-		res->command = ft_strjoin(res->command, (*element)->content);
+		res->command = ft_freed_join(res->command, (*element)->content);
 }
 
 void	command_handl_core(t_elem **element, t_command_h_ret *res)
@@ -454,7 +456,7 @@ t_in_files	*new_in_file(char *filename, bool here_doc, bool env_qoute,
 	new = malloc(sizeof(t_in_files));
 	if (!new)
 		return (NULL);
-	new->filename = filename;
+	new->filename = ft_strdup(filename);
 	new->here_doc = here_doc;
 	new->ambiguous = env_qoute;
 	new->limiter = NULL;
@@ -463,7 +465,7 @@ t_in_files	*new_in_file(char *filename, bool here_doc, bool env_qoute,
 	new->next = NULL;
 	if (here_doc)
 	{
-		new->limiter = filename;
+		new->limiter = ft_strdup(filename);
 	}
 	return (new);
 }
@@ -510,26 +512,32 @@ int	handle_here_doc(t_in_files *file, t_env *env)
 	char	*file_name;
 	int		i;
 	char	*str1;
-	char	*str2;
+	(void)env;
+	// char	*str2;
+	// (void)env;
 
 	random = random_str();
 	file_name = ft_strjoin("/tmp/", random);
 	unlink(file_name);
 	free(random);
+	free(file->filename);
+	file->filename = NULL;
 	file->filename = ft_strdup(file_name);
 	i = open(file_name, O_CREAT | O_WRONLY | O_RDONLY, 0777);
 	if (i == -1)
 	{
 		ft_putstr_fd("problem with opennig here doc\n", 2);
-		return (-1);
+		return (free(file_name), -1);
 	}
 	str1 = here_doc(file->limiter);
 	if (str1 == NULL)
-		return (-1);
-	str2 = expand_here_doc_content(str1, env);
-	ft_putstr_fd(str2, i);
+		return (free(file_name), close(i), -1);
+	// str2 = expand_here_doc_content(str1, env);
+	ft_putstr_fd(str1, i);
+	free(str1);
 	close(i);
 	free(file_name);
+	// free(file->limiter);
 	return (0);
 }
 
@@ -583,7 +591,7 @@ t_out_files	*new_file(char *filename, bool append, bool ambiguous,
 	new = malloc(sizeof(t_out_files));
 	if (!new)
 		return (NULL);
-	new->filename = filename;
+	new->filename = ft_strdup(filename);
 	new->append = append;
 	new->ambiguous = ambiguous;
 	new->wildcard = wild_card;
@@ -722,6 +730,7 @@ bool	handle_subshell(t_command *command, t_elem **elements, t_env *env)
 	}
 	command->type_node = SUBSHELL_NODE;
 	tmp = parser(subshell_set, env);
+	ft_elem_lstclear(&subshell_set, free_content);
 	if (!tmp)
 		return (false);
 	if (tmp->type_node == ROOT_NODE)
@@ -787,6 +796,7 @@ void	redir_out_parse(t_elem **elements, t_command **command, t_env *env)
 		comm_hand_ret->wildcard);
 	add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens,
 		get_last_file((*command)->outfiles));
+	free_ret_parser(&comm_hand_ret);
 }
 bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 {
@@ -799,6 +809,7 @@ bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 			comm_hand_ret->wildcard) == -1)
 	{
 		globalVar = 1;
+		free_ret_parser(&comm_hand_ret);
 		return (false);
 	}
 	if ((*command)->in_redir)
@@ -807,6 +818,7 @@ bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 		add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens,
 			get_last_in_file((*command)->in_files));
 	}
+	free_ret_parser(&comm_hand_ret);
 	return (true);
 }
 
@@ -823,6 +835,7 @@ void	command_args_parse(t_elem **elements, t_command **command)
 				comm_hand_ret->including_null, comm_hand_ret->wildcard, false));
 	add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens,
 		get_last_arg((*command)->command_arg));
+	free_ret_parser(&comm_hand_ret);
 }
 bool	redir_out_condition(t_elem *elements, t_command *command)
 {

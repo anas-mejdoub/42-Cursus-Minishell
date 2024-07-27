@@ -4,6 +4,7 @@ SRC =\
 		sources/lexer/lexer.c sources/lexer/lexer_utils.c  sources/lexer/general_tocken_handler.c sources/lexer/qoute_tocken_handler.c sources/lexer/dqoute_tocken_handler.c sources/lexer/syntax_error_utils.c\
 		sources/lexer/syntax_error.c \
 		sources/parser/parser.c \
+		sources/free/free_lexer.c sources/free/free_parser.c sources/free/free_ambiguous.c \
 		sources/ambiguous/ambiguous_file_creation.c sources/ambiguous/ambiguous_checker.c sources/ambiguous/ambiguous_utils.c\
 		sources/here_doc/here_doc.c  sources/here_doc/here_doc_expander.c \
 		sources/signals/signal.c \
