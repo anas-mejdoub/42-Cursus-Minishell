@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:11:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 16:23:45 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/27 10:38:00 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,6 @@ char	*expand_here_doc_content(char *str, t_env *env)
 	start = i;
 	list = create_list(str, env, i, start);
 	string_final = concat_string(list);
+	ft_lstclear(&list, free_content);
 	return (string_final);
 }

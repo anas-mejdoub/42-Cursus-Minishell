@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   local_ambiguous.h                                  :+:      :+:    :+:   */
+/*   free.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/25 15:05:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 14:30:17 by nbenyahy         ###   ########.fr       */
+/*   Created: 2024/07/26 11:15:20 by nbenyahy          #+#    #+#             */
+/*   Updated: 2024/07/26 14:17:05 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCAL_AMBIGUOUS_H
-# define LOCAL_AMBIGUOUS_H
+#ifndef FREE_H
+# define FREE_H
 
-# include "ambiguous.h"
-# include "minishell.h"
+#include "minishell.h"
 
-// typedef struct s_amb_data
-// {
-// 	int		**arr_env;
-// 	char	**arr;
-// 	int		size;
-// 	int		index;
-// }			t_amb_data;
-
-bool	sec_condition(t_amb_data *data, int j, char *ptr);
+void	ft_elem_lstclear(t_elem **lst, void (*del)(void *));
+void free_content(void *ptr);
+void free_ret_parser(t_command_h_ret **ret);
+// void free_ambg(t_amb_data **ambg);
 
 #endif
