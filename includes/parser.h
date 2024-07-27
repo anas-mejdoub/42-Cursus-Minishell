@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/25 12:06:46 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 13:41:37 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ typedef struct s_commands
     t_command_args *command_arg;
     char **args;
     int type_node;
-    char  **infile;
-    char **outfile;
+    // char  **infile;
+    // char **outfile;
     t_out_files *outfiles;
     t_in_files *in_files;
     char *path;
