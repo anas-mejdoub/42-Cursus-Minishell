@@ -6,27 +6,23 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 12:12:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 07:56:41 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
 
-// void free_content(void *ptr)
-// {
-// 	free(ptr);
-// }
-static t_elem	*check_errors(t_elem *elem, int subshell, t_list **list)
+static t_elem	*check_errors(t_elem *elem, int subshell, t_list *list)
 {
 	if (subshell != 0)
 	{
 		print_err(2, 2, "synthax error : missing a parenthese symbole\n");
-		// free_elem(elem);
+		free_elem(elem);
 		return (NULL);
 	}
-	(*list) = syntax_error(elem);
-	if ((*list))
-		return (check_syntax_error(*list), ft_lstclear(list, free_content), NULL);
+	list = syntax_error(elem);
+	if (list)
+		return (check_syntax_error(list, elem));
 	return (elem);
 }
 
@@ -50,12 +46,8 @@ t_elem	*lexer(void)
 	{
 		add_history(line);
 		if (!tokenize(line, &subshell, &elem))
-			return (ft_elem_lstclear(&elem, free_content), free(line), NULL);
+			return (NULL);
 		free(line);
 	}
-	else
-		free(line);
-	if (check_errors(elem, subshell, &list) == NULL)
-		return (ft_elem_lstclear(&elem, free_content) ,NULL);
-	return (elem);
+	return (check_errors(elem, subshell, list));
 }

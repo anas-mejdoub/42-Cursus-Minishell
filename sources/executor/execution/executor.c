@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/26 20:52:51 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/27 11:45:59 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,13 +457,15 @@ t_exec_ret	*subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_env,
 	int		f;
 
 	found_in = false;
-	((t_command *)command->right)->to_close = add_int(command->to_close,
+	if (c == 'r')
+		((t_command *)command->right)->to_close = add_int(command->to_close,
 			command->fd[0]);
 	((t_command *)command->right)->fd[0] = command->fd[0];
 	((t_command *)command->right)->fd[1] = command->fd[1];
 	if (!get_files(command, d_env, &found_in))
 		return (NULL);
-	command->to_close = add_int(command->to_close, command->fd[0]);
+	if (c == 'r')
+		command->to_close = add_int(command->to_close, command->fd[0]);
 	if (command->outfd != -1)
 		((t_command *)command->right)->outfd = command->outfd;
 	if (command->infd != -1)
@@ -471,11 +473,9 @@ t_exec_ret	*subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_env,
 	f = fork();
 	if (f == 0)
 	{
-		if (c == 'r')
+		if (command->to_close)
 			close_fds(command->to_close);
-			// close(command->fd[0]);
 		subshell_childp(command, ret, d_env, c);
-
 	}
 	else if (f > 0)
 		subshell_parentp(command, ret, f, c);

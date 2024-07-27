@@ -6,24 +6,24 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 11:08:36 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 12:09:19 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 07:38:49 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
 
-// void	free_elem(t_elem *elem)
-// {
-// 	t_elem	*prev;
+void	free_elem(t_elem *elem)
+{
+	t_elem	*prev;
 
-// 	while (elem)
-// 	{
-// 		prev = elem;
-// 		elem = elem->next;
-// 		free(prev->content);
-// 		free(prev);
-// 	}
-// }
+	while (elem)
+	{
+		prev = elem;
+		elem = elem->next;
+		free(prev->content);
+		free(prev);
+	}
+}
 
 int	allocate_node(t_elem **elem, char *content, int state, int token)
 {
@@ -91,38 +91,35 @@ t_elem	*tokenize(char *line, int *subshell, t_elem **elem)
 		if (line[i] && line[i] == QOUTE)
 		{
 			if (qoute_handler(elem, line, &i))
-				return (NULL);
+				return (free(*elem), NULL);
 		}
 		else if (line[i] && line[i] == DOUBLE_QUOTE)
 		{
 			if (double_qoute_handler(elem, line, &i))
-				return (NULL);
+				return (free(*elem), NULL);
 		}
 		else if (line[i])
 		{
 			if (general_handler(elem, line, &i, subshell))
-				return (NULL);
+				return (free(*elem), NULL);
 		}
 	}
 	return (*elem);
 }
 
-t_elem	*check_syntax_error(t_list *list)
+t_elem	*check_syntax_error(t_list *list, t_elem *elem)
 {
 	char	*str;
-	t_list	*tmp;
 
 	str = NULL;
-	tmp = list;
 	print_err(2, 2, "minishell: syntax error\n");
-	tmp = tmp->next;
-	while (tmp)
+	list = list->next;
+	while (list)
 	{
-		str = here_doc(tmp->content);
+		str = here_doc(list->content);
 		free(str);
-		str = NULL;
-		tmp = tmp->next;
+		list = list->next;
 	}
-	// free_elem(elem);
+	free_elem(elem);
 	return (NULL);
 }

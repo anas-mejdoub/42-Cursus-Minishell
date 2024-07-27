@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/27 15:06:39 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 20:53:07 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,15 @@ int main(int ac, char **av, char  **ev)
         // continue;
         if (!elem)
             continue;
-        t_command *root = NULL;
-        t_command *tmp = NULL;
-        root = parser(elem, env);
-        tmp = root;
+        t_command *root = parser(elem, env);
         // print_tree(root, 0);
-        ft_elem_lstclear(&elem, free_content);
         // continue;
         
 
-        t_exec_ret *r =  executor(tmp, env, '\0', ev);
-        // // echo(root->right);
+        t_exec_ret *r =  executor(root, env, '\0', ev);
+        // echo(root->right);
 
-        // // int *arr = NULL;
+        // int *arr = NULL;
         
         int i = 0;
         int hehe= 0;
@@ -87,6 +83,7 @@ int main(int ac, char **av, char  **ev)
         // globalVar = 28 << 8;
         // printf("exit : %d\n", globalVar);
         // printf("hehe : %d\n", WEXIT(hehe));
+        free_tree(root);
         // while (1);
         // while (1)
         // {
@@ -108,9 +105,7 @@ int main(int ac, char **av, char  **ev)
     //     // // printf("here doc content without expanding");
     //     // if (content)
     //     //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
-        free_tree(root);
     }
     // printf("heh\n");
-    // (void)root;
         return (globalVar);
 }

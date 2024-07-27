@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 11:20:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 15:31:15 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@
 #include "signals.h"
 # include "lexer.h"
 # include "ambiguous.h"
-# include "free.h"
 
 enum e_something {
     S1GPIPE = 11,

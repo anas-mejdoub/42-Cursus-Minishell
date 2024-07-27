@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 11:05:24 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 11:21:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/25 09:26:01 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void free_env_index(t_env_index *head)
         head = head->next;
         free(tmp);
     }
-    free(head);
 }
 void free_out_files(t_out_files *head)
 {
@@ -48,12 +47,10 @@ void free_out_files(t_out_files *head)
         tmp = head;
         head = head->next;
         free(tmp->filename);
-        
         if (tmp->index_list)
             free_env_index(tmp->index_list);
         free(tmp);
     }
-    free(head);
 }
 
 void free_in_files(t_in_files *head)
@@ -66,14 +63,12 @@ void free_in_files(t_in_files *head)
         head = head->next;
         if (tmp->here_doc)
         {
-            // printf("%p\n", tmp->limiter);
+            unlink(tmp->filename);
             free(tmp->limiter);
         }
         free(tmp->filename);
         if (tmp->index_list)
             free_env_index(tmp->index_list);
-        if (tmp->here_doc)
-            unlink(tmp->filename);
         free(tmp);
     }
 }
@@ -112,10 +107,10 @@ void free_tree(t_command *cmd)
             free_in_files(cmd->in_files);
         if (cmd->args)
             free_2d_array(cmd->args);
-        // if (cmd->infile)
-        //     free_2d_array(cmd->infile);
-        // if (cmd->outfile)
-        //     free_2d_array(cmd->outfile);
+        if (cmd->infile)
+            free_2d_array(cmd->infile);
+        if (cmd->outfile)
+            free_2d_array(cmd->outfile);
     }
     free(cmd);
 }

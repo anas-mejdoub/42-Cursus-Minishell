@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:11:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 15:00:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:07:49 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,12 @@ int	int_append_to_array(int ***arr, int num, int size)
 		return (-1);
 	while (i < size)
 	{
-		int *n = malloc(sizeof(int));
-		*n = *(*arr)[i];
-		new_arr[i] = n;
+		new_arr[i] = (*arr)[i];
 		i++;
 	}
 	nbr = malloc(sizeof(int));
 	*nbr = num;
 	new_arr[i] = nbr;
-	if (*arr != NULL && (**arr))
-	{	
-		int i = 0;
-		while (i < size)
-		{
-			free((*arr)[i]);
-			i++;
-		}
-		free(*arr);
-		*arr = NULL;
-	}
 	*arr = new_arr;
 	return (size + 1);
 }
@@ -57,11 +44,10 @@ static void	qoute_ambiguous_checker(t_amb_data *data, t_elem **tmp)
 		(*tmp) = (*tmp)->next;
 		while (*tmp && (*tmp)->type != QOUTE && (*tmp)->type != DOUBLE_QUOTE)
 		{
-			a = ft_freed_join(a, (*tmp)->content);
+			a = ft_strjoin(a, (*tmp)->content);
 			(*tmp) = (*tmp)->next;
 		}
 		data->arr = add_to_args(data->arr, a);
-		free(a);
 		data->index++;
 		(*tmp) = (*tmp)->next;
 	}
@@ -93,13 +79,8 @@ static void	fill_array_element(t_amb_data *data, t_elem *tmp, t_env *env)
 		{
 			nv = env->get(env->data, (tmp->content + 1));
 			if (nv == NULL)
-			{
 				nv = ft_calloc(1, 1);
-				data->arr = add_to_args(data->arr, nv);
-				free(nv);
-			}
-			else
-				data->arr = add_to_args(data->arr, nv);
+			data->arr = add_to_args(data->arr, nv);
 			data->size = int_append_to_array(&data->arr_env, data->index,
 					data->size);
 			data->index++;
@@ -133,6 +114,129 @@ static bool	first_condition(t_amb_data *data, int j)
 	return (false);
 }
 
+// static bool	first_sub_sec_condition(t_amb_data *data, char *ptr, int *k)
+// {
+// 	(*k)--;
+// 	if (ptr[0] == '\0')
+// 	{
+// 		while ((*k) >= 0 && data->arr[(*k)][0] == '\0')
+// 			(*k)--;
+// 		if ((*k) != 0)
+// 			return (true);
+// 	}
+// 	while ((*k) >= 0)
+// 	{
+// 		if (data->arr[(*k)][0] != '\0')
+// 			return (true);
+// 		(*k)--;
+// 	}
+// 	return (false);
+// }
+
+// static bool	sub_sec_sub_sec_condition(int j, int *k, t_amb_data *data)
+// {
+// 	int	o;
+
+// 	o = j;
+// 	++o;
+// 	while (o < data->size && *data->arr_env[o] == (*k)
+// 		&& data->arr[*data->arr_env[o]]
+// 		&& !ft_strchr(ft_strtrim(data->arr[*data->arr_env[o]], " "), ' '))
+// 	{
+// 		o++;
+// 		(*k)++;
+// 	}
+// 	while (data->arr[(*k)] && data->arr[(*k)][0] == '\0')
+// 		(*k)++;
+// 	if (data->arr[(*k)])
+// 		return (true);
+// 	return (false);
+// }
+
+// static bool	sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
+// {
+// 	(*k)++;
+// 	if (ptr[0] == '\0')
+// 	{
+// 		while (data->arr[(*k)] && data->arr[(*k)][0] == '\0')
+// 			(*k)++;
+// 		if (data->arr[(*k)] == NULL)
+// 			return (true);
+// 	}
+// 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]])
+// 		- 1] == ' ' && ptr[0] != '\0')
+// 	{
+// 		if (sub_sec_sub_sec_condition(j, k, data))
+// 			return (true);
+// 	}
+// 	while (data->arr[(*k)])
+// 	{
+// 		if (data->arr[(*k)][0] != '\0'
+// 			&& ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
+// 			return (true);
+// 		(*k)++;
+// 	}
+// 	return (false);
+// }
+
+// static bool	therd_sub_sec_condition(t_amb_data *data, int j)
+// {
+// 	bool	p1;
+// 	bool	p2;
+// 	int		a;
+
+// 	p1 = false;
+// 	p2 = false;
+// 	a = *data->arr_env[j] + 1;
+// 	while (data->arr[a])
+// 	{
+// 		if (data->arr[a][0] != '\0')
+// 			break ;
+// 		a++;
+// 	}
+// 	if (!data->arr[a] || (data->arr[a] && data->arr[a][0] == '\0'))
+// 		p1 = true;
+// 	a = *data->arr_env[j] - 1;
+// 	while (*data->arr_env[j] != 0 && a >= 0)
+// 	{
+// 		if (data->arr[a][0] != '\0')
+// 			break ;
+// 		a--;
+// 	}
+// 	if (a != 0)
+// 		p2 = true;
+// 	if (p2 == true && p1 == true)
+// 		return (true);
+// 	return (false);
+// }
+
+// static bool	sec_condition(t_amb_data *data, int j, char *ptr)
+// {
+// 	int	k;
+
+// 	k = *data->arr_env[j];
+// 	if (ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
+// 		return (true);
+// 	else if (*data->arr_env[j] != 0 && (data->arr[*data->arr_env[j]][0] == ' '
+// 		&& ptr[0] != '\0'))
+// 	{
+// 		if (first_sub_sec_condition(data, ptr, &k))
+// 			return (true);
+// 	}
+// 	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]])
+// 		- 1] == ' ' && ptr[0] != '\0')
+// 	{
+// 		if (sec_sub_sec_condition(data, ptr, &k, j))
+// 			return (true);
+// 	}
+// 	if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]])
+// 		- 1] == ' ' && ptr[0] == '\0')
+// 	{
+// 		if (therd_sub_sec_condition(data, j))
+// 			return (true);
+// 	}
+// 	return (false);
+// }
 
 static bool	ambiguous_hard_coding(t_amb_data *data)
 {
@@ -149,7 +253,7 @@ static bool	ambiguous_hard_coding(t_amb_data *data)
 				|| (ptr[0] == '\0' && data->arr[*data->arr_env[j]][0] == '\0')))
 			err = first_condition(data, j);
 		else if (data->arr[*data->arr_env[j]][0] != '\0'
-			&& ft_strchr(ptr, ' '))
+			&& ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
 			err = true;
 		else if (ft_strlen(data->arr[*data->arr_env[j]]) != 0
 			&& data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]])
@@ -161,7 +265,6 @@ static bool	ambiguous_hard_coding(t_amb_data *data)
 			&& data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]])
 			- 1] == ' ')))
 			err = sec_condition(data, j, ptr);
-		free(ptr);
 		if (err)
 			break ;
 		j++;
@@ -169,48 +272,15 @@ static bool	ambiguous_hard_coding(t_amb_data *data)
 	return (err);
 }
 
-void free_ambg(t_amb_data **ambg)
-{
-
-    int i = 0;
-	if (!ambg || !(*ambg))
-		return ;
-    while ((*ambg)->arr && (*ambg)->arr[i])
-    {
-        free((*ambg)->arr[i]);
-        i++;
-    }
-	if ((*ambg)->arr && (*ambg)->arr)
-	{
-    	free((*ambg)->arr);
-	}
-    i = 0;
-    while ((*ambg)->arr_env && i < (*ambg)->size)
-    {
-        free((*ambg)->arr_env[i]);
-        i++;
-    }
-	if ((*ambg)->size != 0)
-	{
-
-    	free((*ambg)->arr_env);
-	}
-    free((*ambg));
-    *ambg = NULL;
-}
-
 bool	imbg(t_elem *tmp, t_env *env)
 {
 	t_amb_data	*data;
-	bool		status;
-	// printf("sdfgdsgfdsgf\n");
+
 	data = malloc(sizeof(t_amb_data));
 	data->arr = NULL;
-	data->arr_env = NULL;
+	data->arr_env = ft_calloc(1, 4);
 	data->index = 0;
 	data->size = 0;
 	fill_array_element(data, tmp, env);
-	status = ambiguous_hard_coding(data);
-	
-	return (free_ambg(&data) ,status);
+	return (ambiguous_hard_coding(data));
 }

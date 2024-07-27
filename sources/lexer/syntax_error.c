@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:43:39 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 12:11:54 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:07:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,5 @@ t_list	*syntax_error(t_elem *elem)
 			continue ;
 	}
 	free(list);
-	return (ft_lstclear(&original, free_content), NULL);
+	return (NULL);
 }

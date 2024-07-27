@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 11:27:42 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:23:25 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void	save_heredoc_content(char *lim, int fd)
 {
 	char	*content;
 	char	*line;
+	char	*tmp;
 
 	content = malloc(1);
 	content[0] = '\0';
@@ -30,16 +31,12 @@ static void	save_heredoc_content(char *lim, int fd)
 		}
 		if (!ft_strncmp(line, lim, ft_strlen(lim))
 			&& ft_strlen(lim) == ft_strlen(line))
-			{
-			free(line);
 			break ;
-			}
-		content = ft_freed_join(content, line);
-		content = ft_freed_join(content, "\n");	
-		free(line);
+		tmp = ft_strjoin(content, ft_strjoin(line, "\n"));
+		free(content);
+		content = tmp;
 	}
 	write(fd, content, ft_strlen(content));
-	free(content);
 	close(fd);
 	exit(0);
 }
@@ -76,18 +73,15 @@ static char	*read_heredoc_content(char *file)
 char	*here_doc(char *lim)
 {
 	int		status;
-	char 	*rand;
 	pid_t	pid;
 	char	*file;
 	int		fd;
 
 	signal(SIGINT, SIG_IGN);
-	rand = random_str();
-	file = ft_strjoin("/tmp/", rand);
-	free(rand);
+	file = ft_strjoin("/tmp/", random_str());
 	fd = open(file, O_WRONLY | O_CREAT, 0777);
 	if (fd < 0)
-		return (free(file), NULL);
+		return (NULL);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -99,9 +93,8 @@ char	*here_doc(char *lim)
 		waitpid(pid, &status, 0);
 		close(fd);
 		if (WEXITSTATUS(status) == 1)
-			return (free(file), NULL);
+			return (NULL);
 		return (read_heredoc_content(file));
-		// return (free(file), ft_strdup("hello"));
 	}
-	return (free(file), NULL);
+	return (NULL);
 }
