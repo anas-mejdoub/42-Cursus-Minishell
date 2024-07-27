@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/27 11:11:49 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/27 11:45:59 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -475,9 +475,7 @@ t_exec_ret	*subshell_node(t_command *command, t_exec_ret *ret, t_env_d *d_env,
 	{
 		if (command->to_close)
 			close_fds(command->to_close);
-			// close(command->fd[0]);
 		subshell_childp(command, ret, d_env, c);
-
 	}
 	else if (f > 0)
 		subshell_parentp(command, ret, f, c);
