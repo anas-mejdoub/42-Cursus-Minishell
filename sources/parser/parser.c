@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 19:03:44 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:22:46 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -806,7 +806,7 @@ int	split_tree(t_elem **elements, t_command **command, t_command **pipe_node,
 		// printf ("ana %p \n", *command);
 		(*command)->left = new_node();
 		// printf ("ana %p \n", (*command)->right);
-		free(*command);
+		// free(*command);
 		*command = (*command)->left;
 		// while (1);
 		((t_command *)(*pipe_node)->left)->left = *command;

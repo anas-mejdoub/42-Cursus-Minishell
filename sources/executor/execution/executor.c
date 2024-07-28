@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 18:51:52 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:29:58 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,9 +247,11 @@ void	wait_one(t_exec_ret *ret)
 bool	second_cmd(t_command *cmd, t_exec_ret *ret, t_env *env, char **ev)
 {
 	t_exec_ret	*tmp;
-
+	char c = '\0';
 	tmp = NULL;
-	tmp = executor(cmd->left, env, '\0', ev);
+	if (is_builtin(cmd->left))
+		c = 'b';
+	tmp = executor(cmd->left, env, c, ev);
 	if (!tmp)
 		return (false);
 	if (tmp && tmp->pids)
@@ -284,7 +286,10 @@ t_exec_ret	*and_node(t_command *command, char **ev, t_exec_ret *ret,
 
 	tmp = NULL;
 	share_fds(command);
-	tmp = executor(command->right, env, '\0', ev);
+	char c = '\0';
+	if (is_builtin(command->right))
+		c = 'b';
+	tmp = executor(command->right, env, c, ev);
 	if (tmp && tmp->pids)
 	{
 		waiting_pids(tmp);
@@ -305,7 +310,10 @@ t_exec_ret	*or_node(t_command *command, char **ev, t_exec_ret *ret, t_env *env)
 
 	tmp = NULL;
 	share_fds(command);
-	tmp = executor(command->right, env, '\0', ev);
+	char c = '\0';
+	if (is_builtin(command->right))
+		c = 'b';
+	tmp = executor(command->right, env, c, ev);
 	if (tmp && tmp->pids)
 	{
 		waiting_pids(tmp);
