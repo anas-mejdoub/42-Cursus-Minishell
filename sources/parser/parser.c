@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/27 17:57:34 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 14:44:06 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,7 +332,7 @@ int	*add_int(int *arr, int new)
 		res[j] = arr[j];
 		j++;
 	}
-	free(arr);
+	// free(arr);
 	res[j] = new;
 	res[j + 1] = -1;
 	return (res);
@@ -741,26 +741,56 @@ bool	handle_subshell(t_command *command, t_elem **elements, t_env *env)
 	command->right = tmp;
 	return (true);
 }
+// void free_tree_(t_command *cmd)
+// {
+//     if (!cmd)
+//         return ;
+//     // free_tree(cmd->right);
+//     // free_tree(cmd->left);
+//     if (cmd->type_node  == NODE)
+//     { 
+//         if (cmd->path)
+//             free(cmd->path);
+//         if (cmd->command_arg)
+//             free_command_args(cmd->command_arg);
+//         if (cmd->outfiles)
+//             free_out_files(cmd->outfiles);
+//         if (cmd->in_files)
+//             free_in_files(cmd->in_files);
+//         if (cmd->args)
+//             free_2d_array(cmd->args);
+//         // if (cmd->infile)
+//         //     free_2d_array(cmd->infile);
+//         // if (cmd->outfile)
+//         //     free_2d_array(cmd->outfile);
+//     }
+//     free(cmd);
+// }
 
-int	split_tree(t_elem *elements, t_command **command, t_command **pipe_node,
+int	split_tree(t_elem **elements, t_command **command, t_command **pipe_node,
 		int *r)
 {
-	if (get_rank(elements->type) >= *r)
+	if (get_rank((*elements)->type) >= *r)
 	{
-		*pipe_node = handle_pipe_node(*pipe_node, elements->type);
+		*pipe_node = handle_pipe_node(*pipe_node, (*elements)->type);
 		if (!*pipe_node)
 			return (0);
 		*command = new_node();
 		(*pipe_node)->left = *command;
-		*r = get_rank(elements->type);
+		*r = get_rank((*elements)->type);
 	}
 	else
 	{
-		*command = handle_pipe_node(*command, elements->type);
+		*command = handle_pipe_node(*command, (*elements)->type);
+		// printf ("ana %p \n", (*pipe_node)->left);
 		(*pipe_node)->left = handle_pipe_node((*pipe_node)->left,
-				elements->type);
+				(*elements)->type);
+		// printf ("ana %p \n", *command);
 		(*command)->left = new_node();
+		// printf ("ana %p \n", (*command)->right);
+		free(*command);
 		*command = (*command)->left;
+		// while (1);
 		((t_command *)(*pipe_node)->left)->left = *command;
 	}
 	return (0);
@@ -955,7 +985,7 @@ t_command	*parser(t_elem *elements, t_env *env)
 		else if (command_args_condition(elements, command))
 			command_args_parse(&elements, &command);
 		else if (split_tree_cond(elements, ft))
-			split_tree(elements, &command, &pipe_node, &r);
+			split_tree(&elements, &command, &pipe_node, &r);
 		else if (f_split_tree_cond(elements, ft))
 			r = first_split_tree(elements, &command, &pipe_node, &ft);
 		else if (!parser_redirs_switch(&elements, &command, env))

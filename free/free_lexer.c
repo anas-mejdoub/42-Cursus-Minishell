@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_lexer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:49:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 12:07:55 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 11:50:00 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ static void	ft_elem_lstdelone(t_elem *lst, void (*del)(void *))
 		return ;
 	del(lst->content);
 	free(lst);
+	lst = NULL;
 }
 
 void free_content(void *ptr)
 {
 	free(ptr);
+	ptr = NULL;
 }
 
 void	ft_elem_lstclear(t_elem **lst, void (*del)(void *))

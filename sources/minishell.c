@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/27 18:08:44 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 18:48:30 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,35 +53,40 @@ int main(int ac, char **av, char  **ev)
         // continue;
         if (!elem)
             continue;
+            
         t_command *root = parser(elem, env);
-        // print_tree(root, 0);
+        // (void)root;
         // continue;
         // (void)root;
-        ft_elem_lstclear(&elem, free_content);
-        (void)root;
-        free_tree(root);
+        // check_leaks();
 
-        // t_exec_ret *r =  executor(root, env, '\0', ev);
-        // // echo(root->right);
+        t_exec_ret *r =  executor(root, env, '\0', ev);
+        // echo(root->right);
 
-        // // int *arr = NULL;
+        // int *arr = NULL;
         
-        // int i = 0;
-        // int hehe= 0;
-        // if (!r || !r->pids)
-        //     continue;
-        //     // printf("problem with the r\n");
-        // while (r && r->pids)
-        // {
-        //     if (r->pids[i] == -1)
-        //         break;
-        //     waitpid(r->pids[i], &hehe, 0);
-        //     if (WIFEXITED(hehe))
-        //         globalVar = WEXITSTATUS(hehe);
-        //     else if (WIFSIGNALED(hehe))
-        //         globalVar = WTERMSIG(hehe) + 128;
-        //     i++;
-        // }
+        int i = 0;
+        int hehe= 0;
+        if (!r || !r->pids)
+            continue;
+            // printf("problem with the r\n");
+        while (r && r->pids)
+        {
+            if (r->pids[i] == -1)
+                break;
+            waitpid(r->pids[i], &hehe, 0);
+            if (WIFEXITED(hehe))
+                globalVar = WEXITSTATUS(hehe);
+            else if (WIFSIGNALED(hehe))
+                globalVar = WTERMSIG(hehe) + 128;
+            i++;
+        }
+        ft_elem_lstclear(&elem, free_content);
+        // print_tree(root, 0);
+        // if (root)
+        //     printf ("root is null\n");
+        free_tree(root);
+        root = NULL;
         // // printf("1\n");
         // // globalVar = 28 << 8;
         // // printf("exit : %d\n", globalVar);
