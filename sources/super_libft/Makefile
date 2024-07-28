@@ -6,6 +6,7 @@ SRC = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft
 		ft_lstdelone_bonus.c ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c\
 		ft_printf.c ft_putchar.c ft_putnbr.c ft_putstr.c ft_puthexa.c\
 		get_next_line_bonus.c get_next_line_utils_bonus.c\
+		ft_alloc_util.c ft_alloc.c
 
 OBJ = $(SRC:.c=.o)
 

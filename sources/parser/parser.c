@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 14:44:06 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:03:44 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ int	allocate_node1(t_elem **elem, char *content, int state, int token)
 
 	if (!content || content[0] == '\0')
 		return (0);
-	new_node = malloc(sizeof(t_elem));
+	// new_node = malloc(sizeof(t_elem));
+	new_node = ft_alloc(sizeof(t_elem), NULL, MALLOC);
 	if (!new_node)
 		return (1);
 	new_node->state = state;
@@ -81,7 +82,8 @@ t_command	*new_node(void)
 {
 	t_command	*new;
 
-	new = malloc(sizeof(t_command));
+	// new = malloc(sizeof(t_command));
+	new = ft_alloc(sizeof(t_command), NULL, MALLOC);
 	if (!new)
 		return (0);
 	intialize_new_node(new);
@@ -171,7 +173,8 @@ t_command_args	*new_arg(char *content, bool including_null, bool wild_card,
 {
 	t_command_args	*new;
 
-	new = malloc(sizeof(t_command_args));
+	// new = malloc(sizeof(t_command_args));
+	new = ft_alloc(sizeof(t_command_args), NULL, MALLOC);
 	if (!new)
 		return (NULL);
 	new->content = ft_strdup(content);
@@ -212,10 +215,12 @@ void	free2d(char **str)
 		return ;
 	while (str[i])
 	{
-		free(str[i]);
+		// free(str[i]);
+		ft_alloc(0, str[i], FREE_PTR);
 		i++;
 	}
-	free(str);
+	// free(str);
+	ft_alloc(0, str, FREE_PTR);
 }
 
 char	**add_to_args(char **args, char *to_append)
@@ -226,7 +231,8 @@ char	**add_to_args(char **args, char *to_append)
 	i = 0;
 	while (args && args[i])
 		i++;
-	new = malloc(sizeof(char *) * (i + 2));
+	// new = malloc(sizeof(char *) * (i + 2));
+	new = ft_alloc((sizeof(char *) * (i + 2)), NULL, MALLOC);
 	if (!new)
 		return (NULL);
 	i = 0;
@@ -268,7 +274,8 @@ t_env_index	*new_index(int new, int len)
 {
 	t_env_index	*new_i;
 
-	new_i = malloc(sizeof(t_env_index));
+	// new_i = malloc(sizeof(t_env_index));
+	new_i = ft_alloc(sizeof(t_env_index), NULL, MALLOC);
 	if (!new_i)
 		return (NULL);
 	new_i->index = new;
@@ -323,7 +330,8 @@ int	*add_int(int *arr, int new)
 			break ;
 		i++;
 	}
-	res = malloc(sizeof(int) * (i + 2));
+	// res = malloc(sizeof(int) * (i + 2));
+	res =ft_alloc((sizeof(int) * (i + 2)), NULL, MALLOC);
 	if (!res)
 		return (NULL);
 	j = 0;
@@ -370,7 +378,8 @@ t_command_h_ret	*intialize_ret_cmd(void)
 {
 	t_command_h_ret	*res;
 
-	res = malloc(sizeof(t_command_h_ret));
+	// res = malloc(sizeof(t_command_h_ret));
+	res = ft_alloc(sizeof(t_command_h_ret), NULL, MALLOC);
 	if (!res)
 		return (NULL);
 	res->command = NULL;
@@ -453,7 +462,8 @@ t_in_files	*new_in_file(char *filename, bool here_doc, bool env_qoute,
 {
 	t_in_files	*new;
 
-	new = malloc(sizeof(t_in_files));
+	// new = malloc(sizeof(t_in_files));
+	new = ft_alloc(sizeof(t_in_files), NULL, MALLOC);
 	if (!new)
 		return (NULL);
 	new->filename = ft_strdup(filename);
@@ -490,7 +500,8 @@ char	*random_str(void)
 
 	res = NULL;
 	i = 0;
-	res = malloc(sizeof(char) * 10);
+	// res = malloc(sizeof(char) * 10);
+	res = ft_alloc((sizeof(char) * 10), NULL, MALLOC);
 	if (!res)
 		return (NULL);
 	while (i < 9)
@@ -519,24 +530,30 @@ int	handle_here_doc(t_in_files *file, t_env *env)
 	random = random_str();
 	file_name = ft_strjoin("/tmp/", random);
 	unlink(file_name);
-	free(random);
-	free(file->filename);
+	// free(random);
+	// free(file->filename);
+	ft_alloc(0, random, FREE_PTR);
+	ft_alloc(0, file->filename, FREE_PTR);
 	file->filename = NULL;
 	file->filename = ft_strdup(file_name);
 	i = open(file_name, O_CREAT | O_WRONLY | O_RDONLY, 0777);
 	if (i == -1)
 	{
 		ft_putstr_fd("problem with opennig here doc\n", 2);
-		return (free(file_name), -1);
+		return (ft_alloc(0, file_name, FREE_PTR), -1);
+		// return (free(file_name), -1);
 	}
 	str1 = here_doc(file->limiter);
 	if (str1 == NULL)
-		return (free(file_name), close(i), -1);
+		return (ft_alloc(0, file_name, FREE_PTR), close(i), -1);
+		// return (free(file_name), close(i), -1);
 	// str2 = expand_here_doc_content(str1, env);
 	ft_putstr_fd(str1, i);
-	free(str1);
+	// free(str1);
+	ft_alloc(0, str1, FREE_PTR);
 	close(i);
-	free(file_name);
+	// free(file_name);
+	ft_alloc(0, file_name, FREE_PTR);
 	// free(file->limiter);
 	return (0);
 }
@@ -588,7 +605,8 @@ t_out_files	*new_file(char *filename, bool append, bool ambiguous,
 {
 	t_out_files	*new;
 
-	new = malloc(sizeof(t_out_files));
+	// new = malloc(sizeof(t_out_files));
+	new = ft_alloc(sizeof(t_out_files), NULL, MALLOC);
 	if (!new)
 		return (NULL);
 	new->filename = ft_strdup(filename);
@@ -730,7 +748,7 @@ bool	handle_subshell(t_command *command, t_elem **elements, t_env *env)
 	}
 	command->type_node = SUBSHELL_NODE;
 	tmp = parser(subshell_set, env);
-	ft_elem_lstclear(&subshell_set, free_content);
+	// ft_elem_lstclear(&subshell_set, free_content);
 	if (!tmp)
 		return (false);
 	if (tmp->type_node == ROOT_NODE)
@@ -826,7 +844,7 @@ void	redir_out_parse(t_elem **elements, t_command **command, t_env *env)
 		comm_hand_ret->wildcard);
 	add_indexs_to_outfiles(comm_hand_ret->arr, comm_hand_ret->lens,
 		get_last_file((*command)->outfiles));
-	free_ret_parser(&comm_hand_ret);
+	// free_ret_parser(&comm_hand_ret);
 }
 bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 {
@@ -839,7 +857,7 @@ bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 			comm_hand_ret->wildcard) == -1)
 	{
 		globalVar = 1;
-		free_ret_parser(&comm_hand_ret);
+		// free_ret_parser(&comm_hand_ret);
 		return (false);
 	}
 	if ((*command)->in_redir)
@@ -848,7 +866,7 @@ bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 		add_indexs_to_infiles(comm_hand_ret->arr, comm_hand_ret->lens,
 			get_last_in_file((*command)->in_files));
 	}
-	free_ret_parser(&comm_hand_ret);
+	// free_ret_parser(&comm_hand_ret);
 	return (true);
 }
 
@@ -865,7 +883,7 @@ void	command_args_parse(t_elem **elements, t_command **command)
 				comm_hand_ret->including_null, comm_hand_ret->wildcard, false));
 	add_indexs_to_args(comm_hand_ret->arr, comm_hand_ret->lens,
 		get_last_arg((*command)->command_arg));
-	free_ret_parser(&comm_hand_ret);
+	// free_ret_parser(&comm_hand_ret);
 }
 bool	redir_out_condition(t_elem *elements, t_command *command)
 {

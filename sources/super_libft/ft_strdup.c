@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:58:51 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/03/13 08:22:50 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:47:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strdup(const char *s)
 	size_t	len;
 
 	len = ft_strlen(s);
-	ptr = (char *)malloc(sizeof(char) * (len + 1));
+	ptr = (char *)ft_alloc((sizeof(char) * (len + 1)), NULL, MALLOC);
 	if (!ptr)
 	{
 		return (NULL);

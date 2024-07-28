@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 10:27:10 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/06 16:33:48 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:48:30 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*get_next_line(int fd)
 	static char	*helper[1024];
 	char		*ptr;
 
-	ptr = (char *)malloc(1);
+	ptr = (char *)ft_alloc(1, NULL, MALLOC);
 	if (!ptr || fd < 0 || BUFFER_SIZE >= INT_MAX
 		|| BUFFER_SIZE < 1)
 		return (ft_gnl_bonus_free(&helper[fd], &ptr));

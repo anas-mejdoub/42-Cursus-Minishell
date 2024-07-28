@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 18:56:59 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:07:33 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,10 @@
 #include "wildcard.h"
 #include "signals.h"
 # include "lexer.h"
-#include "free.h"
+// #include "free.h"
 # include "ambiguous.h"
 
-enum e_something {
-    S1GPIPE = 11,
-};
+
 
 void check_leaks();
 

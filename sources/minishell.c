@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 18:48:30 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 18:50:40 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,16 @@ int main(int ac, char **av, char  **ev)
         // }
         // continue;
         if (!elem)
+        {
+            ft_alloc(0, NULL, FREE_ALL);
             continue;
-            
+        }
         t_command *root = parser(elem, env);
         // (void)root;
         // continue;
         // (void)root;
-        // check_leaks();
+        // ft_elem_lstclear(&elem, free_content);
+        // free_tree(root);
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
         // echo(root->right);
@@ -81,12 +84,6 @@ int main(int ac, char **av, char  **ev)
                 globalVar = WTERMSIG(hehe) + 128;
             i++;
         }
-        ft_elem_lstclear(&elem, free_content);
-        // print_tree(root, 0);
-        // if (root)
-        //     printf ("root is null\n");
-        free_tree(root);
-        root = NULL;
         // // printf("1\n");
         // // globalVar = 28 << 8;
         // // printf("exit : %d\n", globalVar);
@@ -113,6 +110,7 @@ int main(int ac, char **av, char  **ev)
     //     // // printf("here doc content without expanding");
     //     // if (content)
     //     //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
+        ft_alloc(0, NULL, FREE_ALL);
     }
     // printf("heh\n");
         return (globalVar);

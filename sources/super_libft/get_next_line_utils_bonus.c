@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 10:28:33 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/01/10 16:12:12 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:49:18 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*ft_gnl_bonus_change_reminder(char *helper)
 	size_t	i;
 	size_t	j;
 
-	ptr = (char *)malloc(BUFFER_SIZE + 1);
+	ptr = (char *)ft_alloc((BUFFER_SIZE + 1), NULL, MALLOC);
 	if (!ptr)
 		return (free(helper), NULL);
 	i = 0;
@@ -66,7 +66,7 @@ char	*ft_gnl_bonus_join(char *ptr, char *helper)
 	if (!ptr && !helper)
 		return (NULL);
 	ptrlen = ft_gnl_bonus_strlen(ptr, '\0');
-	newptr = (char *)malloc(ptrlen + ft_gnl_bonus_strlen(helper, '\n') + 1);
+	newptr = (char *)ft_alloc((ptrlen + ft_gnl_bonus_strlen(helper, '\n') + 1), NULL, MALLOC);
 	if (!newptr)
 		return (free(ptr), NULL);
 	i = -1;

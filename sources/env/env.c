@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 09:23:24 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 17:14:23 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ static int	fetch_env_data(char **ev, t_env_data **node, t_env_data **tmp)
 			j++;
 		if (allocate_node(i, ev, node, tmp))
 			return (1);
-		(*tmp)->key = ft_substr(ev[i], 0, j);
-		(*tmp)->value = ft_substr(ev[i], j + 1, ft_strlen(ev[i] + j));
+		(*tmp)->key = ft_sabstr(ev[i], 0, j);
+		(*tmp)->value = ft_sabstr(ev[i], j + 1, ft_strlen(ev[i] + j));
 		*tmp = (*tmp)->next;
 		i++;
 	}

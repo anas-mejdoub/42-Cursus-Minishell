@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 12:41:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/03/14 00:44:30 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:38:25 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,23 @@ typedef struct s_list
 	void			*content;
 	struct s_list	*next;
 }	t_list;
+
+enum					e_alloc_mode
+{
+	MALLOC,
+	CALLOC,
+	REALLOC,
+	FREE_ALL,
+	FREE_PTR,
+};
+
+typedef struct s_address
+{
+	void				*address;
+	size_t				size;
+	struct s_address	*next;
+	struct s_address	*prev;
+}						t_address;
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
@@ -89,5 +106,11 @@ char	*ft_gnl_bonus_join(char *ptr, char *helper);
 char	*ft_gnl_bonus_change_reminder(char *helper);
 char	*ft_gnl_bonus_free(char **ptr1, char **ptr2);
 char	*get_next_line(int fd);
+
+//ft_alloc
+
+void					ft_alloc_add_back(t_address **lst, t_address *new_node);
+t_address				*ft_alloc_new_node(void *ptr, size_t size);
+void					*ft_alloc(size_t size, void *ptr, char c);
 
 #endif
