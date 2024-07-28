@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 11:22:20 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:56:15 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,8 @@ char	**get_command_args(t_command_args *args, t_env *env)
 
 	res = NULL;
 	exp = false;
+	if (!args)
+		return (NULL);
 	if (!ft_strncmp(args->content, "export", ft_strlen(args->content)) && ft_strlen(args->content) == 6)
 		exp = true; 
 	while (args)
@@ -534,7 +536,7 @@ bool	get_files_args(t_command *command, t_env_d *d_env, bool *found_in)
 			globalVar = 1;
 	}
 	if (command->args == NULL)
-		return (false);
+		return (true);
 	return (true);
 }
 
@@ -565,7 +567,9 @@ void	parent_proc(t_command *command, t_exec_ret *ret, char c, int i)
 void	child_proc(t_command *command, char c, bool f, t_env_d *d_env)
 {
 	if (command->command_arg)
+	{
 		command->path = get_path(command->args[0], d_env->env);
+	}
 	if ((command->outfiles && command->outfd == -1) || (command->infd
 			&& f == true))
 		exit(1);
@@ -579,8 +583,12 @@ void	child_proc(t_command *command, char c, bool f, t_env_d *d_env)
 	duping(command);
 	right_left(command, c);
 	v_close_fd(2, command->outfd, command->infd);
+		// printf ("%s\n", command->in_files->filename);
 	if (!command->path && !command->args)
+	{
+		// printf ("hello\n");
 		exit(0);
+	}
 	if (is_builtin(command))
 	{
 		if ((command->outfiles && command->outfd == -1) || (command->infd
@@ -596,6 +604,7 @@ void	child_proc(t_command *command, char c, bool f, t_env_d *d_env)
 t_exec_ret	*cmd_node(t_command *command, t_exec_ret *ret, t_env_d *d_env,
 		char c)
 {
+	// printf("cmd node\n");
 	bool	found_in;
 	pid_t	i;
 
@@ -616,6 +625,7 @@ t_exec_ret	*cmd_node(t_command *command, t_exec_ret *ret, t_env_d *d_env,
 	signal(SIGINT, handle_intr_sig);
 	if (i == 0)
 	{
+		// printf ("child prc\n");
 		signal(SIGQUIT, SIG_DFL);
 		child_proc(command, c, found_in, d_env);
 	}
@@ -630,6 +640,7 @@ t_exec_ret	*executor(t_command *command, t_env *env, char c, char **ev)
 	t_env_d		d_env;
 	t_exec_ret	*ret;
 
+	// printf("hello\n");
 	fd[0] = -1;
 	fd[1] = -1;
 	d_env.env = env;
@@ -653,6 +664,9 @@ t_exec_ret	*executor(t_command *command, t_env *env, char c, char **ev)
 	else if (command->type_node == SUBSHELL_NODE)
 		return (subshell_node(command, ret, &d_env, c));
 	else if (command->type_node == NODE)
+	{
+		// printf("hh\n");
 		return (cmd_node(command, ret, &d_env, c));
+	}
 	return (ret);
 }
