@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ambiguous_checker.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:11:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 15:00:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 11:53:36 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int	int_append_to_array(int ***arr, int num, int size)
 		while (i < size)
 		{
 			free((*arr)[i]);
+			(*arr)[i] = NULL;
 			i++;
 		}
 		free(*arr);
@@ -178,22 +179,25 @@ void free_ambg(t_amb_data **ambg)
     while ((*ambg)->arr && (*ambg)->arr[i])
     {
         free((*ambg)->arr[i]);
+		(*ambg)->arr[i] = NULL;
         i++;
     }
 	if ((*ambg)->arr && (*ambg)->arr)
 	{
     	free((*ambg)->arr);
+		(*ambg)->arr = NULL;
 	}
     i = 0;
     while ((*ambg)->arr_env && i < (*ambg)->size)
     {
         free((*ambg)->arr_env[i]);
+		(*ambg)->arr_env[i] = NULL;
         i++;
     }
 	if ((*ambg)->size != 0)
 	{
-
     	free((*ambg)->arr_env);
+		(*ambg)->arr_env = NULL;
 	}
     free((*ambg));
     *ambg = NULL;

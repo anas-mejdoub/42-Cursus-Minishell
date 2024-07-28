@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 09:23:47 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 11:54:41 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static int	change_value(char *key, char *value, t_env_data **tmp)
 			if (!value)
 				return (0);
 			free((*tmp)->value);
+			(*tmp)->value = NULL;
 			(*tmp)->value = ft_strdup(value);
 			return (0);
 		}

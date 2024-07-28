@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/27 11:45:59 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 11:22:20 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -639,8 +639,6 @@ t_exec_ret	*executor(t_command *command, t_env *env, char c, char **ev)
     ret->ret = -1;
 	if (!command)
 	{
-		// ret->ret = -1;
-		// ret->pids = NULL;
 		return (ret);
 	}
 	if (command->type_node == AND_NODE)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/27 18:02:54 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 14:46:30 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,12 @@ int main(int ac, char **av, char  **ev)
         // continue;
         if (!elem)
             continue;
+            
         t_command *root = parser(elem, env);
-        // print_tree(root, 0);
+        (void)root;
         // continue;
         // (void)root;
-        ft_elem_lstclear(&elem, free_content);
-        free_tree(root);
+        // check_leaks();
 
         // t_exec_ret *r =  executor(root, env, '\0', ev);
         // // echo(root->right);
@@ -81,6 +81,12 @@ int main(int ac, char **av, char  **ev)
         //         globalVar = WTERMSIG(hehe) + 128;
         //     i++;
         // }
+        ft_elem_lstclear(&elem, free_content);
+        // print_tree(root, 0);
+        // if (root)
+        //     printf ("root is null\n");
+        free_tree(root);
+        root = NULL;
         // // printf("1\n");
         // // globalVar = 28 << 8;
         // // printf("exit : %d\n", globalVar);
