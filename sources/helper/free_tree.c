@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 11:05:24 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 14:43:43 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 15:56:51 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void free_2d_array(char **array)
         return;
     while (array && array[i])
     {
-        printf("arg ----%s-----\n", array[i]);
         free(array[i]);
         array[i] = NULL;
         i++;
