@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 12:12:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:01:20 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static t_elem	*check_errors(t_elem *elem, int subshell, t_list **list)
 	}
 	(*list) = syntax_error(elem);
 	if ((*list))
-		return (check_syntax_error(*list), ft_lstclear(list, free_content), NULL);
+		return (check_syntax_error(*list), NULL);
+		// return (check_syntax_error(*list), ft_lstclear(list, free_content), NULL);
 	return (elem);
 }
 
@@ -50,12 +51,14 @@ t_elem	*lexer(void)
 	{
 		add_history(line);
 		if (!tokenize(line, &subshell, &elem))
-			return (ft_elem_lstclear(&elem, free_content), free(line), NULL);
+			return (free(line), NULL);
+			// return (ft_elem_lstclear(&elem, free_content), free(line), NULL);
 		free(line);
 	}
 	else
 		free(line);
 	if (check_errors(elem, subshell, &list) == NULL)
-		return (ft_elem_lstclear(&elem, free_content) ,NULL);
+		return (NULL);
+		// return (ft_elem_lstclear(&elem, free_content) ,NULL);
 	return (elem);
 }

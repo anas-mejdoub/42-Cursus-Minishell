@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 10:40:50 by nbenyahy          #+#    #+#             */
-/*   Updated: 2023/12/17 11:20:46 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:51:40 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,12 @@ static void	*free2darr(char **arr, size_t a)
 	i = 0;
 	while (i < a && arr[i] != NULL)
 	{
-		free(arr[i]);
+		// free(arr[i]);
+		ft_alloc(0, arr[i], FREE_PTR);
 		i++;
 	}
-	free(arr);
+	// free(arr);
+	ft_alloc(0, arr, FREE_PTR);
 	return (NULL);
 }
 
@@ -85,7 +87,7 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	count = wordcount(s, c);
-	arr = (char **)malloc(sizeof(char *) * (count + 1));
+	arr = (char **)ft_alloc((sizeof(char *) * (count + 1)), NULL, MALLOC);
 	if (!arr)
 		return (NULL);
 	arr[count] = NULL;

@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:16:31 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 17:01:49 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:37:19 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,7 @@
 #include "free.h"
 # include "ambiguous.h"
 
-enum e_something {
-    S1GPIPE = 11,
-};
+
 
 typedef struct s_global_data
 {

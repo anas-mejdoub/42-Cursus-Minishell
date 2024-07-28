@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:16:54 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 12:06:36 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 15:48:25 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ static char	*original_string(char *pattern)
 	j = 0;
 	if (!pattern)
 		return (NULL);
-	new_ptr = malloc(ft_strlen(pattern) + 1);
+	// new_ptr = malloc(ft_strlen(pattern) + 1);
+	new_ptr = ft_alloc((ft_strlen(pattern) + 1), NULL, MALLOC);
 	while (pattern[j])
 	{
 		if (pattern[j] == -17)

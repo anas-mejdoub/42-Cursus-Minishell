@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:13:10 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 16:16:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 17:17:29 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,11 @@ int	general_tokens(char *line, t_elem **elem, int *i, int *subshell)
 			create_node(elem, WHITE_SPACE, " ", i);
 		else if (line[(*i)] != '&')
 		{
-			content = ft_calloc(2, 1);
+			// content = ft_calloc(2, 1);
+			content = ft_alloc(2, NULL, CALLOC);
 			content[0] = line[(*i)];
 			create_node(elem, (int)line[(*i)], content, i);
-			free(content);
+			// free(content);
 		}
 	}
 	return (0);

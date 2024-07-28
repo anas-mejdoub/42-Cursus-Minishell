@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 11:05:24 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 11:21:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:04:30 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,26 +96,26 @@ void free_command_args(t_command_args *head)
 
 void free_tree(t_command *cmd)
 {
-    if (!cmd)
-        return ;
-    free_tree(cmd->right);
-    free_tree(cmd->left);
-    if (cmd->type_node  == NODE)
-    { 
-        if (cmd->path)
-            free(cmd->path);
-        if (cmd->command_arg)
-            free_command_args(cmd->command_arg);
-        if (cmd->outfiles)
-            free_out_files(cmd->outfiles);
-        if (cmd->in_files)
-            free_in_files(cmd->in_files);
-        if (cmd->args)
-            free_2d_array(cmd->args);
+    // if (!cmd)
+    //     return ;
+    // free_tree(cmd->right);
+    // free_tree(cmd->left);
+    // if (cmd->type_node  == NODE)
+    // { 
+    //     if (cmd->path)
+    //         free(cmd->path);
+    //     if (cmd->command_arg)
+    //         free_command_args(cmd->command_arg);
+    //     if (cmd->outfiles)
+    //         free_out_files(cmd->outfiles);
+    //     if (cmd->in_files)
+    //         free_in_files(cmd->in_files);
+    //     if (cmd->args)
+    //         free_2d_array(cmd->args);
         // if (cmd->infile)
         //     free_2d_array(cmd->infile);
         // if (cmd->outfile)
         //     free_2d_array(cmd->outfile);
-    }
-    free(cmd);
+    // }
+    // free(cmd);
 }

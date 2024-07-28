@@ -72,7 +72,8 @@
     "helper.h": "c",
     "stdbool.h": "c",
     "termios.h": "c",
-    "ambiguous.h": "c"
+    "ambiguous.h": "c",
+    "history.h": "c"
   },
   "editor.fontFamily": "fira code"
 }

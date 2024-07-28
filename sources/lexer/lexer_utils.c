@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 11:08:36 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 12:09:19 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 17:03:03 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ int	allocate_node(t_elem **elem, char *content, int state, int token)
 
 	if (!content || content[0] == '\0')
 		return (0);
-	new_node = malloc(sizeof(t_elem));
+	// new_node = malloc(sizeof(t_elem));
+	new_node = ft_alloc(sizeof(t_elem), NULL, MALLOC);
 	if (!new_node)
 		return (1);
 	new_node->state = state;
@@ -119,7 +120,8 @@ t_elem	*check_syntax_error(t_list *list)
 	while (tmp)
 	{
 		str = here_doc(tmp->content);
-		free(str);
+		ft_alloc(0, str, FREE_PTR);
+		// free(str);
 		str = NULL;
 		tmp = tmp->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 09:23:47 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 18:42:51 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static char	*get(t_env_data *env, char *key)
 	t_env_data	*tmp;
 
 	if (key && !ft_strncmp("?", key, 1) && ft_strlen(key) == 1)
-		return (ft_itoa(globalVar));
+		return (ft_itua(globalVar));
 	if (!env || !key)
 		return (NULL);
 	tmp = env;
@@ -41,7 +41,7 @@ static int	change_value(char *key, char *value, t_env_data **tmp)
 			if (!value)
 				return (0);
 			free((*tmp)->value);
-			(*tmp)->value = ft_strdup(value);
+			(*tmp)->value = ft_strdap(value);
 			return (0);
 		}
 		(*tmp) = (*tmp)->next;
@@ -61,11 +61,11 @@ static int	set(t_env_data **env, char *key, char *value)
 	tmp = malloc(sizeof(t_env_data));
 	if (!tmp)
 		return (1);
-	tmp->key = ft_strdup(key);
+	tmp->key = ft_strdap(key);
 	if (!value)
 		tmp->value = NULL;
 	else
-		tmp->value = ft_strdup(value);
+		tmp->value = ft_strdap(value);
 	tmp->next = *env;
 	*env = tmp;
 	return (2);
@@ -89,6 +89,8 @@ static int	unset(t_env_data **env, char *key)
 				*env = tmp->next;
 			else
 				prev->next = tmp->next;
+			free(tmp->key);
+			free(tmp->value);
 			free(tmp);
 			return (0);
 		}

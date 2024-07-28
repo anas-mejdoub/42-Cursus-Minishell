@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/27 11:45:59 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 15:42:11 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -634,7 +634,8 @@ t_exec_ret	*executor(t_command *command, t_env *env, char c, char **ev)
 	fd[1] = -1;
 	d_env.env = env;
 	d_env.ev = ev;
-	ret = malloc(sizeof(t_exec_ret));
+	// ret = malloc(sizeof(t_exec_ret));
+	ret = ft_alloc(sizeof(t_exec_ret), NULL, MALLOC);
 	ret->pids = NULL;
     ret->ret = -1;
 	if (!command)

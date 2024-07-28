@@ -1,6 +1,6 @@
 SRC =\
 		sources/executor/execution/executor.c \
-		sources/env/env.c sources/env/methods.c \
+		sources/env/env.c sources/env/methods.c sources/env/env_utils.c\
 		sources/lexer/lexer.c sources/lexer/lexer_utils.c  sources/lexer/general_tocken_handler.c sources/lexer/qoute_tocken_handler.c sources/lexer/dqoute_tocken_handler.c sources/lexer/syntax_error_utils.c\
 		sources/lexer/syntax_error.c \
 		sources/parser/parser.c \
@@ -15,11 +15,11 @@ SRC =\
 
 OBJ = $(SRC:.c=.o)
 
-LIBFT = sources/super_libft/libft.a  -L /goinfre/$(USER)/homebrew/opt/readline/lib 
+LIBFT = sources/super_libft/libft.a -L /goinfre/$(USER)/homebrew/opt/readline/lib 
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include #-fsanitize=address
+CFLAGS = -Wall -Wextra  -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include #-fsanitize=address
 
 NAME = minishell
 

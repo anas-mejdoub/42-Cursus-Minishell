@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 22:51:47 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/03/03 11:31:07 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:47:25 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		return (NULL);
 	s1len = ft_strlen(s1);
 	s2len = ft_strlen(s2);
-	ptr = (char *)malloc(sizeof(char) * (s1len + s2len + 1));
+	ptr = (char *)ft_alloc((sizeof(char) * (s1len + s2len + 1)), NULL, MALLOC);
 	if (!ptr)
 		return (NULL);
 	concat(s1, s2, ptr);

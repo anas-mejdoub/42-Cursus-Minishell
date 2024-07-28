@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:53:10 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 10:26:05 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:04:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void free_ret_parser(t_command_h_ret **ret)
 {
-    free((*ret)->command);
-    free((*ret)->arr);
-    free((*ret)->lens);
-    free (*ret);
-    *ret = NULL;
+    // free((*ret)->command);
+    // free((*ret)->arr);
+    // free((*ret)->lens);
+    // free (*ret);
+    // *ret = NULL;
 }
