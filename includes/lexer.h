@@ -6,13 +6,14 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 08:38:52 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:21:18 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
-#define LEXER_H
-#include "minishell.h"
+# define LEXER_H
+# include "minishell.h"
+
 enum e_token
 {
 	WORD = -1,
@@ -43,12 +44,12 @@ enum e_state
 
 typedef struct s_elem
 {
-	char            *content;
-	int             len;
+	char			*content;
+	int				len;
 	enum e_token	type;
 	enum e_state	state;
 	void			*next;
 }	t_elem;
 
-t_elem *lexer(void);
+t_elem	*lexer(void);
 #endif

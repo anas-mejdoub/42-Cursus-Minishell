@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:06:17 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 19:09:20 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 08:44:17 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 # include "minishell.h"
 # include "lexer.h"
 
-// void	free_elem(t_elem *elem);
-// void free_content(void *ptr);
 int		allocate_node(t_elem **elem, char *content, int state, int token);
 int		env_handeler(t_elem **elem, char *line, int *i, int state);
 t_list	*syntax_error(t_elem *elem);

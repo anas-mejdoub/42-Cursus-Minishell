@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:31:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 15:58:17 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	new_prompt(int sig)
 {
 	(void)sig;
-	globalVar = 1;
+	g_var = 1;
 	printf(BHMAG "\n" RESET);
 	rl_on_new_line();
 	rl_replace_line("", 0);

@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 12:27:44 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/26 10:31:05 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	print_err(int count, ...)
 
 	i = 0;
 	va_start(args, count);
-	globalVar = va_arg(args, int);
+	g_var = va_arg(args, int);
 	i++;
 	ft_putstr_fd(RED, 2);
 	while (i < count)
