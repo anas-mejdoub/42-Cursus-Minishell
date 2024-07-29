@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:33 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 17:13:37 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:13:51 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,5 @@ char	*ft_itua(int n);
 char	*ft_sabstr(char const *s, unsigned int start, size_t len);
 
 void	init_env_methods(t_env **env);
-
 
 #endif

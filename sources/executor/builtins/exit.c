@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 09:21:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:20:10 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,9 @@ static int	extract_number(t_command *cmd, int *fd_in, int *fd_out)
 	{
 		res = (res * 10) + (cmd->args[1][j++] - '0');
 		if ((res > LLONG_MAX && sign == 1) || (res > LLONG_MAX && sign == -1))
-			return (restor_rediraction(cmd, fd_in, fd_out), print_err(4, 255,
-					"minishell: exit: ", cmd->args[1],
-					": numeric argument required\n"), ft_alloc(0, NULL, FREE_ALL), exit(255),
-				-1);
+			return (restor_rediraction(cmd, fd_in, fd_out), print_err(4, 255, \
+			"minishell: exit: ", cmd->args[1], ": numeric argument required\n"), \
+			ft_alloc(0, NULL, FREE_ALL), exit(255), -1);
 	}
 	return (overflow_result(res * sign));
 }

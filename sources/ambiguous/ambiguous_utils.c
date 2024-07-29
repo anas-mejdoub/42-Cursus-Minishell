@@ -6,12 +6,11 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:05:47 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/27 14:37:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:12:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_ambiguous.h"
-
 
 static bool	therd_sub_sec_condition(t_amb_data *data, int j)
 {
@@ -37,9 +36,7 @@ static bool	therd_sub_sec_condition(t_amb_data *data, int j)
 			break ;
 		a--;
 	}
-	if (a != 0)
-		p2 = true;
-	if (p2 == true && p1 == true)
+	if (a != 0 || (p2 == true && p1 == true))
 		return (true);
 	return (false);
 }
@@ -83,7 +80,6 @@ static bool	sub_sec_sub_sec_condition(int j, int *k, t_amb_data *data)
 	return (false);
 }
 
-
 static bool	sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
 {
 	(*k)++;
@@ -94,7 +90,8 @@ static bool	sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
 		if (data->arr[(*k)] == NULL)
 			return (true);
 	}
-	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]])
+	else if (data->arr[*data->arr_env[j]] \
+	[ft_strlen(data->arr[*data->arr_env[j]]) \
 		- 1] == ' ' && ptr[0] != '\0')
 	{
 		if (sub_sec_sub_sec_condition(j, k, data))
@@ -102,14 +99,12 @@ static bool	sec_sub_sec_condition(t_amb_data *data, char *ptr, int *k, int j)
 	}
 	while (data->arr[(*k)])
 	{
-		if (data->arr[(*k)][0] != '\0'
-			&& ft_strchr(ptr, ' '))
+		if (data->arr[(*k)][0] != '\0' && ft_strchr(ptr, ' '))
 			return (true);
 		(*k)++;
 	}
 	return (false);
 }
-
 
 bool	sec_condition(t_amb_data *data, int j, char *ptr)
 {
@@ -118,13 +113,14 @@ bool	sec_condition(t_amb_data *data, int j, char *ptr)
 	k = *data->arr_env[j];
 	if (ft_strchr(ft_strtrim(data->arr[*data->arr_env[j]], " "), ' '))
 		return (true);
-	else if (*data->arr_env[j] != 0 && (data->arr[*data->arr_env[j]][0] == ' '
-		&& ptr[0] != '\0'))
+	else if (*data->arr_env[j] != 0 && (data->arr[*data->arr_env[j]][0] == ' ' \
+			&& ptr[0] != '\0'))
 	{
 		if (first_sub_sec_condition(data, ptr, &k))
 			return (true);
 	}
-	else if (data->arr[*data->arr_env[j]][ft_strlen(data->arr[*data->arr_env[j]])
+	else if (data->arr[*data->arr_env[j]] \
+	[ft_strlen(data->arr[*data->arr_env[j]]) \
 		- 1] == ' ' && ptr[0] != '\0')
 	{
 		if (sec_sub_sec_condition(data, ptr, &k, j))

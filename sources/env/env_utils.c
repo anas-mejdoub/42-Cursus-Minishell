@@ -6,12 +6,11 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 17:06:12 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 17:10:59 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:13:25 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_env.h"
-
 
 static size_t	nbrlen(int n)
 {
@@ -75,10 +74,8 @@ char	*ft_itua(int n)
 		res[size] = n % 10 + 48;
 		n /= 10;
 	}
-    return (res);
+	return (res);
 }
-
-
 
 char	*ft_sabstr(char const *s, unsigned int start, size_t len)
 {
