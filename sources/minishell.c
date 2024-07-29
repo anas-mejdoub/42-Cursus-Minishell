@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 08:47:07 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,12 @@ int main(int ac, char **av, char  **ev)
                 break;
             waitpid(r->pids[i], &hehe, 0);
             if (WIFEXITED(hehe))
-                globalVar = WEXITSTATUS(hehe);
+                g_var = WEXITSTATUS(hehe);
             else if (WIFSIGNALED(hehe))
-                globalVar = WTERMSIG(hehe) + 128;
+                g_var = WTERMSIG(hehe) + 128;
             i++;
         }
         ft_alloc(0, NULL, FREE_ALL);
     }
-    return (globalVar);
+    return (g_var);
 }

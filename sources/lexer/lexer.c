@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 08:44:12 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_elem	*lexer(void)
 	rl_on_new_line();
 	line = readline(BHMAG "➜ minishell$ " RESET);
 	if (line == NULL)
-		exit(globalVar);
+		exit(g_var);
 	if (line && *line)
 	{
 		add_history(line);

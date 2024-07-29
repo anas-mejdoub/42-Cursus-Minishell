@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 19:08:37 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:21:27 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	exit_comand(t_command *cmd)
 	{
 		restor_rediraction(cmd, &fd_in, &fd_out);
 		ft_alloc(0, NULL, FREE_ALL);
-		exit(globalVar);
+		exit(g_var);
 	}
 	return (restor_rediraction(cmd, &fd_in, &fd_out), calculate_status(cmd,
 			&fd_in, &fd_out));

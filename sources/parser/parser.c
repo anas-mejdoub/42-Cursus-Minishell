@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 07:55:10 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -856,7 +856,7 @@ bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 	if (handle_redir_in(*command, comm_hand_ret->command, imbg(tmp, env), env,
 			comm_hand_ret->wildcard) == -1)
 	{
-		globalVar = 1;
+		g_var = 1;
 		// free_ret_parser(&comm_hand_ret);
 		return (false);
 	}

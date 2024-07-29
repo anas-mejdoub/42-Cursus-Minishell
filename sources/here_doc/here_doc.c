@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 07:52:59 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static char	*read_heredoc_content(char *file)
 	close(fd);
 	unlink(file);
 	ft_alloc(0, file, FREE_PTR);
-	globalVar = 0;
+	g_var = 0;
 	return (str);
 }
 
