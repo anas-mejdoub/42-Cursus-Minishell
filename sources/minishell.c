@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:43:30 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int main(int ac, char **av, char  **ev)
         }
         t_command *root = parser(elem, env);
 
-        t_exec_ret *r =  executor(root, env, '\0', ev);
+        t_exec_ret *r =  executor(root, env, '\0');
 
         
         int i = 0;

@@ -1,5 +1,12 @@
 SRC =\
 		sources/executor/execution/executor.c \
+		sources/executor/execution/cmd_exec.c \
+		sources/executor/execution/exec_node.c \
+		sources/executor/execution/exec_utils.c \
+		sources/executor/execution/extra_utils.c \
+		sources/executor/execution/paths_args.c \
+		sources/executor/execution/pipes.c \
+		sources/executor/execution/subshells.c \
 		sources/env/env.c sources/env/methods.c sources/env/env_utils.c\
 		sources/lexer/lexer.c sources/lexer/lexer_utils.c  sources/lexer/general_tocken_handler.c sources/lexer/qoute_tocken_handler.c sources/lexer/dqoute_tocken_handler.c sources/lexer/syntax_error_utils.c\
 		sources/lexer/syntax_error.c \

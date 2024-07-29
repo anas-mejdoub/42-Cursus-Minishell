@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_command.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:15:58 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 17:27:59 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:36:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	env_cmd(t_command *cmd, t_env *env)
 {
-	t_env_data	*tmp;
+	t_envata	*tmp;
 	int			fd_in;
 	int			fd_out;
 

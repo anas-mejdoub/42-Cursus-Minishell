@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   env_to_2d_arr.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 09:25:07 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 12:47:53 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:36:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
 
-static int	size_of_env(t_env_data *data)
+static int	size_of_env(t_envata *data)
 {
-	t_env_data	*tmp;
+	t_envata	*tmp;
 	int			i;
 
 	i = 0;
@@ -28,7 +28,7 @@ static int	size_of_env(t_env_data *data)
 	return (i);
 }
 
-static char	**stor_it(t_env_data *data, int size)
+static char	**stor_it(t_envata *data, int size)
 {
 	int		i;
 	char	**arr;
@@ -54,7 +54,7 @@ static char	**stor_it(t_env_data *data, int size)
 
 char	**env_to_2d_arr(t_env *env)
 {
-	t_env_data	*data;
+	t_envata	*data;
 	int			size;
 
 	size = size_of_env(env->data);

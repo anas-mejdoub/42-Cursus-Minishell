@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   methods.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 09:21:24 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:36:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_env.h"
 
-static char	*get(t_env_data *env, char *key)
+static char	*get(t_envata *env, char *key)
 {
-	t_env_data	*tmp;
+	t_envata	*tmp;
 
 	if (key && !ft_strncmp("?", key, 1) && ft_strlen(key) == 1)
 		return (ft_itua(g_var));
@@ -31,7 +31,7 @@ static char	*get(t_env_data *env, char *key)
 	return (NULL);
 }
 
-static int	change_value(char *key, char *value, t_env_data **tmp)
+static int	change_value(char *key, char *value, t_envata **tmp)
 {
 	while ((*tmp))
 	{
@@ -49,16 +49,16 @@ static int	change_value(char *key, char *value, t_env_data **tmp)
 	return (1);
 }
 
-static int	set(t_env_data **env, char *key, char *value)
+static int	set(t_envata **env, char *key, char *value)
 {
-	t_env_data	*tmp;
+	t_envata	*tmp;
 
 	if (!key)
 		return (1);
 	tmp = *env;
 	if (!change_value(key, value, &tmp))
 		return (0);
-	tmp = malloc(sizeof(t_env_data));
+	tmp = malloc(sizeof(t_envata));
 	if (!tmp)
 		return (1);
 	tmp->key = ft_strdap(key);
@@ -71,10 +71,10 @@ static int	set(t_env_data **env, char *key, char *value)
 	return (2);
 }
 
-static int	unset(t_env_data **env, char *key)
+static int	unset(t_envata **env, char *key)
 {
-	t_env_data	*tmp;
-	t_env_data	*prev;
+	t_envata	*tmp;
+	t_envata	*prev;
 
 	if (!*env || !key)
 		return (1);
