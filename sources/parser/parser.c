@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 19:22:46 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:33:15 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,7 +330,6 @@ int	*add_int(int *arr, int new)
 			break ;
 		i++;
 	}
-	// res = malloc(sizeof(int) * (i + 2));
 	res =ft_alloc((sizeof(int) * (i + 2)), NULL, MALLOC);
 	if (!res)
 		return (NULL);
@@ -340,7 +339,6 @@ int	*add_int(int *arr, int new)
 		res[j] = arr[j];
 		j++;
 	}
-	// free(arr);
 	res[j] = new;
 	res[j + 1] = -1;
 	return (res);
