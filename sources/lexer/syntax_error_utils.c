@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 10:44:37 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 17:17:39 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:35:37 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ static void	add_limiter(t_elem **tmp, t_list **original, t_list **list)
 	// tmp_str = NULL;
 	// while ((*tmp) && ((*tmp)->type != QOUTE || (*tmp)->type != DOUBLE_QUOTE))
 	// {
-		ft_lstadd_back(original, ft_lstnew(ft_strdup((*tmp)->content)));
+		if ((*tmp) && (*tmp)->type != QOUTE && (*tmp)->type != DOUBLE_QUOTE)
+			ft_lstadd_back(original, ft_lstnew(ft_strdup((*tmp)->content)));
+		else
+			ft_lstadd_back(original, ft_lstnew(ft_strdup("")));
 		(*tmp) = (*tmp)->next;
 	// }
 	// str = calloc(2, 1);
