@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 07:28:38 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 16:42:30 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:51:20 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ static void	*clear_address(t_address **lst)
 {
 	t_address	*tmp;
 
-    if (!lst || !*lst)
-        return (NULL);
+	if (!lst || !*lst)
+		return (NULL);
 	while (*lst)
 	{
 		tmp = *lst;

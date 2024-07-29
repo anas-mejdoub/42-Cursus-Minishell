@@ -6,42 +6,43 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 10:51:36 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 12:42:55 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_here_doc.h"
 
-// static write_on_file()
-
-static void save_heredoc_content(char *lim, char *file)
+static char	*read_input(char *lim)
 {
 	char	*content;
 	char	*line;
-	int		fd;
 
-	content = ft_alloc(1, NULL, CALLOC);
 	line = NULL;
+	content = ft_alloc(1, NULL, CALLOC);
 	while (1)
 	{
 		line = readline("> ");
 		if (line == NULL)
-			break;
-		// {
-			// ft_alloc(0, content, FREE_PTR);
-			
-			// exit(0);
-		// }
-		if (!ft_strncmp(line, lim, ft_strlen(lim))
+			break ;
+		if (!ft_strncmp(line, lim, ft_strlen(lim)) \
 			&& ft_strlen(lim) == ft_strlen(line))
-			{
-				free(line);
-				break ;
-			}
+		{
+			free(line);
+			break ;
+		}
 		content = ft_freed_join(content, line);
-		content = ft_freed_join(content, "\n");	
+		content = ft_freed_join(content, "\n");
 		free(line);
 	}
+	return (content);
+}
+
+static void	save_heredoc_content(char *lim, char *file)
+{
+	char	*content;
+	int		fd;
+
+	content = read_input(lim);
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd < 0)
 	{
@@ -86,7 +87,7 @@ static char	*read_heredoc_content(char *file)
 char	*here_doc(char *lim)
 {
 	int		status;
-	char 	*rand;
+	char	*rand;
 	pid_t	pid;
 	char	*file;
 
@@ -100,13 +101,8 @@ char	*here_doc(char *lim)
 		signal(SIGINT, kill_here_doc);
 		save_heredoc_content(lim, file);
 	}
-	// else if (pid > 0)
-	// {
-		waitpid(pid, &status, 0);
-		if (WEXITSTATUS(status) == 1)
-			return (ft_alloc(0, file, FREE_PTR), NULL);
-		// printf("hehe\n");
-		return (read_heredoc_content(file));
-	// }
-	// return (ft_alloc(0, file, FREE_PTR), NULL);
+	waitpid(pid, &status, 0);
+	if (WEXITSTATUS(status) == 1)
+		return (ft_alloc(0, file, FREE_PTR), NULL);
+	return (read_heredoc_content(file));
 }

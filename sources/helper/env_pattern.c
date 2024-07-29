@@ -6,14 +6,13 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 15:42:20 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/23 15:44:30 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:20:43 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
 
-
-bool env_pattern(char a)
+bool	env_pattern(char a)
 {
-    return (!ft_isalpha(a) || a == '_' || a == '?');
+	return (!ft_isalpha(a) || a == '_' || a == '?');
 }

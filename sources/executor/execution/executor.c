@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 10:42:21 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/29 12:42:45 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ char	*fetch_paths(char **paths, char *command)
 		if (!access(tmp2, F_OK))
 			return (tmp2);
 		i++;
-		free(tmp2);
+		ft_alloc(0, tmp2, FREE_PTR);
 		tmp2 = NULL;
 	}
 	return (NULL);

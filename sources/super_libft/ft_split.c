@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 10:40:50 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 16:51:40 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:52:41 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ static void	*free2darr(char **arr, size_t a)
 	i = 0;
 	while (i < a && arr[i] != NULL)
 	{
-		// free(arr[i]);
 		ft_alloc(0, arr[i], FREE_PTR);
 		i++;
 	}
-	// free(arr);
 	ft_alloc(0, arr, FREE_PTR);
 	return (NULL);
 }
@@ -68,11 +66,11 @@ static char	**fillarr(char const *s, char c, char **arr)
 		{
 			end = 0;
 			while (!issep(s[start + end], c) && s[start + end])
-				end ++;
+				end++;
 			arr[count] = ft_substr(s + start, 0, end);
 			if (!arr[count])
 				return (free2darr(arr, count));
-			count ++;
+			count++;
 			start += end;
 		}
 	}

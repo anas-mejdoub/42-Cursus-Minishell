@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:31:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:50:48 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	new_prompt(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
+
 void	kill_here_doc(int sig)
 {
 	(void)sig;

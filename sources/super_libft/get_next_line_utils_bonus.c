@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 10:28:33 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 16:49:18 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:53:02 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ char	*ft_gnl_bonus_join(char *ptr, char *helper)
 	if (!ptr && !helper)
 		return (NULL);
 	ptrlen = ft_gnl_bonus_strlen(ptr, '\0');
-	newptr = (char *)ft_alloc((ptrlen + ft_gnl_bonus_strlen(helper, '\n') + 1), NULL, MALLOC);
+	newptr = (char *)ft_alloc((ptrlen + ft_gnl_bonus_strlen(helper, '\n') + 1), \
+				NULL, MALLOC);
 	if (!newptr)
 		return (free(ptr), NULL);
 	i = -1;

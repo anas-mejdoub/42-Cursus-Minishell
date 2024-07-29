@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:12:28 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:44:58 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,8 @@ t_elem	*lexer(void)
 		add_history(line);
 		if (!tokenize(line, &subshell, &elem))
 			return (free(line), NULL);
-		free(line);
 	}
-	else
-		free(line);
+	free(line);
 	if (check_errors(elem, subshell, &list) == NULL)
 		return (NULL);
 	return (elem);
