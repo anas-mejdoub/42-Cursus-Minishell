@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:35:45 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 15:01:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 15:36:45 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,9 @@
 
 char	*add_string_back(char **s1, char **s2)
 {
-	char	*tmp;
-
 	if ((*s2) == NULL)
 		return ((*s1));
-	tmp = ft_strjoin(*s1, *s2);
-	*s1 = tmp;
+	*s1 = ft_freed_join(*s1, *s2);
 	return (*s1);
 }
 

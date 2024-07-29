@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:30:08 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 09:21:24 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 15:38:06 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static char	*get(t_env_data *env, char *key)
 	t_env_data	*tmp;
 
 	if (key && !ft_strncmp("?", key, 1) && ft_strlen(key) == 1)
-		return (ft_itua(g_var));
+		return (ft_itoa(g_var));
 	if (!env || !key)
 		return (NULL);
 	tmp = env;

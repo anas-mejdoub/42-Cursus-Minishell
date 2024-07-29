@@ -18,7 +18,7 @@ LIBFT = sources/super_libft/libft.a -L /goinfre/$(USER)/homebrew/opt/readline/li
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror  -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror  -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include
 
 NAME = minishell
 
