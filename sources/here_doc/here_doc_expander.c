@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:11:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 19:04:00 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 08:42:51 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,11 @@ static char	*concat_string(t_list *list)
 	char	*tmp_str;
 
 	tmp = list;
-	// str = ft_calloc(1, 1);
 	str = ft_alloc(1, NULL, CALLOC);
 	while (tmp)
 	{
 		tmp_str = ft_strjoin(str, tmp->content);
 		ft_alloc(0, str, FREE_PTR);
-		// free(str);
 		str = tmp_str;
 		tmp = tmp->next;
 	}
@@ -89,6 +87,5 @@ char	*expand_here_doc_content(char *str, t_env *env)
 	start = i;
 	list = create_list(str, env, i, start);
 	string_final = concat_string(list);
-	// ft_lstclear(&list, free_content);
 	return (string_final);
 }

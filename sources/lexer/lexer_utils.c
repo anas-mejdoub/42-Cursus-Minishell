@@ -6,24 +6,11 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 11:08:36 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 17:03:03 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 08:44:00 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_lexer.h"
-
-// void	free_elem(t_elem *elem)
-// {
-// 	t_elem	*prev;
-
-// 	while (elem)
-// 	{
-// 		prev = elem;
-// 		elem = elem->next;
-// 		free(prev->content);
-// 		free(prev);
-// 	}
-// }
 
 int	allocate_node(t_elem **elem, char *content, int state, int token)
 {
@@ -32,7 +19,6 @@ int	allocate_node(t_elem **elem, char *content, int state, int token)
 
 	if (!content || content[0] == '\0')
 		return (0);
-	// new_node = malloc(sizeof(t_elem));
 	new_node = ft_alloc(sizeof(t_elem), NULL, MALLOC);
 	if (!new_node)
 		return (1);
@@ -121,10 +107,8 @@ t_elem	*check_syntax_error(t_list *list)
 	{
 		str = here_doc(tmp->content);
 		ft_alloc(0, str, FREE_PTR);
-		// free(str);
 		str = NULL;
 		tmp = tmp->next;
 	}
-	// free_elem(elem);
 	return (NULL);
 }

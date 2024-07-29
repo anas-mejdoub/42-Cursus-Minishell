@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 19:33:15 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:49:49 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -534,6 +534,9 @@ int	handle_here_doc(t_in_files *file, t_env *env)
 	ft_alloc(0, file->filename, FREE_PTR);
 	file->filename = NULL;
 	file->filename = ft_strdup(file_name);
+	str1 = here_doc(file->limiter);
+	if (str1 == NULL)
+		return (ft_alloc(0, file_name, FREE_PTR), -1);
 	i = open(file_name, O_CREAT | O_WRONLY | O_RDONLY, 0777);
 	if (i == -1)
 	{
@@ -541,15 +544,12 @@ int	handle_here_doc(t_in_files *file, t_env *env)
 		return (ft_alloc(0, file_name, FREE_PTR), -1);
 		// return (free(file_name), -1);
 	}
-	str1 = here_doc(file->limiter);
-	if (str1 == NULL)
-		return (ft_alloc(0, file_name, FREE_PTR), close(i), -1);
 		// return (free(file_name), close(i), -1);
 	// str2 = expand_here_doc_content(str1, env);
 	ft_putstr_fd(str1, i);
+	close(i);
 	// free(str1);
 	ft_alloc(0, str1, FREE_PTR);
-	close(i);
 	// free(file_name);
 	ft_alloc(0, file_name, FREE_PTR);
 	// free(file->limiter);
@@ -854,7 +854,7 @@ bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 	if (handle_redir_in(*command, comm_hand_ret->command, imbg(tmp, env), env,
 			comm_hand_ret->wildcard) == -1)
 	{
-		globalVar = 1;
+		g_var = 1;
 		// free_ret_parser(&comm_hand_ret);
 		return (false);
 	}

@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 18:33:22 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 18:38:27 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 07:58:05 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ static void	update_env(t_env *env, char *oldpwd)
 		env->set(&env->data, "OLDPWD", oldpwd);
 	if (env->get(env->data, "PWD"))
 		env->set(&env->data, "PWD", ptr);
-	// free(ptr);
 }
 
 static int	change_dir(t_env *env, t_command *cmd, int *fd_in, int *fd_out)
@@ -75,7 +74,6 @@ int	cd_cmd(t_command *cmd, t_env *env)
 	if (change_dir(env, cmd, &fd_in, &fd_out) == -1)
 		return (-1);
 	update_env(env, oldpwd);
-	// free(oldpwd);
 	if (restor_rediraction(cmd, &fd_in, &fd_out) == -1)
 		return (-1);
 	return (0);

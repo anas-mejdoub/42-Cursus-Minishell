@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 12:40:27 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 19:07:40 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:21:16 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 # define HELPER_H
 
 # include "minishell.h"
+
 char	*env_expander(char *content, t_env_index *index, t_env *env,
 			bool wild_card);
 int		open_out_files(t_out_files *files, t_env *env);
 int		open_in_files(t_in_files *files, t_env *env);
-// void	free_tree(t_command *cmd);
-// void	free_tree1(t_command **cmd);
 int		do_builtin(t_command *cmd, t_env *env);
 int		is_builtin(t_command *cmd);
 char	**env_to_2d_arr(t_env *env);
@@ -33,7 +32,5 @@ bool	is_red_spliter(char c);
 bool	is_qoutes(char c);
 bool	in_qoutes(char c);
 char	*ft_freed_join(char *s1, char *s2);
-// char	*ft_strdap(const char *s);
-// int     open_out_files(t_out_files *files, t_env *env);
 
 #endif

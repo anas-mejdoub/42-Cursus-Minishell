@@ -6,11 +6,47 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 15:36:11 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 07:43:21 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_helper.h"
+
+int change_content(t_in_files *file, t_env *env)
+{
+	char *ptr;
+	char *ptr2;
+	char buffer[1024];
+	int readbyte;
+	int fd;
+
+	readbyte = 0;
+	fd = open(file->filename, O_RDONLY);
+	if (fd < 1)
+		return (print_err(2, 1, "error while opening heredoc file") ,-1);
+	ptr = ft_alloc(1, NULL, CALLOC);
+	while (1)
+	{
+		readbyte = read(fd, buffer, 1024);
+		if (readbyte < 0)
+			return (print_err(2, 1, "error while reading heredoc file") ,-1);
+		if (readbyte == 0)
+			break;
+		buffer[readbyte] = '\0';
+		ptr = ft_freed_join(ptr, buffer);
+	}
+	close(fd);
+	ptr2 = expand_here_doc_content(ptr, env);
+	ft_alloc(0, ptr, FREE_PTR);
+	fd = open(file->filename, O_WRONLY | O_TRUNC);
+	if (fd < 0)
+		return (print_err(2, 1, "error while writing in heredoc file") ,-1);
+	write(fd, ptr2, ft_strlen(ptr2));
+	close(fd);
+	ft_alloc(0, ptr2, FREE_PTR);
+	return (0);
+}
+
 
 int	open_file(char *file_name, bool append, bool create, bool type)
 {
@@ -108,6 +144,11 @@ int	open_in_files(t_in_files *files, t_env *env)
 		file_name = ambiguous(files, false, env);
 		if (file_name == NULL)
 			return (-1);
+		if (files->here_doc)
+		{			
+			if (change_content(files, env) == -1)
+				return (-1);
+		}
 		if (helper_open_in_files(file_name, &last_fd) == -1)
 			return (-1);
 		if (files->next)

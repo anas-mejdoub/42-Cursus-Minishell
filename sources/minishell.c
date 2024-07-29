@@ -6,112 +6,65 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/28 18:50:40 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 09:18:08 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
 void print_tchbi7a(void)
 {
-//     printf(RED "██████  ██░ ██ ▓█████  ██▓     ██▓            \n"
-// "▒██    ▒ ▓██░ ██▒▓█   ▀ ▓██▒    ▓██▒            \n"
-// "░ ▓██▄   ▒██▀▀██░▒███   ▒██░    ▒██░            \n"
-// "  ▒   ██▒░▓█ ░██ ▒▓█  ▄ ▒██░    ▒██░            \n"
-// "▒██████▒▒░▓█▒░██▓░▒████▒░██████▒░██████▒        \n"
-// "▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░░ ▒░ ░░ ▒░▓  ░░ ▒░▓  ░        \n"
-// "░ ░▒  ░ ░ ▒ ░▒░ ░ ░ ░  ░░ ░ ▒  ░░ ░ ▒  ░        \n"
-// "░  ░  ░   ░  ░░ ░   ░     ░ ░     ░ ░           \n"
-// "      ░   ░  ░  ░   ░  ░    ░  ░    ░  ░        \n" RESET);
+    printf(RED "██████  ██░ ██ ▓█████  ██▓     ██▓            \n"
+"▒██    ▒ ▓██░ ██▒▓█   ▀ ▓██▒    ▓██▒            \n"
+"░ ▓██▄   ▒██▀▀██░▒███   ▒██░    ▒██░            \n"
+"  ▒   ██▒░▓█ ░██ ▒▓█  ▄ ▒██░    ▒██░            \n"
+"▒██████▒▒░▓█▒░██▓░▒████▒░██████▒░██████▒        \n"
+"▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░░ ▒░ ░░ ▒░▓  ░░ ▒░▓  ░        \n"
+"░ ░▒  ░ ░ ▒ ░▒░ ░ ░ ░  ░░ ░ ▒  ░░ ░ ▒  ░        \n"
+"░  ░  ░   ░  ░░ ░   ░     ░ ░     ░ ░           \n"
+"      ░   ░  ░  ░   ░  ░    ░  ░    ░  ░        \n" RESET);
 }
-// int globalVar;
 int main(int ac, char **av, char  **ev)
 {
     t_env *env;
     (void)ac;
     (void)av;
     
-    // (void)ev;
     print_tchbi7a();
     env = init_env(ev);
-    // printf("%s\n", env->get(env->data, "HOME"));
     t_elem *elem;
-    // env_command(env);
     while (1)
     {
-        // char *cnt =  wildcard("*");
-        // printf("%s\n",cnt);
         elem = lexer();
-        // while (elem)
-        // {
-        //     printf("~%s~                       ", elem->content);
-        //     printf("~%c~                       ", elem->type == WORD ? 'W' : elem->type == AND ? 'A' : elem->type == OR ? 'O' : elem->type == HERE_DOC ? 'H' : elem->type == DREDIR_OUT ? 'D' : elem->type);
-        //     printf("~%s~        \n", elem->state == GENERAL ? "GENERAL" : elem->state == IN_DQUOTE ? "IN DOUBLE QUOTE" : "IN QOUTE");
-        //     elem = elem->next;
-        // }
-        // continue;
         if (!elem)
         {
             ft_alloc(0, NULL, FREE_ALL);
             continue;
         }
         t_command *root = parser(elem, env);
-        // (void)root;
-        // continue;
-        // (void)root;
-        // ft_elem_lstclear(&elem, free_content);
-        // free_tree(root);
 
         t_exec_ret *r =  executor(root, env, '\0', ev);
-        // echo(root->right);
 
-        // int *arr = NULL;
         
         int i = 0;
         int hehe= 0;
         if (!r || !r->pids)
+        {
+            ft_alloc(0, NULL, FREE_ALL);
             continue;
-            // printf("problem with the r\n");
+        }
         while (r && r->pids)
         {
             if (r->pids[i] == -1)
                 break;
             waitpid(r->pids[i], &hehe, 0);
             if (WIFEXITED(hehe))
-                globalVar = WEXITSTATUS(hehe);
+                g_var = WEXITSTATUS(hehe);
             else if (WIFSIGNALED(hehe))
-                globalVar = WTERMSIG(hehe) + 128;
+                g_var = WTERMSIG(hehe) + 128;
             i++;
         }
-        // // printf("1\n");
-        // // globalVar = 28 << 8;
-        // // printf("exit : %d\n", globalVar);
-        // // printf("hehe : %d\n", WEXIT(hehe));
-        // free_tree(root);
-        // while (1);
-        // while (1)
-        // {
-        //     i = executor(root, env, '\0');
-        //     waitpid(i, NULL, 0);
-        //     printf("after wait\n");
-        //     if (i == -1)
-        //     {
-        //         printf("it the end of the prompt !\n");
-        //         break;
-        //     }
-        // }
-        // open_out_files(((t_command *)(root->right))->outfiles, env);
-        // print_tree(root, 0);
-        // open_out_files(((t_command *)(root->right))->outfiles, env);
-        // printf("%s\n", env_expander((((t_command *)root->right))->command_arg->content, (((t_command *)root->right))->command_arg->index_list, env));
-        // print_tree(root, 0);
-    //     // char *content  = here_doc("$lim");
-    //     // // printf("here doc content without expanding");
-    //     // if (content)
-    //     //     printf("here doc content with expanding : %s\n", expand_here_doc_content(content, env));
         ft_alloc(0, NULL, FREE_ALL);
     }
-    // printf("heh\n");
-        return (globalVar);
+    return (g_var);
 }
