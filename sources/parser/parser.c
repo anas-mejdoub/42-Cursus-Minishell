@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:53:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 09:31:08 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 10:42:56 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -538,7 +538,10 @@ int	handle_here_doc(t_in_files *file, t_env *env)
 	file->filename = ft_strdup(file_name);
 	str1 = here_doc(file->limiter);
 	if (str1 == NULL)
+	{
+		// printf("hello\n");
 		return (ft_alloc(0, file_name, FREE_PTR), -1);
+	}
 	i = open(file_name, O_CREAT | O_WRONLY | O_RDONLY, 0777);
 	if (i == -1)
 	{
