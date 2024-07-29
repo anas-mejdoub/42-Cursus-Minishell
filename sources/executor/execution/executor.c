@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 13:02:39 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 11:44:36 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/29 16:25:51 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-t_exec_ret	*single_built(t_command *cmd, t_exec_ret *ret, bool f,
-		t_env *env)
+t_exec_ret	*single_built(t_command *cmd, t_exec_ret *ret, bool f, t_env *env)
 {
 	if ((cmd->outfiles && cmd->outfd == -1) || (cmd->infd && f == true)
 		|| do_builtin(cmd, env) == -1)
+	{
 		g_var = 1;
+	}
 	else
 		g_var = 0;
 	ret->ret = -1;

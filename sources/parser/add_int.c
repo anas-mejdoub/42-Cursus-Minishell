@@ -1,29 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   add_int.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/24 07:31:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 16:26:07 by amejdoub         ###   ########.fr       */
+/*   Created: 2024/07/29 14:42:34 by amejdoub          #+#    #+#             */
+/*   Updated: 2024/07/29 14:51:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "local_signal.h"
+#include "minishell.h"
+#include "parser.h"
 
-void	new_prompt(int sig)
+int	*add_int(int *arr, int new)
 {
-	(void)sig;
-	g_var = 1;
-	printf(BHMAG "\n" RESET);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-void	kill_here_doc(int sig)
-{
-	(void)sig;
-	printf("\n");
-	exit(1);
+	int	i;
+	int	*res;
+	int	j;
+
+	i = 0;
+	while (arr)
+	{
+		if (arr[i] == -1)
+			break ;
+		i++;
+	}
+	res = ft_alloc((sizeof(int) * (i + 2)), NULL, MALLOC);
+	if (!res)
+		return (NULL);
+	j = 0;
+	while (res && j < i)
+	{
+		res[j] = arr[j];
+		j++;
+	}
+	res[j] = new;
+	res[j + 1] = -1;
+	return (res);
 }

@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 11:43:30 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/29 16:03:50 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int main(int ac, char **av, char  **ev)
             continue;
         }
         t_command *root = parser(elem, env);
-
+        // print_tree(root, 0);
         t_exec_ret *r =  executor(root, env, '\0');
 
         

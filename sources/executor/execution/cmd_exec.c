@@ -6,7 +6,7 @@
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:10:01 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 12:11:58 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/29 16:35:50 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool	builtin_condition(t_command *command, t_env *env, bool f)
 	if ((command->outfiles && command->outfd == -1) || (command->infd
 			&& f == true) || do_builtin(command, env) == -1)
 		return (true);
-	return (true);
+	return (false);
 }
 
 void	exec_cmd_nf(char *str)

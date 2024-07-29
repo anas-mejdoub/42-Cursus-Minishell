@@ -1,29 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   out_indexes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/24 07:31:40 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 16:26:07 by amejdoub         ###   ########.fr       */
+/*   Created: 2024/07/29 13:17:39 by amejdoub          #+#    #+#             */
+/*   Updated: 2024/07/29 14:52:47 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "local_signal.h"
+#include "minishell.h"
+#include "parser.h"
 
-void	new_prompt(int sig)
+void	add_to_out_index(t_out_files *list, t_env_index *new)
 {
-	(void)sig;
-	g_var = 1;
-	printf(BHMAG "\n" RESET);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	if (!list->index_list)
+	{
+		list->index_list = new;
+	}
+	else
+	{
+		last_index(list->index_list)->next = new;
+	}
 }
-void	kill_here_doc(int sig)
+
+void	add_indexs_to_outfiles(int *arr, int *len, t_out_files *file)
 {
-	(void)sig;
-	printf("\n");
-	exit(1);
+	int	i;
+
+	i = 0;
+	while (arr)
+	{
+		if (arr[i] == -1)
+			break ;
+		add_to_out_index(file, new_index(arr[i], len[i]));
+		i++;
+	}
 }
