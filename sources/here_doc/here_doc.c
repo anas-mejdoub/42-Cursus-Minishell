@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 10:17:55 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 10:23:48 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/29 10:51:36 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_here_doc.h"
+
+// static write_on_file()
 
 static void save_heredoc_content(char *lim, char *file)
 {
@@ -24,15 +26,17 @@ static void save_heredoc_content(char *lim, char *file)
 	{
 		line = readline("> ");
 		if (line == NULL)
-		{
-			ft_alloc(0, content, FREE_PTR);
-			exit(0);
-		}
+			break;
+		// {
+			// ft_alloc(0, content, FREE_PTR);
+			
+			// exit(0);
+		// }
 		if (!ft_strncmp(line, lim, ft_strlen(lim))
 			&& ft_strlen(lim) == ft_strlen(line))
 			{
-			free(line);
-			break ;
+				free(line);
+				break ;
 			}
 		content = ft_freed_join(content, line);
 		content = ft_freed_join(content, "\n");	
@@ -96,12 +100,13 @@ char	*here_doc(char *lim)
 		signal(SIGINT, kill_here_doc);
 		save_heredoc_content(lim, file);
 	}
-	else if (pid > 0)
-	{
+	// else if (pid > 0)
+	// {
 		waitpid(pid, &status, 0);
 		if (WEXITSTATUS(status) == 1)
 			return (ft_alloc(0, file, FREE_PTR), NULL);
+		// printf("hehe\n");
 		return (read_heredoc_content(file));
-	}
-	return (ft_alloc(0, file, FREE_PTR), NULL);
+	// }
+	// return (ft_alloc(0, file, FREE_PTR), NULL);
 }

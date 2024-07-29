@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 10:48:34 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 07:43:21 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 10:39:11 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,9 +146,11 @@ int	open_in_files(t_in_files *files, t_env *env)
 			return (-1);
 		if (files->here_doc)
 		{			
+			// printf("jpjojo\n");
 			if (change_content(files, env) == -1)
 				return (-1);
 		}
+		// printf("jpjojo\n");
 		if (helper_open_in_files(file_name, &last_fd) == -1)
 			return (-1);
 		if (files->next)
