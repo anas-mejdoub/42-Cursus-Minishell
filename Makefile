@@ -10,7 +10,7 @@ SRC =\
 		sources/wildcard/wildcard.c sources/wildcard/fun_wildcard.c\
 		sources/helper/env_helper.c sources/helper/print_err.c sources/helper/file_creation.c sources/helper/file_creation_utils.c sources/helper/is_builtin.c sources/helper/env_to_2d_arr.c sources/helper/redirections_helper.c sources/helper/env_pattern.c sources/helper/tockens_checker.c sources/helper/ft_free_join.c\
 		sources/executor/builtins/echo.c sources/executor/builtins/pwd.c sources/executor/builtins/env_command.c sources/executor/builtins/exit.c sources/executor/builtins/export.c sources/executor/builtins/cd.c sources/executor/builtins/unset.c\
-		sources/minishell.c #sources/leaks.c
+		sources/minishell.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -18,7 +18,7 @@ LIBFT = sources/super_libft/libft.a -L /goinfre/$(USER)/homebrew/opt/readline/li
 
 CC = cc
 
-CFLAGS = -Wall -Wextra  -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror  -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include -fsanitize=address -g
 
 NAME = minishell
 
@@ -30,7 +30,7 @@ $(NAME) : $(OBJ)
 	make -C sources/super_libft
 	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) $(LIBS)  -o $(NAME)
 
-%.o : %.c
+%.o : %.c ./includes/minishell.h
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
