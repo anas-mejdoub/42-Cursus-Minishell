@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 10:56:36 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 11:01:10 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/30 12:02:43 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,11 @@ void	share_fds(t_command *command)
 	((t_command *)command->left)->fd[1] = command->fd[1];
 	((t_command *)command->right)->fd[0] = command->fd[0];
 	((t_command *)command->right)->fd[1] = command->fd[1];
+}
+
+bool	mini_condition(char *command)
+{
+	if (!access(command, F_OK) && access(command, X_OK) == -1)
+		print_err_exit(2, 126, "minishell : Permission denied\n");
+	return (true);
 }

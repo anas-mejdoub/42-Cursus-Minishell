@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:01:25 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/30 10:43:56 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/30 12:02:29 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,5 +209,5 @@ int							first_split_tree(t_elem *elements,
 								t_command **command, t_command **pipe_node,
 								bool *f);
 t_command_h_ret				*intialize_ret_cmd(void);
-
+bool						mini_condition(char *command);
 #endif

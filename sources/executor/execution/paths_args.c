@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 10:59:13 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/30 09:35:28 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/30 12:02:55 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,14 @@ char	*get_path(char *command, t_env *env)
 	paths = NULL;
 	if (!command[0])
 		return (NULL);
+	if (command[0] == '.' && command[1] == '/' && mini_condition(command))
+		return (command);
 	if (env)
 		paths = ft_split(env->get(env->data, "PATH"), ':');
 	if (!paths)
 	{
+		if (!access(command, F_OK) && access(command, X_OK) == -1)
+			print_err_exit(2, 126, "minishell : Permission denied\n");
 		if (!access(command, F_OK))
 			return (command);
 		return (NULL);
@@ -58,8 +62,6 @@ char	*get_path(char *command, t_env *env)
 	tmp = fetch_paths(paths, command);
 	if (tmp)
 		return (tmp);
-	if (!access(command, F_OK) && access(command, X_OK) == -1)
-		print_err_exit(2, 126, "minishell : Permission denied\n");
 	if (!access(command, F_OK) && ((command[0] == '.' && command[1])
 			|| command[0] == '/'))
 		return (command);
