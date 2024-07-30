@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_exec.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:10:01 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 16:35:50 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/30 09:34:55 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,17 @@ void	exec_cmd_nf(char *str)
 
 void	child_proc(t_command *command, char c, bool f, t_env *env)
 {
-	if (command->command_arg)
+	if (command->command_arg && command->args && command->args[0])
 		command->path = get_path(command->args[0], env);
 	if ((command->outfiles && command->outfd == -1) || (command->infd
 			&& f == true))
 		exit(1);
 	if (command->command_arg && !command->path && !is_builtin(command)
-		&& access(command->args[0], F_OK))
-		print_err_exit(4, 127, "minishell: ", command->args[0],
-			": command not found\n");
+		&& command->args && command->args[0] && access(command->args[0], F_OK))
+		exec_cmd_nf(command->args[0]);
 	if (!command->path && !is_builtin(command) && command->command_arg
-		&& !access(command->args[0], F_OK) && access(command->args[0], X_OK))
+		&& command->args && command->args[0] && !access(command->args[0], F_OK)
+		&& access(command->args[0], X_OK))
 		print_err_exit(2, 126, "minishell :  Permission denied\n");
 	duping(command);
 	right_left(command, c);

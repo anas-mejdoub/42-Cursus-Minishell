@@ -42,7 +42,7 @@ LIBFT = sources/super_libft/libft.a -L /goinfre/$(USER)/homebrew/opt/readline/li
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror  -g -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include
+CFLAGS = -Wall -Wextra -Werror -I includes/   -I/goinfre/$(USER)/homebrew/opt/readline/include 
 
 NAME = minishell
 
@@ -52,7 +52,7 @@ all : $(NAME)
 
 $(NAME) : $(OBJ)
 	make -C sources/super_libft
-	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) $(LIBS)  -o $(NAME)
+	$(CC) $(CFLAGS) -lreadline $(OBJ) $(LIBFT) -o $(NAME)
 
 %.o : %.c ./includes/minishell.h
 	@$(CC) $(CFLAGS) -c $< -o $@

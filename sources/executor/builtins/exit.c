@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 18:09:14 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 11:20:10 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/30 11:07:11 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	extract_number(t_command *cmd, int *fd_in, int *fd_out)
 		if ((res > LLONG_MAX && sign == 1) || (res > LLONG_MAX && sign == -1))
 			return (restor_rediraction(cmd, fd_in, fd_out), print_err(4, 255, \
 			"minishell: exit: ", cmd->args[1], ": numeric argument required\n"), \
-			ft_alloc(0, NULL, FREE_ALL), exit(255), -1);
+			exit(255), -1);
 	}
 	return (overflow_result(res * sign));
 }
@@ -62,7 +62,7 @@ static int	calculate_status(t_command *cmd, int *fd_in, int *fd_out)
 	if (cmd->args[1][j] || !ft_isdigit(cmd->args[1][j - 1]))
 		return (print_err(4, 255, "minishell: exit: ", cmd->args[1],
 				": numeric argument required\n"), restor_rediraction(cmd, fd_in,
-				fd_out), ft_alloc(0, NULL, FREE_ALL), exit(255), -1);
+				fd_out), exit(255), -1);
 	else
 	{
 		if (cmd->args[1] != NULL && cmd->args[2] != NULL)
@@ -71,7 +71,6 @@ static int	calculate_status(t_command *cmd, int *fd_in, int *fd_out)
 		else
 			exit_status = extract_number(cmd, fd_in, fd_out);
 		restor_rediraction(cmd, fd_in, fd_out);
-		ft_alloc(0, NULL, FREE_ALL);
 		exit(exit_status);
 	}
 	return (0);
@@ -91,7 +90,6 @@ int	exit_comand(t_command *cmd)
 	if (cmd->args[1] == NULL)
 	{
 		restor_rediraction(cmd, &fd_in, &fd_out);
-		ft_alloc(0, NULL, FREE_ALL);
 		exit(g_var);
 	}
 	return (restor_rediraction(cmd, &fd_in, &fd_out), calculate_status(cmd,

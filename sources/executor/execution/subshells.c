@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   subshells.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:08:23 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 11:56:23 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/30 11:24:15 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,15 @@ void	subshell_config(t_command *command, char c)
 		((t_command *)command->right)->infd = command->infd;
 }
 
+void	child_sub_caller(t_command *command, t_exec_ret *ret, t_env *env,
+		char c)
+{
+	signal(SIGINT, SIG_DFL);
+	if (command->to_close)
+		close_fds(command->to_close);
+	subshell_childp(command, ret, env, c);
+}
+
 t_exec_ret	*subshell_node(t_command *command, t_exec_ret *ret, t_env *env,
 		char c)
 {
@@ -86,13 +95,10 @@ t_exec_ret	*subshell_node(t_command *command, t_exec_ret *ret, t_env *env,
 	if (!get_files(command, env, &found_in))
 		return (NULL);
 	subshell_config(command, c);
+	signal(SIGINT, SIG_IGN);
 	f = fork();
 	if (f == 0)
-	{
-		if (command->to_close)
-			close_fds(command->to_close);
-		subshell_childp(command, ret, env, c);
-	}
+		child_sub_caller(command, ret, env, c);
 	else if (f > 0)
 		subshell_parentp(command, ret, f, c);
 	if (f < 0)

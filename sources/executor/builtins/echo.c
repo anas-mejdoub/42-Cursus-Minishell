@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 09:58:21 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/24 17:21:38 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/30 11:12:29 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static int	check_argument(t_command *cmd, int *new_line)
 			else
 				break ;
 		}
+		else if (!cmd->args[i][1])
+			break ;
 	}
 	return (i);
 }
