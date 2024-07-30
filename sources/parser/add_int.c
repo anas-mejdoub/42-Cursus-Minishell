@@ -1,33 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.h                                              :+:      :+:    :+:   */
+/*   add_int.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/08 10:14:53 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 11:36:17 by amejdoub         ###   ########.fr       */
+/*   Created: 2024/07/29 14:42:34 by amejdoub          #+#    #+#             */
+/*   Updated: 2024/07/29 14:51:16 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENV_H
-# define ENV_H
+#include "minishell.h"
+#include "parser.h"
 
-typedef struct s_env_data
+int	*add_int(int *arr, int new)
 {
-	char				*key;
-	char				*value;
-	struct s_env_data	*next;
-}						t_envata;
+	int	i;
+	int	*res;
+	int	j;
 
-typedef struct s_env
-{
-	t_envata			*data;
-	char				*(*get)(t_envata *env, char *key);
-	int					(*set)(t_envata **env, char *key, char *value);
-	int					(*unset)(t_envata **env, char *key);
-}						t_env;
-
-t_env					*init_env(char **ev);
-
-#endif
+	i = 0;
+	while (arr)
+	{
+		if (arr[i] == -1)
+			break ;
+		i++;
+	}
+	res = ft_alloc((sizeof(int) * (i + 2)), NULL, MALLOC);
+	if (!res)
+		return (NULL);
+	j = 0;
+	while (res && j < i)
+	{
+		res[j] = arr[j];
+		j++;
+	}
+	res[j] = new;
+	res[j + 1] = -1;
+	return (res);
+}

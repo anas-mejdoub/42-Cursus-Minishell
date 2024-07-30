@@ -1,33 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.h                                              :+:      :+:    :+:   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/08 10:14:53 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/29 11:36:17 by amejdoub         ###   ########.fr       */
+/*   Created: 2024/07/29 13:16:24 by amejdoub          #+#    #+#             */
+/*   Updated: 2024/07/29 14:53:01 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENV_H
-# define ENV_H
+#include "minishell.h"
+#include "parser.h"
 
-typedef struct s_env_data
+void	intialize_parser(t_command **command, t_command **pipe_node, bool *f,
+		int *r)
 {
-	char				*key;
-	char				*value;
-	struct s_env_data	*next;
-}						t_envata;
+	*command = new_node();
+	*pipe_node = new_node();
+	(*pipe_node)->type_node = ROOT_NODE;
+	(*pipe_node)->right = *command;
+	*r = 0;
+	*f = true;
+}
 
-typedef struct s_env
+int	get_rank(int n)
 {
-	t_envata			*data;
-	char				*(*get)(t_envata *env, char *key);
-	int					(*set)(t_envata **env, char *key, char *value);
-	int					(*unset)(t_envata **env, char *key);
-}						t_env;
-
-t_env					*init_env(char **ev);
-
-#endif
+	if (n == PIPE_LINE)
+		return (P);
+	if (n == AND)
+		return (A);
+	if (n == OR)
+		return (O);
+	return (0);
+}

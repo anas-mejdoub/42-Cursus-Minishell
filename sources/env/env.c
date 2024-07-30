@@ -3,27 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:58:04 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/28 17:14:23 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:36:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "local_env.h"
 
-static int	allocate_node(int i, char **ev, t_env_data **node, t_env_data **tmp)
+static int	allocate_node(int i, char **ev, t_envata **node, t_envata **tmp)
 {
 	if (i == 0)
 	{
-		*node = malloc(sizeof(t_env_data));
+		*node = malloc(sizeof(t_envata));
 		if (!*node)
 			return (1);
 		*tmp = *node;
 	}
 	if ((ev && ev[i + 1]) || i == 0)
 	{
-		(*tmp)->next = malloc(sizeof(t_env_data));
+		(*tmp)->next = malloc(sizeof(t_envata));
 		if (!*tmp)
 			return (1);
 	}
@@ -32,7 +32,7 @@ static int	allocate_node(int i, char **ev, t_env_data **node, t_env_data **tmp)
 	return (0);
 }
 
-static int	fetch_env_data(char **ev, t_env_data **node, t_env_data **tmp)
+static int	fetch_env_data(char **ev, t_envata **node, t_envata **tmp)
 {
 	int	i;
 	int	j;
@@ -61,8 +61,8 @@ static int	fetch_env_data(char **ev, t_env_data **node, t_env_data **tmp)
 t_env	*init_env(char **ev)
 {
 	t_env		*env;
-	t_env_data	*node;
-	t_env_data	*tmp;
+	t_envata	*node;
+	t_envata	*tmp;
 	int			len;
 
 	node = NULL;

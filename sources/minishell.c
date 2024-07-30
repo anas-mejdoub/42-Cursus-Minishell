@@ -6,7 +6,7 @@
 /*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:59:33 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 12:39:43 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/30 07:57:34 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	wait_commands(t_exec_ret	*r)
 	}
 }
 
-static void	minishell(t_env *env, char **ev)
+static void	minishell(t_env *env)
 {
 	t_elem		*elem;
 	t_command	*root;
@@ -59,7 +59,7 @@ static void	minishell(t_env *env, char **ev)
 			continue ;
 		}
 		root = parser(elem, env);
-		r = executor(root, env, '\0', ev);
+		r = executor(root, env, '\0');
 		if (!r || !r->pids)
 		{
 			ft_alloc(0, NULL, FREE_ALL);
@@ -78,6 +78,6 @@ int	main(int ac, char **av, char **ev)
 	(void)av;
 	print_tchbi7a();
 	env = init_env(ev);
-	minishell(env, ev);
+	minishell(env);
 	return (g_var);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:35:02 by nbenyahy          #+#    #+#             */
-/*   Updated: 2024/07/25 12:40:44 by nbenyahy         ###   ########.fr       */
+/*   Updated: 2024/07/29 11:36:17 by amejdoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	print_all_envs(t_env *env)
 {
-	t_env_data	*tmp_env_data;
+	t_envata	*tmp_env_data;
 	int			k;
 
 	tmp_env_data = env->data;
