@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amejdoub <amejdoub@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nbenyahy <nbenyahy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 12:51:18 by amejdoub          #+#    #+#             */
-/*   Updated: 2024/07/29 16:55:16 by amejdoub         ###   ########.fr       */
+/*   Updated: 2024/07/30 07:46:01 by nbenyahy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ bool	redir_in_parse(t_elem **elements, t_command **command, t_env *env)
 
 	tmp = NULL;
 	comm_hand_ret = NULL;
-	bool_param.bool1 = imbg(tmp, env);
-	bool_param.bool1 = comm_hand_ret->wildcard;
 	tmp = *elements;
 	comm_hand_ret = command_handling(elements);
+	bool_param.bool1 = imbg(tmp, env);
+	bool_param.bool2 = comm_hand_ret->wildcard;
 	if (handle_redir_in(*command, comm_hand_ret->command, bool_param, env) == \
 	-1)
 	{
