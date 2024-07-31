@@ -96,17 +96,12 @@ typedef struct s_commands
 	t_command_args			*command_arg;
 	char					**args;
 	int						type_node;
-	char					**infile;
-	char					**outfile;
 	t_out_files				*outfiles;
 	t_in_files				*in_files;
 	char					*path;
 	bool					dup;
-	bool					pipe;
 	int						infd;
 	int						outfd;
-	bool					and_;
-	bool					or_;
 	bool					builtin;
 	bool					in_redir;
 	bool					out_redir;

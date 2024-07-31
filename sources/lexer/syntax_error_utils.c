@@ -57,6 +57,8 @@ int	other_syntax(t_elem **elem, t_list **list, t_list **original)
 	{
 		if (here_doc_syntax(elem, list, original) != NULL)
 			return (0);
+		if (*elem)
+			*elem = (*elem)->next;
 	}
 	else if ((*elem) && is_spliter((*elem)->type))
 	{

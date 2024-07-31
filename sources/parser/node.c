@@ -47,9 +47,6 @@ void	intialize_new_node(t_command *new)
 	new->to_close = NULL;
 	new->left = NULL;
 	new->path = NULL;
-	new->pipe = false;
-	new->and_ = false;
-	new->or_ = false;
 	new->builtin = false;
 	new->in_redir = false;
 	new->out_redir = false;
