@@ -3,7 +3,7 @@
   
 # MINISHELL
   
-### let's build a beautiful bash like brian fox 
+### let's build a beautiful mini bash like brian fox 
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/BrianJFox.png/1200px-BrianJFox.png" alt="Brian Fox" width="300"/>
 
