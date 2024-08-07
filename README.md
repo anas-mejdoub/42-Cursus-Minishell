@@ -10,27 +10,27 @@
 </div>
 
 
+## Table of Contents
+
+- [Introduction](#Authors)
+- [Features](#Introduction)
+- [Installation](#installation)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
 
 ## Authors
 
 - [nourddine benyahya](https://github.com/nourddine-benyahya) [(42 profile)](https://profile.intra.42.fr/users/nbenyahy)
 - [anas-mejdoub](https://github.com/anas-mejdoub) [(42 profile)](https://profile.intra.42.fr/users/amejdoub)
 
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Built-in Commands](#built-in-commands)
-- [Contributing](#contributing)
-- [License](#license)
-
-
 ## Introduction
 
 Minishell is a simple shell implementation project for 42 School. The goal of this project is to create a small, yet functional shell that can execute commands, manage processes, and handle basic shell functionalities.
+
+## features
 
 This project recreates a basic shell with essential functionalities, including:
 
@@ -53,7 +53,7 @@ To install Minishell, follow these steps:
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/minishell.git
+    git clone https://github.com/nourddine-benyahya/Minishell
     ```
 
 2. Navigate to the project directory:
