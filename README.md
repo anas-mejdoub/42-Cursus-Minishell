@@ -52,7 +52,7 @@ To install Minishell, follow these steps:
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/nourddine-benyahya/Minishell
+    git clone https://github.com/1337-Med/42-Cursus-Minishell
     ```
 
 2. Navigate to the project directory:
