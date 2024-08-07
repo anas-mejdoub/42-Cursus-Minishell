@@ -12,12 +12,12 @@
 
 ## Table of Contents
 
-- [Introduction](#Authors)
-- [Features](#Introduction)
-- [Installation](#installation)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
+- [Authors](#Authors)
+- [Introduction](#Introduction)
+- [features](#features)
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [Contributing](#Contributing)
 - [License](#license)
 
 
@@ -73,6 +73,7 @@ To run Minishell, execute the following command in the project directory:
 ```sh
 ./minishell
 ```
+then enjoy with out beautiful bash :)
 
 Once running, you can enter commands just like you would in a regular Unix shell.
 
