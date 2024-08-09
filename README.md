@@ -1,7 +1,7 @@
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/BrianJFox.png/1200px-BrianJFox.png" alt="Brian Fox" width="300"/>
 
 <div align="center">
   
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/BrianJFox.png/1200px-BrianJFox.png" alt="Brian Fox" width="300"/>
 # MINISHELL
   ![Minishell](https://img.shields.io/badge/Minishell-42-blue)
 ### let's build a beautiful mini bash like brian fox 
